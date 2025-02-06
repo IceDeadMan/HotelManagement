@@ -1,1 +1,1 @@
-# HotelManagement
+# Hotel Tenant & Management Log (HTML)
