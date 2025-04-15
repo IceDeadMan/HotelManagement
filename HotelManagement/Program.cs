@@ -14,6 +14,9 @@ namespace HotelManagement
             builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,7 +36,8 @@ namespace HotelManagement
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Users}/{action=Login}/{id?}");
+
 
             app.Run();
         }

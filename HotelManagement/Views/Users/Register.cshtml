@@ -1,0 +1,8 @@
+﻿@model HotelManagement.Models.Users.RegisterViewModel
+
+<form asp-action="Register" method="post">
+    <input asp-for="Username" placeholder="Username" />
+    <input asp-for="Email" placeholder="Email" />
+    <input asp-for="Password" placeholder="Password" type="password" />
+    <button type="submit">Register</button>
+</form>
