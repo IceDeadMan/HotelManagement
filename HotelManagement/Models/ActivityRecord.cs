@@ -2,9 +2,8 @@
 
 namespace HotelManagement.Models
 {
-    public class ActivityRecord
+    public class ActivityRecord : BaseModel
     {
-        public Guid Id { get; init; }
         public DateTime Date { get; set; }
         public string? Description { get; set; }
         public ActivityType Type { get; set; }

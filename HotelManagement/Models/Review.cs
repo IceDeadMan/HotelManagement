@@ -1,8 +1,7 @@
 ﻿namespace HotelManagement.Models
 {
-    public class Review
+    public class Review : BaseModel
     {
-        public Guid Id { get; init; }
         public string? Comment { get; set; }
         public int Rating { get; set; } // */10
         public DateTime ReviewDate { get; set; }

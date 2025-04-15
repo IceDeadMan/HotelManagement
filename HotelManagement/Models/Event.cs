@@ -1,8 +1,7 @@
 ﻿namespace HotelManagement.Models
 {
-    public class Event
+    public class Event : BaseModel
     {
-        public Guid Id { get; init; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime Date { get; set; }

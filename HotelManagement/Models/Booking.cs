@@ -2,9 +2,8 @@
 
 namespace HotelManagement.Models
 {
-    public class Booking
+    public class Booking : BaseModel
     {
-        public Guid Id { get; init; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public BookingStatus Status { get; set; }

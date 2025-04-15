@@ -1,3 +1,4 @@
+using HotelManagement.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement
@@ -16,6 +17,8 @@ namespace HotelManagement
 
             builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+
+            AddRepositories(builder.Services);
 
             var app = builder.Build();
 
@@ -40,6 +43,17 @@ namespace HotelManagement
 
 
             app.Run();
+        }
+
+        public static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<RoomRepository, RoomRepository>();
+            services.AddScoped<BookingRepository, BookingRepository>();
+            services.AddScoped<ActivityRecordRepository, ActivityRecordRepository>();
+            services.AddScoped<FoodRepository, FoodRepository>();
+            services.AddScoped<FoodOrderRepository, FoodOrderRepository>();
+            services.AddScoped<ReviewRepository, ReviewRepository>();
+            services.AddScoped<EventRepository, EventRepository>();
         }
     }
 }

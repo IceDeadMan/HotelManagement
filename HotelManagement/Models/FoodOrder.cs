@@ -2,9 +2,8 @@
 
 namespace HotelManagement.Models
 {
-    public class FoodOrder
+    public class FoodOrder : BaseModel
     {
-        public Guid Id { get; init; }
         public string? Description { get; set; }
         public DateTime OrderDate { get; set; }
         public OrderStatus Status { get; set; }
