@@ -4,7 +4,7 @@ namespace HotelManagement.DAL.Repositories
 {
     public class BaseRepository<TModel> : IRepository<TModel>, IDisposable where TModel : class, IModel
     {
-        private readonly HotelManagementDbContext _context;
+        protected readonly HotelManagementDbContext _context;
 
         public BaseRepository(HotelManagementDbContext context)
         {

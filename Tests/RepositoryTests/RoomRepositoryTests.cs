@@ -45,7 +45,6 @@ namespace Tests.RepositoryTests
             };
 
             var newRoomId = _roomRepository.Create(newRoom);
-            _context.SaveChanges();
             var createdRoom = _roomRepository.GetById(newRoomId);
 
             Assert.NotNull(createdRoom);
@@ -60,7 +59,6 @@ namespace Tests.RepositoryTests
 
             roomToUpdate.Description = "Updated Description";
             var updatedRoomId = _roomRepository.Update(roomToUpdate) ?? Guid.NewGuid();
-            _context.SaveChanges();
             var updatedRoom = _roomRepository.GetById(updatedRoomId);
 
             Assert.NotNull(updatedRoom);
@@ -74,7 +72,6 @@ namespace Tests.RepositoryTests
             Assert.NotNull(roomToDelete);
 
             _roomRepository.Delete(roomToDelete.Id);
-            _context.SaveChanges();
             var deletedRoom = _roomRepository.GetById(roomToDelete.Id);
 
             Assert.Null(deletedRoom);

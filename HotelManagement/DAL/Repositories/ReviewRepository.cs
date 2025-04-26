@@ -7,5 +7,19 @@ namespace HotelManagement.DAL.Repositories
         public ReviewRepository(HotelManagementDbContext context) : base(context)
         {
         }
+
+        public IList<Review> GetReviewsByRoomId(Guid hotelId)
+        {
+            return _context.Reviews
+                .Where(r => r.RoomId == hotelId)
+                .ToList();
+        }
+
+        public IList<Review> GetReviewsByFoodId(Guid foodId)
+        {
+            return _context.Reviews
+                .Where(r => r.FoodId == foodId)
+                .ToList();
+        }
     }
 }
