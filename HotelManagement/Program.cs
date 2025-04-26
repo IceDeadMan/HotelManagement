@@ -1,3 +1,4 @@
+using HotelManagement.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement
@@ -13,6 +14,11 @@ namespace HotelManagement
 
             builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+
+            AddRepositories(builder.Services);
 
             var app = builder.Build();
 
@@ -33,9 +39,21 @@ namespace HotelManagement
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Users}/{action=Login}/{id?}");
+
 
             app.Run();
+        }
+
+        public static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<RoomRepository, RoomRepository>();
+            services.AddScoped<BookingRepository, BookingRepository>();
+            services.AddScoped<ActivityRecordRepository, ActivityRecordRepository>();
+            services.AddScoped<FoodRepository, FoodRepository>();
+            services.AddScoped<FoodOrderRepository, FoodOrderRepository>();
+            services.AddScoped<ReviewRepository, ReviewRepository>();
+            services.AddScoped<EventRepository, EventRepository>();
         }
     }
 }
