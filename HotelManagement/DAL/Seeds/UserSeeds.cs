@@ -32,9 +32,21 @@ namespace HotelManagement.DAL.Seeds
             PasswordHash = hasher.HashPassword(null, "User2@Password")
         };
 
+        public static readonly ApplicationUser User3 = new ApplicationUser
+        {
+            Id = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd293"),
+            UserName = "user3",
+            NormalizedUserName = "USER3",
+            Email = "user3@example.com",
+            NormalizedEmail = "USER3@EXAMPLE.COM",
+            EmailConfirmed = true,
+            SecurityStamp = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd293").ToString(),
+            PasswordHash = hasher.HashPassword(null, "User3@Password")
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ApplicationUser>().HasData(User1, User2);
+            modelBuilder.Entity<ApplicationUser>().HasData(User1, User2, User3);
         }
     }
 }

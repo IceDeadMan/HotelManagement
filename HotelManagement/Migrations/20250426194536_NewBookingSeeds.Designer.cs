@@ -4,6 +4,7 @@ using HotelManagement.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagement.Migrations
 {
     [DbContext(typeof(HotelManagementDbContext))]
-    partial class HotelManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426194536_NewBookingSeeds")]
+    partial class NewBookingSeeds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,13 +219,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "768aefaf-48ca-4b7b-8d88-c380fdb4dcdb",
+                            ConcurrencyStamp = "26dbb6c1-aced-4aea-b79f-c34eb3759c02",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAENaNW3mXKfMOtuzVDgOZWwMbRyHMNp93Jl+QEOAZQv++KZJoAmP62SevioHzxcp2cA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPqhSFaz/oore55RtmnHqhcMcIgcdZQeTNn7dtzp3MnNPrmiIZ7XUVdqR7uKrzRw6g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd291",
                             TwoFactorEnabled = false,
@@ -232,13 +235,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd292"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c584d95b-2b2f-4022-9a84-7ecb383f5095",
+                            ConcurrencyStamp = "96c2da21-1cfc-4b5d-8f20-9bb9a7a46f0e",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP8XaB4DJ0EL+AemDoeuKyYZFiJBNq4pBC/BgZZTbMGy4giFdbsDmUooHp6Q97SPxg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHS5hr16a2AqzEk4xd/VqSAeNNXedurOImYjJZQ2UfU8LNEGkW2z6dm1b95DaZJbPw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd292",
                             TwoFactorEnabled = false,
@@ -248,13 +251,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c1887ccb-a6e6-4deb-9248-8ccfd80638f0",
+                            ConcurrencyStamp = "fe749ed2-6758-449b-a36f-24f4ed3e2b00",
                             Email = "user3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER3@EXAMPLE.COM",
                             NormalizedUserName = "USER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDu434KSOQUDfudjMHWSUaRFAUA1keJmwPWhgJ9Ssqju9qG05cnlAyiG22laLjK4FQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELJC5Okc7LR/8wTeden1nQ1Pfczpa04BflhfuQnzA+czm/9nsWprwnsOu+OR005ugg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd293",
                             TwoFactorEnabled = false,
@@ -424,7 +427,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2961"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 1",
-                            OrderDate = new DateTime(2025, 4, 26, 22, 55, 18, 23, DateTimeKind.Local).AddTicks(6676),
+                            OrderDate = new DateTime(2025, 4, 26, 22, 45, 35, 518, DateTimeKind.Local).AddTicks(8049),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21"),
                             Status = 0
                         },
@@ -433,7 +436,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2962"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 2",
-                            OrderDate = new DateTime(2025, 4, 26, 22, 55, 18, 26, DateTimeKind.Local).AddTicks(1044),
+                            OrderDate = new DateTime(2025, 4, 26, 22, 45, 35, 521, DateTimeKind.Local).AddTicks(1374),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
                             Status = 2
                         });
@@ -480,7 +483,7 @@ namespace HotelManagement.Migrations
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Comment = "Excellent service and clean room!",
                             Rating = 9,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2332),
+                            ReviewDate = new DateTime(2025, 4, 26, 22, 45, 35, 522, DateTimeKind.Local).AddTicks(1801),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21")
                         },
                         new
@@ -490,25 +493,7 @@ namespace HotelManagement.Migrations
                             Comment = "Pretty decent pizza",
                             FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45811"),
                             Rating = 7,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2891)
-                        },
-                        new
-                        {
-                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7293"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
-                            Comment = "Average experience, could be better.",
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2912),
-                            RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22")
-                        },
-                        new
-                        {
-                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7294"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
-                            Comment = "Great burger, will order again!",
-                            FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45812"),
-                            Rating = 8,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2916)
+                            ReviewDate = new DateTime(2025, 4, 26, 22, 45, 35, 522, DateTimeKind.Local).AddTicks(2316)
                         });
                 });
 

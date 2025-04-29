@@ -25,9 +25,29 @@ namespace HotelManagement.DAL.Seeds
             ReviewDate = DateTime.Now
         };
 
+        public static readonly Review Review3 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7293"),
+            ApplicationUserId = UserSeeds.User1.Id,
+            RoomId = RoomSeeds.Room2.Id,
+            Rating = 5,
+            Comment = "Average experience, could be better.",
+            ReviewDate = DateTime.Now
+        };
+
+        public static readonly Review Review4 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7294"),
+            ApplicationUserId = UserSeeds.User1.Id,
+            FoodId = FoodSeeds.Food2.Id,
+            Rating = 8,
+            Comment = "Great burger, will order again!",
+            ReviewDate = DateTime.Now
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Review>().HasData(Review1, Review2);
+            modelBuilder.Entity<Review>().HasData(Review1, Review2, Review3, Review4);
         }
     }
 }

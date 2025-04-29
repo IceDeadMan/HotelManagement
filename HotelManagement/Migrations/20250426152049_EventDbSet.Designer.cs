@@ -4,6 +4,7 @@ using HotelManagement.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagement.Migrations
 {
     [DbContext(typeof(HotelManagementDbContext))]
-    partial class HotelManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426152049_EventDbSet")]
+    partial class EventDbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,26 +126,6 @@ namespace HotelManagement.Migrations
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21"),
                             Status = 0,
                             Type = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("db1ae6ab-91a7-4aaf-a08a-4097ce670a32"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
-                            Date = new DateTime(2023, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Room 102 maintenance",
-                            RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
-                            Status = 2,
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("db1ae6ab-91a7-4aaf-a08a-4097ce670a33"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
-                            Date = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Room 102 cleaning",
-                            RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
-                            Status = 0,
-                            Type = 0
                         });
                 });
 
@@ -216,13 +199,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "768aefaf-48ca-4b7b-8d88-c380fdb4dcdb",
+                            ConcurrencyStamp = "24502bed-7f55-47c5-ab15-a5e0f41a792f",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAENaNW3mXKfMOtuzVDgOZWwMbRyHMNp93Jl+QEOAZQv++KZJoAmP62SevioHzxcp2cA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIO/JnQ6z8dyAf59CivseIg4RpWKTIeuY6j9nagNQ+2mVy2+UVfLUub4mC6t3muvow==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd291",
                             TwoFactorEnabled = false,
@@ -232,33 +215,17 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd292"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c584d95b-2b2f-4022-9a84-7ecb383f5095",
+                            ConcurrencyStamp = "4997f021-a2e3-46c1-bd53-d5276ffa5baa",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP8XaB4DJ0EL+AemDoeuKyYZFiJBNq4pBC/BgZZTbMGy4giFdbsDmUooHp6Q97SPxg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFuiUEYHt3oFodcSucgNWU51n4Kdq8A/pN/8AQ0pNH429PCPRUwB8B5o3G4C+DnQmA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd292",
                             TwoFactorEnabled = false,
                             UserName = "user2"
-                        },
-                        new
-                        {
-                            Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c1887ccb-a6e6-4deb-9248-8ccfd80638f0",
-                            Email = "user3@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER3@EXAMPLE.COM",
-                            NormalizedUserName = "USER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDu434KSOQUDfudjMHWSUaRFAUA1keJmwPWhgJ9Ssqju9qG05cnlAyiG22laLjK4FQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd293",
-                            TwoFactorEnabled = false,
-                            UserName = "user3"
                         });
                 });
 
@@ -294,14 +261,6 @@ namespace HotelManagement.Migrations
                             EndDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("371c096d-5c0b-4929-aab5-1c0289611902"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
-                            EndDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = 0
                         });
                 });
 
@@ -335,14 +294,6 @@ namespace HotelManagement.Migrations
                             Date = new DateTime(2023, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "A night of nostalgia with classic hits.",
                             Name = "Oldies Party"
-                        },
-                        new
-                        {
-                            Id = new Guid("6b7da81a-74a0-4d50-8cac-fea2f7897732"),
-                            Capacity = 0,
-                            Date = new DateTime(2023, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Enjoy a relaxing evening with smooth jazz.",
-                            Name = "Jazz Night"
                         });
                 });
 
@@ -424,7 +375,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2961"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 1",
-                            OrderDate = new DateTime(2025, 4, 26, 22, 55, 18, 23, DateTimeKind.Local).AddTicks(6676),
+                            OrderDate = new DateTime(2025, 4, 26, 18, 20, 48, 243, DateTimeKind.Local).AddTicks(1615),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21"),
                             Status = 0
                         },
@@ -433,7 +384,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2962"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 2",
-                            OrderDate = new DateTime(2025, 4, 26, 22, 55, 18, 26, DateTimeKind.Local).AddTicks(1044),
+                            OrderDate = new DateTime(2025, 4, 26, 18, 20, 48, 245, DateTimeKind.Local).AddTicks(5160),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
                             Status = 2
                         });
@@ -480,7 +431,7 @@ namespace HotelManagement.Migrations
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Comment = "Excellent service and clean room!",
                             Rating = 9,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2332),
+                            ReviewDate = new DateTime(2025, 4, 26, 18, 20, 48, 246, DateTimeKind.Local).AddTicks(4273),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21")
                         },
                         new
@@ -490,25 +441,7 @@ namespace HotelManagement.Migrations
                             Comment = "Pretty decent pizza",
                             FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45811"),
                             Rating = 7,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2891)
-                        },
-                        new
-                        {
-                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7293"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
-                            Comment = "Average experience, could be better.",
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2912),
-                            RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22")
-                        },
-                        new
-                        {
-                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7294"),
-                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
-                            Comment = "Great burger, will order again!",
-                            FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45812"),
-                            Rating = 8,
-                            ReviewDate = new DateTime(2025, 4, 26, 22, 55, 18, 27, DateTimeKind.Local).AddTicks(2916)
+                            ReviewDate = new DateTime(2025, 4, 26, 18, 20, 48, 246, DateTimeKind.Local).AddTicks(4764)
                         });
                 });
 
@@ -696,11 +629,6 @@ namespace HotelManagement.Migrations
                         {
                             UserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd292"),
                             RoleId = new Guid("87600eb8-1da1-452a-a0bc-0d9c808b4b13")
-                        },
-                        new
-                        {
-                            UserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
-                            RoleId = new Guid("87600eb8-1da1-452a-a0bc-0d9c808b4b14")
                         });
                 });
 
@@ -747,11 +675,6 @@ namespace HotelManagement.Migrations
                         {
                             BookingsId = new Guid("371c096d-5c0b-4929-aab5-1c0289611901"),
                             RoomsId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22")
-                        },
-                        new
-                        {
-                            BookingsId = new Guid("371c096d-5c0b-4929-aab5-1c0289611902"),
-                            RoomsId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21")
                         });
                 });
 

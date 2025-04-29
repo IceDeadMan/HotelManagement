@@ -19,6 +19,7 @@ namespace HotelManagement.DAL
         public DbSet<Food> Foods { get; set; }
         public DbSet<FoodOrder> FoodOrders { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

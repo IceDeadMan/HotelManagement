@@ -13,10 +13,18 @@ namespace HotelManagement.DAL.Seeds
             Date = new DateTime(2023, 10, 15),
         };
 
+        public static readonly Event Event2 = new Event
+        {
+            Id = Guid.Parse("6b7da81a-74a0-4d50-8cac-fea2f7897732"),
+            Name = "Jazz Night",
+            Description = "Enjoy a relaxing evening with smooth jazz.",
+            Date = new DateTime(2023, 11, 20),
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Event>().HasData(
-                Event1
+                Event1, Event2
             );
 
             // Add users to event
