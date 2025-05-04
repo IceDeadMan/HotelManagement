@@ -20,5 +20,18 @@ namespace HotelManagement.Controllers
             var rooms = await _context.Rooms.ToListAsync();
             return View(rooms);
         }
-    }
+
+		public async Task<IActionResult> RoomDetails(Guid id)
+		{
+			var room = await _context.Rooms
+				.Include(r => r.Bookings)
+				.FirstOrDefaultAsync(r => r.Id == id);
+			if (room == null)
+			{
+				return NotFound();
+			}
+			return View(room);
+		}
+
+	}
 }
