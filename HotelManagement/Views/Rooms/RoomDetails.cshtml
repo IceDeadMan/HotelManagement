@@ -35,7 +35,37 @@
 				<p class="text-muted mt-4">No bookings for this room yet.</p>
 			}
 
+			<!-- Calendar -->
+			<div id="calendar" class="mt-4"></div>
+
 			<a asp-action="RoomsList" class="btn btn-secondary mt-4">Back to List</a>
+			<script>
+				const bookings = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+						Model.Bookings.Select(b => new
+						{
+							title = "Booked",
+							start = b.StartDate.ToString("yyyy-MM-dd"),
+							end = b.EndDate.AddDays(1).ToString("yyyy-MM-dd")
+						})
+					));
+			</script>
+
+			<!-- Initialize FullCalendar -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function () {
+					var calendarEl = document.getElementById('calendar');
+
+					var calendar = new FullCalendar.Calendar(calendarEl, {
+						initialView: 'dayGridMonth',
+						height: 'auto',
+						events: bookings,
+						eventColor: '#dc3545',
+						selectable: true
+					});
+
+					calendar.render();
+				});
+			</script>
 		</div>
 	</div>
 </div>

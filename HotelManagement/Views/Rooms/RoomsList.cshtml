@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<HotelManagement.Models.Room>
+@using HotelManagement.Helpers
+
 @{
 	ViewData["Title"] = "Rooms List";
 }
@@ -31,11 +33,20 @@
 	<div class="row row-cols-1 row-cols-md-3 g-4">
 		@foreach (var room in Model)
 		{
+			var roomTypeName = RoomTypeHelper.GetName(room.RoomType);
+			var roomTypeDescription = RoomTypeHelper.GetDescription(room.RoomType);
+			var roomCapacity = RoomTypeHelper.GetCapacity(room.RoomType);
+
 			<div class="col">
 				<div class="card h-100 shadow-sm">
 					<div class="card-body">
 						<h5 class="card-title">Room @room.RoomNumber</h5>
 						<p class="card-text">@room.Description</p>
+
+						<hr />
+						<p><strong>Type:</strong> @roomTypeName</p>
+						<p><strong>Description:</strong> @roomTypeDescription</p>
+						<p><strong>Capacity:</strong> @roomCapacity guests</p>
 					</div>
 					<div class="card-footer bg-transparent border-top-0">
 						<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
@@ -44,4 +55,5 @@
 			</div>
 		}
 	</div>
+
 </div>
