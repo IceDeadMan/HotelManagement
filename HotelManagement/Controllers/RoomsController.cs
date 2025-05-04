@@ -22,9 +22,8 @@ namespace HotelManagement.Controllers
 
 		public async Task<IActionResult> RoomDetails(Guid id)
 		{
-			var room = await _context.Rooms
-				.Include(r => r.Bookings)
-				.FirstOrDefaultAsync(r => r.Id == id);
+            var room = await _roomRepository.GetRoomWithDetailsAsync(id);
+
 			if (room == null)
 			{
 				return NotFound();
