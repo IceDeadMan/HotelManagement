@@ -1,4 +1,5 @@
 ﻿using HotelManagement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Repositories
 {
@@ -37,6 +38,11 @@ namespace HotelManagement.DAL.Repositories
         public virtual IList<TModel> GetAll()
         {
             return _context.Set<TModel>().ToList();
+        }
+
+        public virtual async Task<IList<TModel>> GetAllAsync()
+        {
+            return await _context.Set<TModel>().ToListAsync();
         }
 
         public TModel? GetById(Guid id)

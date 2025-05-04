@@ -1,23 +1,22 @@
-﻿using HotelManagement.DAL;
+﻿using HotelManagement.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.Controllers
 {
     public class RoomsController : Controller
     {
         private readonly ILogger<RoomsController> _logger;
-        private readonly HotelManagementDbContext _context;
+        private readonly RoomRepository _roomRepository;
 
-        public RoomsController(ILogger<RoomsController> logger, HotelManagementDbContext context)
+        public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository)
         {
             _logger = logger;
-            _context = context;
+            _roomRepository = roomRepository;
         }
 
         public async Task<IActionResult> RoomsList()
         {
-            var rooms = await _context.Rooms.ToListAsync();
+            var rooms = await _roomRepository.GetAllAsync();
             return View(rooms);
         }
     }
