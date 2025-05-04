@@ -4,12 +4,12 @@
 }
 
 <h3>Rooms List</h3>
-<table class="table">
+@* <table class="table">
 	<thead>
 		<tr>
 			<th>Room Number</th>
 			<th>Room Type</th>
-			@*<th>Actions</th>*@
+			@*<th>Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,8 +21,27 @@
 				@*<td>
 				 	<a asp-action="Edit" asp-route-id="@room.Id">Edit</a> |
 				 	<a asp-action="Delete" asp-route-id="@room.Id">Delete</a>
-				</td>*@
+				</td>
 			</tr>
 		}
 	</tbody>
-</table>
+</table> *@
+
+<div class="container">
+	<div class="row row-cols-1 row-cols-md-3 g-4">
+		@foreach (var room in Model)
+		{
+			<div class="col">
+				<div class="card h-100 shadow-sm">
+					<div class="card-body">
+						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<p class="card-text">@room.Description</p>
+					</div>
+					<div class="card-footer bg-transparent border-top-0">
+						<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>

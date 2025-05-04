@@ -1,0 +1,42 @@
+﻿@model HotelManagement.Models.Room
+
+@{
+	ViewData["Title"] = "Room Details";
+}
+
+<div class="container mt-4">
+	<div class="card shadow-sm">
+		<div class="card-body">
+			<h3 class="card-title">Room @Model.RoomNumber</h3>
+			<p class="card-text"><strong>Description:</strong> @Model.Description</p>
+
+			@* You can show more info here if you have it *@
+			@* Example:
+               <p><strong>Price:</strong> @Model.Price</p>
+               <p><strong>Capacity:</strong> @Model.Capacity</p>
+            *@
+
+			@if (Model.Bookings?.Any() == true)
+			{
+				<h5 class="mt-4">Bookings:</h5>
+				<ul class="list-group">
+					@foreach (var booking in Model.Bookings)
+					{
+						<li class="list-group-item">
+							<strong>Guest:</strong> @booking.ApplicationUserId
+							| <strong>From:</strong> @booking.StartDate.ToShortDateString()
+							| <strong>To:</strong> @booking.EndDate.ToShortDateString()
+						</li>
+					}
+				</ul>
+			}
+			else
+			{
+				<p class="text-muted mt-4">No bookings for this room yet.</p>
+			}
+
+			<a asp-action="RoomsList" class="btn btn-secondary mt-4">Back to List</a>
+		</div>
+	</div>
+</div>
+
