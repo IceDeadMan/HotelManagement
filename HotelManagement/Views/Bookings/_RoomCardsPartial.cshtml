@@ -1,0 +1,16 @@
+﻿@model IEnumerable<HotelManagement.Models.Room>
+@using HotelManagement.Enums
+
+@foreach (var room in Model)
+{
+	<div class="card mb-3">
+		<div class="card-body">
+			<h5 class="card-title">Room @room.RoomNumber</h5>
+			<p>@room.Description</p>
+@* 			<p><strong>Type:</strong> @RoomTypeHelper.GetName(room.RoomType)</p>
+			<p><strong>Capacity:</strong> @RoomTypeHelper.GetCapacity(room.RoomType)</p> *@
+			<!-- Add booking button logic later -->
+		</div>
+	</div>
+}
+

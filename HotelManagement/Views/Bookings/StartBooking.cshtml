@@ -1,0 +1,77 @@
+﻿@model IEnumerable<HotelManagement.Models.RoomType>
+@using HotelManagement.Models
+
+@{
+	var rooms = ViewBag.AvailableRooms as List<Room> ?? new List<Room>();
+	var selectedRoomTypeId = ViewBag.SelectedRoomTypeId as Guid?;
+	var startDate = ViewBag.StartDate as string ?? "";
+	var endDate = ViewBag.EndDate as string ?? "";
+}
+
+<form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
+	<div class="row mb-4">
+		<div class="col-md-6">
+			<label for="roomType" class="form-label">Room Type</label>
+			<select name="roomTypeId" class="form-select">
+				<option value="">-- Any --</option>
+				@foreach (var type in Model)
+				{
+					var label = $"{type.Name} - {type.Description} (Capacity: {type.Capacity}, Price: {type.Price.ToString("C")})";
+					if (type.Id == selectedRoomTypeId)
+					{
+						<option value="@type.Id" selected>@label</option>
+					}
+					else
+					{
+						<option value="@type.Id">@label</option>
+					}
+				}
+
+			</select>
+		</div>
+		<div class="col-md-6">
+			<label for="stayDuration" class="form-label">Stay Duration</label>
+			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder="Select stay duration" readonly />
+			<input type="hidden" name="start" value="@startDate" />
+			<input type="hidden" name="end" value="@endDate" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
+</form>
+
+@if (rooms.Any())
+{
+	<h4 class="mt-4">Available Rooms</h4>
+	@foreach (var room in rooms)
+	{
+		<div class="card mb-3">
+			<div class="card-body">
+				<h5 class="card-title">Room @room.RoomNumber</h5>
+				<p class="card-text">@room.Description</p>
+				<p><strong>Type:</strong> @room.RoomType?.Name</p>
+				<p><strong>Capacity:</strong> @room.RoomType?.Capacity</p>
+				<p><strong>Price:</strong> @room.RoomType?.Price.ToString("C")</p>
+			</div>
+		</div>
+	}
+}
+
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script>
+		flatpickr("#stayDuration", {
+			mode: "range",
+			dateFormat: "Y-m-d",
+			defaultDate: [
+				"@startDate",
+				"@endDate"
+			],
+			onClose: function (selectedDates) {
+				if (selectedDates.length === 2) {
+					document.querySelector("input[name='start']").value = selectedDates[0].toISOString().split('T')[0];
+					document.querySelector("input[name='end']").value = selectedDates[1].toISOString().split('T')[0];
+				}
+			}
+		});
+	</script>
+}
