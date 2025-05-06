@@ -54,6 +54,7 @@ namespace HotelManagement
             services.AddScoped<FoodOrderRepository, FoodOrderRepository>();
             services.AddScoped<ReviewRepository, ReviewRepository>();
             services.AddScoped<EventRepository, EventRepository>();
+            services.AddScoped<RoomTypeRepository, RoomTypeRepository>();
         }
     }
 }

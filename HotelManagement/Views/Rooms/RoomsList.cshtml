@@ -33,9 +33,9 @@
 	<div class="row row-cols-1 row-cols-md-3 g-4">
 		@foreach (var room in Model)
 		{
-			var roomTypeName = RoomTypeHelper.GetName(room.RoomType);
-			var roomTypeDescription = RoomTypeHelper.GetDescription(room.RoomType);
-			var roomCapacity = RoomTypeHelper.GetCapacity(room.RoomType);
+			var roomTypeName = room.RoomType?.Name ?? "";
+			var roomTypeDescription = room.RoomType?.Description ?? "";
+			var roomCapacity = room.RoomType?.Capacity ?? 0;
 
 			<div class="col">
 				<div class="card h-100 shadow-sm">

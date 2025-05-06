@@ -216,13 +216,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e8b3418e-a2ab-41bf-aa8d-b4b219ae343f",
+                            ConcurrencyStamp = "a89e3cd4-6b35-47fd-8619-2ccda2f63bc3",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL26xAXJAUgGT+ZUpWTWI5e3nqcK7o7X/kBm2rmk4IA6GIpFziOKZ9E41xj5yw4Evg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENot6gCpWS4SwF+LYO7NKU3VB3fmob4Obsj4PB/fd7zNUBI4dMdpi5T9m7hAwepWFA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd291",
                             TwoFactorEnabled = false,
@@ -232,13 +232,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd292"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9bbb0777-e395-48b4-8c20-9bb56170b0fa",
+                            ConcurrencyStamp = "a1521484-b926-4e30-ba04-8ee1f1d5576d",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOngcyCg/1X+TcRaYlhWg59h0sn8qiLAIQFMdK3j2qEAAH9ziEqBLM1cdyMYVs188Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJHBAVx3LWKdurTdMOl0MfNDC3YUv7pOYUM8uNjlp3Qpdbt65Tuc08Bbxg6TGMeRkg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd292",
                             TwoFactorEnabled = false,
@@ -248,13 +248,13 @@ namespace HotelManagement.Migrations
                         {
                             Id = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd293"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c1887ccb-a6e6-4deb-9248-8ccfd80638f0",
+                            ConcurrencyStamp = "e016b9a2-c649-412d-ac4c-f3370ca26db7",
                             Email = "user3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER3@EXAMPLE.COM",
                             NormalizedUserName = "USER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDu434KSOQUDfudjMHWSUaRFAUA1keJmwPWhgJ9Ssqju9qG05cnlAyiG22laLjK4FQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE0RuWU/Pk0nbvUcZkVTLnpEPILmxCXAad/THeTBMHFos8L3Ugre9UtCHDSH2+qmeg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "67019a3d-04de-444b-bb6c-6ef934dcd293",
                             TwoFactorEnabled = false,
@@ -424,7 +424,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2961"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 1",
-                            OrderDate = new DateTime(2025, 5, 4, 18, 45, 18, 19, DateTimeKind.Local).AddTicks(6958),
+                            OrderDate = new DateTime(2025, 5, 6, 16, 50, 30, 191, DateTimeKind.Local).AddTicks(8422),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21"),
                             Status = 0
                         },
@@ -433,7 +433,7 @@ namespace HotelManagement.Migrations
                             Id = new Guid("41d65c90-de3e-49be-8802-8cbc5b4e2962"),
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Description = "Order 2",
-                            OrderDate = new DateTime(2025, 5, 4, 18, 45, 18, 22, DateTimeKind.Local).AddTicks(7745),
+                            OrderDate = new DateTime(2025, 5, 6, 16, 50, 30, 194, DateTimeKind.Local).AddTicks(3667),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
                             Status = 2
                         });
@@ -480,7 +480,7 @@ namespace HotelManagement.Migrations
                             ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
                             Comment = "Excellent service and clean room!",
                             Rating = 9,
-                            ReviewDate = new DateTime(2025, 5, 4, 18, 45, 18, 23, DateTimeKind.Local).AddTicks(7514),
+                            ReviewDate = new DateTime(2025, 5, 6, 16, 50, 30, 195, DateTimeKind.Local).AddTicks(5372),
                             RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21")
                         },
                         new
@@ -490,7 +490,25 @@ namespace HotelManagement.Migrations
                             Comment = "Pretty decent pizza",
                             FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45811"),
                             Rating = 7,
-                            ReviewDate = new DateTime(2025, 5, 4, 18, 45, 18, 23, DateTimeKind.Local).AddTicks(7878)
+                            ReviewDate = new DateTime(2025, 5, 6, 16, 50, 30, 195, DateTimeKind.Local).AddTicks(5857)
+                        },
+                        new
+                        {
+                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7293"),
+                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
+                            Comment = "Average experience, could be better.",
+                            Rating = 5,
+                            ReviewDate = new DateTime(2025, 5, 6, 16, 50, 30, 195, DateTimeKind.Local).AddTicks(5875),
+                            RoomId = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22")
+                        },
+                        new
+                        {
+                            Id = new Guid("4aef3307-19ee-4b61-8efa-8828279e7294"),
+                            ApplicationUserId = new Guid("67019a3d-04de-444b-bb6c-6ef934dcd291"),
+                            Comment = "Great burger, will order again!",
+                            FoodId = new Guid("a9063d88-88c6-40db-a7e9-868afeb45812"),
+                            Rating = 8,
+                            ReviewDate = new DateTime(2025, 5, 6, 16, 50, 30, 195, DateTimeKind.Local).AddTicks(5889)
                         });
                 });
 
@@ -506,10 +524,12 @@ namespace HotelManagement.Migrations
                     b.Property<string>("RoomNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoomType")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoomTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomTypeId");
 
                     b.ToTable("Rooms");
 
@@ -517,23 +537,80 @@ namespace HotelManagement.Migrations
                         new
                         {
                             Id = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca21"),
-                            Description = "Deluxe Room with sea view",
+                            Description = "Room 101",
                             RoomNumber = "101",
-                            RoomType = 0
+                            RoomTypeId = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b51")
                         },
                         new
                         {
                             Id = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca22"),
-                            Description = "Standard Room with garden view",
+                            Description = "Room 102",
                             RoomNumber = "102",
-                            RoomType = 1
+                            RoomTypeId = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b52")
                         },
                         new
                         {
                             Id = new Guid("a242ae42-b5f3-417e-9277-b89ac16fca23"),
-                            Description = "Suite with balcony",
+                            Description = "Room 103",
                             RoomNumber = "103",
-                            RoomType = 2
+                            RoomTypeId = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b53")
+                        });
+                });
+
+            modelBuilder.Entity("HotelManagement.Models.RoomType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoomTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b51"),
+                            Capacity = 1,
+                            Description = "A cozy room for one person",
+                            Name = "Single",
+                            Price = 50.0m
+                        },
+                        new
+                        {
+                            Id = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b52"),
+                            Capacity = 2,
+                            Description = "Comfortable for two guests",
+                            Name = "Double",
+                            Price = 90.0m
+                        },
+                        new
+                        {
+                            Id = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b53"),
+                            Capacity = 4,
+                            Description = "Luxury suite with extra amenities",
+                            Name = "Suite",
+                            Price = 160.0m
+                        },
+                        new
+                        {
+                            Id = new Guid("fbf96b7e-04d2-4290-82e7-40a6f1c76b54"),
+                            Capacity = 6,
+                            Description = "Spacious room for families",
+                            Name = "Family",
+                            Price = 220.0m
                         });
                 });
 
@@ -845,6 +922,17 @@ namespace HotelManagement.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("HotelManagement.Models.Room", b =>
+                {
+                    b.HasOne("HotelManagement.Models.RoomType", "RoomType")
+                        .WithMany("Rooms")
+                        .HasForeignKey("RoomTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoomType");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -934,6 +1022,11 @@ namespace HotelManagement.Migrations
                     b.Navigation("FoodOrders");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("HotelManagement.Models.RoomType", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }
