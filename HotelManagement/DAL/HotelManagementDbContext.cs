@@ -20,6 +20,7 @@ namespace HotelManagement.DAL
         public DbSet<FoodOrder> FoodOrders { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,10 @@ namespace HotelManagement.DAL
 
             modelBuilder.Entity<Food>()
                 .Property(b => b.Price)
+                .HasColumnType("decimal(10, 2)");
+
+            modelBuilder.Entity<RoomType>()
+                .Property(rt => rt.Price)
                 .HasColumnType("decimal(10, 2)");
 
             modelBuilder.Entity<Room>()
@@ -71,6 +76,7 @@ namespace HotelManagement.DAL
 
 
             UserSeeds.Seed(modelBuilder);
+            RoomTypeSeeds.Seed(modelBuilder);
             RoomSeeds.Seed(modelBuilder);
             BookingSeeds.Seed(modelBuilder);
             FoodSeeds.Seed(modelBuilder);
