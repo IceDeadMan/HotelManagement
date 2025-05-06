@@ -16,7 +16,7 @@ namespace HotelManagement.Controllers
 
         public async Task<IActionResult> RoomsList()
         {
-            var rooms = await _roomRepository.GetAllAsync();
+            var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
             return View(rooms);
         }
 

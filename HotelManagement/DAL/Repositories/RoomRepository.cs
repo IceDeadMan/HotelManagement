@@ -16,7 +16,19 @@ namespace HotelManagement.DAL.Repositories
                 .Include(r => r.ActivityRecords)
                 .Include(r => r.FoodOrders)
                 .Include(r => r.Reviews)
+                .Include(r => r.RoomType)
                 .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task<List<Room>> GetAllRoomsWithDetailAsync()
+        {
+            return await _context.Rooms
+                .Include(r => r.Bookings)
+                .Include(r => r.ActivityRecords)
+                .Include(r => r.FoodOrders)
+                .Include(r => r.Reviews)
+                .Include(r => r.RoomType)
+                .ToListAsync();
         }
     }
 }
