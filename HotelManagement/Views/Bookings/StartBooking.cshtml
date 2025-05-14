@@ -11,27 +11,34 @@
 <form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
 	<div class="row mb-4">
 		<div class="col-md-6">
-			<label for="roomType" class="form-label">Room Type</label>
-			<select name="roomTypeId" class="form-select">
-				<option value="">-- Any --</option>
+			<label class="form-label">Room Type</label>
+			<div class="d-flex flex-column gap-2">
+				<div class="form-check border rounded p-3 @(selectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
+					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(selectedRoomTypeId == Guid.Empty ? "checked" : "") />
+					<label class="form-check-label w-100" for="roomTypeAny">
+						-- Any --
+					</label>
+				</div>
+
 				@foreach (var type in Model)
 				{
 					var label = $"{type.Name} - {type.Description} (Capacity: {type.Capacity}, Price: {type.Price.ToString("C")})";
-					if (type.Id == selectedRoomTypeId)
-					{
-						<option value="@type.Id" selected>@label</option>
-					}
-					else
-					{
-						<option value="@type.Id">@label</option>
-					}
+					var isSelected = (type.Id == selectedRoomTypeId);
+					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
+						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
+						<label class="form-check-label w-100" for="roomType_@type.Id">
+							@label
+						</label>
+					</div>
 				}
-
-			</select>
+			</div>
 		</div>
+
 		<div class="col-md-6">
 			<label for="stayDuration" class="form-label">Stay Duration</label>
 			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder="Select stay duration" readonly />
+			<div id="stayDurationError" class="text-danger mt-1" style="display:none;">Please select a valid stay duration.</div>
+			<div id="staySummary" class="mt-2 text-muted"></div>
 			<input type="hidden" name="start" value="@startDate" />
 			<input type="hidden" name="end" value="@endDate" />
 		</div>
@@ -58,20 +65,79 @@
 
 @section Scripts {
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="~/js/utils.js"></script>
 	<script>
+		const staySummary = document.getElementById("staySummary");
+		const startInput = document.querySelector("input[name='start']");
+		const endInput = document.querySelector("input[name='end']");
+		const errorDiv = document.getElementById("stayDurationError");
+
+		function updateStaySummary(startStr, endStr) {
+			if (!startStr || !endStr) {
+				staySummary.style.display = "none";
+				return;
+			}
+
+			const start = new Date(startStr);
+			const end = new Date(endStr);
+
+			if (start >= end) {
+				staySummary.style.display = "none";
+				return;
+			}
+
+			const nights = getNights(start, end);
+			staySummary.innerHTML = `
+				Check-in: <strong>${formatDateDisplay(start)}</strong><br>
+				Check-out: <strong>${formatDateDisplay(end)}</strong><br>
+				Nights: <strong>${nights}</strong>
+			`;
+			staySummary.style.display = "block";
+		}
+
 		flatpickr("#stayDuration", {
 			mode: "range",
 			dateFormat: "Y-m-d",
+			altInput: true,
+			altFormat: "d.m.Y",
+			minDate: "today",
 			defaultDate: [
 				"@startDate",
 				"@endDate"
 			],
 			onClose: function (selectedDates) {
-				if (selectedDates.length === 2) {
-					document.querySelector("input[name='start']").value = selectedDates[0].toISOString().split('T')[0];
-					document.querySelector("input[name='end']").value = selectedDates[1].toISOString().split('T')[0];
+				if (selectedDates.length === 2 && selectedDates[0] < selectedDates[1]) {
+					startInput.value = formatDateLocal(selectedDates[0]);
+					endInput.value = formatDateLocal(selectedDates[1]);
+					updateStaySummary(startInput.value, endInput.value);
+					errorDiv.style.display = "none";
+				} else {
+					startInput.value = "";
+					endInput.value = "";
+					staySummary.style.display = "none";
 				}
 			}
 		});
+
+		document.querySelector("form").addEventListener("submit", function (e) {
+			const start = startInput.value;
+			const end = endInput.value;
+
+			if (!start || !end) {
+				e.preventDefault();
+				errorDiv.style.display = "block";
+				staySummary.style.display = "none";
+			} else {
+				errorDiv.style.display = "none";
+			}
+		});
+
+		// Run summary update on initial page load
+		window.addEventListener("DOMContentLoaded", function () {
+			updateStaySummary(startInput.value, endInput.value);
+		});
 	</script>
 }
+
+
+
