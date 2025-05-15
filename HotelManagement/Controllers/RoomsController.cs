@@ -1,4 +1,5 @@
 ﻿using HotelManagement.DAL.Repositories;
+using HotelManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagement.Controllers
@@ -8,12 +9,14 @@ namespace HotelManagement.Controllers
         private readonly ILogger<RoomsController> _logger;
         private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
+		private readonly BookingCartService _bookingCartService;
 
-		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository)
+		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService)
 		{
             _logger = logger;
             _roomRepository = roomRepository;
 			_roomTypeRepository = roomTypeRepository;
+			_bookingCartService = bookingCartService;
 		}
 
         public async Task<IActionResult> RoomsList()
@@ -37,6 +40,10 @@ namespace HotelManagement.Controllers
 		{
 			var allRoomTypes = await _roomTypeRepository.GetAllAsync();
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
+			var cart = _bookingCartService.GetCart();
+			var roomIdsInCart = cart.RoomIds;
+			var startCart = cart.StartDate;
+			var endCart = cart.EndDate;
 
 			var availableRooms = rooms
 				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
@@ -48,6 +55,9 @@ namespace HotelManagement.Controllers
 			ViewBag.EndDate = end.ToString("yyyy-MM-dd");
 			ViewBag.SelectedRoomTypeId = roomTypeId;
 			ViewBag.AvailableRooms = availableRooms;
+			ViewBag.RoomIdsInCart = roomIdsInCart;
+			ViewBag.StartCart = startCart;
+			ViewBag.EndCart = endCart;
 			return View("~/Views/Bookings/StartBooking.cshtml", allRoomTypes); // ← Render the StartBooking view again
 		}
 	}

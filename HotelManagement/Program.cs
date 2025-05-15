@@ -1,4 +1,5 @@
 using HotelManagement.DAL.Repositories;
+using HotelManagement.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement
@@ -17,8 +18,12 @@ namespace HotelManagement
 
             builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			builder.Services.AddScoped<BookingCartService>();
+			builder.Services.AddSession();
 
-            AddRepositories(builder.Services);
+
+			AddRepositories(builder.Services);
 
             var app = builder.Build();
 
@@ -34,8 +39,9 @@ namespace HotelManagement
             app.UseStaticFiles();
 
             app.UseRouting();
+			app.UseSession();
 
-            app.UseAuthorization();
+			app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
