@@ -13,7 +13,7 @@
 
 <form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
 	<div class="row mb-4">
-		<div class="col-md-6">a
+		<div class="col-md-6">
 			<label class="form-label">Room Type</label>
 			<div class="d-flex flex-column gap-2">
 				<div class="form-check border rounded p-3 @(selectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
@@ -25,7 +25,7 @@
 
 				@foreach (var type in Model)
 				{
-					var label = $"{type.Name} - {type.Description} (Capacity: {type.Capacity}, Price: {type.Price.ToString("C")})";
+					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("C")} per night";
 					var isSelected = (type.Id == selectedRoomTypeId);
 					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
 						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
@@ -49,7 +49,7 @@
 	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
 </form>
 <div>
-	Current cart: @string.Join(", ", (List<Guid>)ViewBag.RoomIdsInCart)
+	(dev)Current cart: @string.Join(", ", (List<Guid>)ViewBag.RoomIdsInCart)
 
 	<p>Start: @startCart</p>
 	<p>End: @endCart</p>
@@ -60,32 +60,39 @@
 @if (rooms.Any())
 {
 	<h4 class="mt-4">Available Rooms</h4>
-	@foreach (var room in rooms)
-	{
-		bool isInCart = roomIdsInCart != null && roomIdsInCart.Contains(room.Id);
-		<div class="card mb-3">
-			<div class="card-body">
-				<h5 class="card-title">Room @room.RoomNumber</h5>
-				<p class="card-text">@room.Description</p>
-				<p><strong>Type:</strong> @room.RoomType?.Name</p>
-				<p><strong>ID:</strong> @room.Id</p>
-				<p><strong>Capacity:</strong> @room.RoomType?.Capacity</p>
-				<p><strong>Price:</strong> @room.RoomType?.Price.ToString("C")</p>
-				<form class="booking-cart-form" asp-controller="Bookings" asp-action="@(isInCart ? "RemoveFromBookingCart" : "AddToBookingCart")" method="post">
-					<input type="hidden" name="roomId" value="@room.Id" />
-					<input type="hidden" name="startDate" value="@ViewBag.StartDate" />
-					<input type="hidden" name="endDate" value="@ViewBag.EndDate" />
 
-					<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success")">
-						@(isInCart ? "Remove Room" : "Book Room")
-					</button>
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+		@foreach (var room in rooms)
+		{
+			bool isInCart = roomIdsInCart != null && roomIdsInCart.Contains(room.Id);
+			<div class="col">
+				<div class="card h-100">
+					<div class="card-body">
+						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<p class="card-text">@room.RoomType.Description</p>
+						<p>Type: <strong>@room.RoomType?.Name</strong></p>
+						<p>(dev)ID: <strong>@room.Id</strong></p>
+						<p>Capacity: <strong>@room.RoomType?.Capacity</strong></p>
+						<p>Price: <strong>@room.RoomType?.Price.ToString("C")</strong></p>
 
-					@Html.AntiForgeryToken()
-				</form>
+						<form class="booking-cart-form" asp-controller="Bookings" asp-action="@(isInCart ? "RemoveFromBookingCart" : "AddToBookingCart")" method="post">
+							<input type="hidden" name="roomId" value="@room.Id" />
+							<input type="hidden" name="startDate" value="@ViewBag.StartDate" />
+							<input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+
+							<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success") w-100">
+								@(isInCart ? "Remove Room" : "Book Room")
+							</button>
+
+							@Html.AntiForgeryToken()
+						</form>
+					</div>
+				</div>
 			</div>
-		</div>
-	}
+		}
+	</div>
 }
+
 
 @section Scripts {
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -187,8 +194,8 @@
 					const result = await response.json();
 					if (result.success) {
 						//alert("Action successful!"); //todo maybe popup
-						// You can update the button text/state here instead of reloading
-						location.reload(); // Or dynamic update here
+						// maybe update the button text/state here instead of reloading
+						location.reload();
 					} else {
 						alert("Action failed.");
 					}
@@ -201,71 +208,6 @@
 
 
 	</script>
-	<script>
-		// document.querySelectorAll(".add-to-cart-form").forEach(form => {
-		// 	form.addEventListener("submit", async function (e) {
-		// 		e.preventDefault();
-
-		// 		const roomId = form.dataset.roomId;
-		// 		const startDate = document.querySelector("input[name='start']").value;
-		// 		const endDate = document.querySelector("input[name='end']").value;
-
-		// 		console.log("Submitting room to booking cart:");
-		// 		console.log("Room ID:", roomId);
-		// 		console.log("Start Date:", startDate);
-		// 		console.log("End Date:", endDate);
-
-		// 		const response = await fetch('Url.Action("AddToBookingCart", "Bookings")', {
-		// 			method: "POST",
-		// 			headers: {
-		// 				"Content-Type": "application/json",
-		// 				"RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
-		// 			},
-		// 			body: JSON.stringify({ roomId, startDate, endDate })
-		// 		});
-
-		// 		if (response.ok) {
-		// 			alert("Room added to booking!");
-		// 		} else {
-		// 			const error = await response.text();
-		// 			alert("Failed to add room: " + error);
-		// 		}
-		// 	});
-		// });
-	</script>
-
-	<script>
-		// document.addEventListener('DOMContentLoaded', () => {
-		// 	document.querySelectorAll('.booking-form').forEach(form => {
-		// 		form.addEventListener('submit', async function (e) {
-		// 			e.preventDefault();
-
-		// 			const formData = new FormData(form);
-		// 			const actionUrl = form.action;
-
-		// 			try {
-		// 				const response = await fetch(actionUrl, {
-		// 					method: 'POST',
-		// 					body: formData,
-		// 				});
-
-		// 				if (response.ok) {
-		// 					// Option 1: Reload the page or partial
-		// 					//location.reload();
-
-		// 					// Option 2: Or dynamically update the button label/text/icon here if you want smoother UX
-		// 					alert('Booking cart updated successfully!');
-		// 				} else {
-		// 					console.error('Failed to update booking cart');
-		// 				}
-		// 			} catch (error) {
-		// 				console.error('Error:', error);
-		// 			}
-		// 		});
-		// 	});
-		// });
-	</script>
-
 }
 
 

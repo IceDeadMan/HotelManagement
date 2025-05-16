@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HotelManagement.Services;
 using HotelManagement.Models.DTOs;
+using HotelManagement.Models;
 
 namespace HotelManagement.Controllers
 {
@@ -12,12 +13,18 @@ namespace HotelManagement.Controllers
 		private readonly ILogger<BookingsController> _logger;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
+		private readonly RoomRepository _roomRepository;
 
-		public BookingsController(ILogger<BookingsController> logger, RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService)
+		public BookingsController(
+			ILogger<BookingsController> logger,
+			RoomTypeRepository roomTypeRepository,
+			BookingCartService bookingCartService,
+			RoomRepository roomRepository)
 		{
 			_logger = logger;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
+			_roomRepository = roomRepository;
 		}
 
 		// View for starting a new booking with filters
@@ -86,6 +93,36 @@ namespace HotelManagement.Controllers
 			}
 			return Json(new { success = true });
 		}
+
+		// Proceed to checkout
+		public IActionResult BookingCart()
+		{
+			var cart = _bookingCartService.GetCart();
+
+			var roomDetails = new List<(Room room, RoomType roomType)>();
+
+			foreach (var roomId in cart.RoomIds)
+			{
+				var room = _roomRepository.GetById(roomId);
+				if (room == null) continue;
+
+				var roomType = _roomTypeRepository.GetById(room.RoomTypeId);
+				if (roomType == null) continue;
+
+				roomDetails.Add((room, roomType));
+			}
+
+			ViewBag.StartDate = cart.StartDate;
+			ViewBag.EndDate = cart.EndDate;
+			ViewBag.RoomDetails = roomDetails;
+
+			int nights = (cart.EndDate - cart.StartDate).Days;
+			ViewBag.Nights = nights;
+			ViewBag.TotalPrice = roomDetails.Sum(r => r.roomType.Price * nights);
+
+			return View("BookingCart");
+		}
+
 
 	}
 }
