@@ -2,6 +2,7 @@
 @using HotelManagement.Models
 
 @{
+	ViewData["Title"] = "Create Booking";
 	var rooms = ViewBag.AvailableRooms as List<Room> ?? new List<Room>();
 	var selectedRoomTypeId = ViewBag.SelectedRoomTypeId as Guid?;
 	var startDate = ViewBag.StartDate as string ?? "";
