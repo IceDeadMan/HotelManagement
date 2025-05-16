@@ -44,13 +44,6 @@ namespace HotelManagement.Controllers
 			return View(roomTypes);
 		}
 
-		//[HttpPost]
-		//public async Task<IActionResult> FilterRooms(DateTime startDate, DateTime endDate, RoomType? roomType)
-		//{
-		//	var availableRooms = await _roomRepository.GetAvailableRoomsAsync(startDate, endDate, roomType);
-		//	return PartialView("_RoomCardsPartial", availableRooms);
-		//}
-
 		// Add room to booking cart
 		[HttpPost]
 		public IActionResult AddToBookingCart([FromBody] BookingRequest dto)
@@ -161,6 +154,25 @@ namespace HotelManagement.Controllers
 			return View("BookingConfirmation", booking);
 		}
 
+		// View for user bookings
+		public IActionResult MyBookings()
+		{
+			// Get current logged-in user ID (assuming you store it as GUID string in NameIdentifier)
+			// for now placehiolder USER1
+			//var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var userIdString = "67019a3d-04de-444b-bb6c-6ef934dcd291"; // Placeholder for logged-in user
+
+			if (!Guid.TryParse(userIdString, out Guid userId))
+			{
+				// User not logged in or invalid ID
+				return RedirectToAction("Login", "Account"); // or handle accordingly
+			}
+
+			var bookings = _bookingRepository.GetBookingsByUserId(userId);
+
+			// We will pass bookings as ViewBag or directly to View
+			return View(bookings);
+		}
 	}
 }
 
