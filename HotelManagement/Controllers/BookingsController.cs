@@ -14,17 +14,20 @@ namespace HotelManagement.Controllers
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
 		private readonly RoomRepository _roomRepository;
+		private readonly BookingRepository _bookingRepository;
 
 		public BookingsController(
 			ILogger<BookingsController> logger,
 			RoomTypeRepository roomTypeRepository,
 			BookingCartService bookingCartService,
-			RoomRepository roomRepository)
+			RoomRepository roomRepository,
+			BookingRepository bookingRepository)
 		{
 			_logger = logger;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
 			_roomRepository = roomRepository;
+			_bookingRepository = bookingRepository;
 		}
 
 		// View for starting a new booking with filters
@@ -123,6 +126,40 @@ namespace HotelManagement.Controllers
 			return View("BookingCart");
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult FinalizeBooking()
+		{
+			var cart = _bookingCartService.GetCart();
+
+			if (cart.RoomIds.Count == 0)
+			{
+				TempData["Error"] = "Your booking cart is empty.";
+				return RedirectToAction("BookingCart");
+			}
+
+			// This is used because the number of rooms in a single booking will generally be low,
+			// but we can implement GetRoomsByIds later
+			var rooms = cart.RoomIds.Select(id => _roomRepository.GetById(id)).ToList();
+
+			var booking = new Booking
+			{
+				StartDate = cart.StartDate,
+				EndDate = cart.EndDate,
+				Status = BookingStatus.Pending,
+				// user placeholder - USER1
+				ApplicationUserId = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd291"),
+				Rooms = rooms
+			};
+
+			_bookingRepository.Create(booking);
+			// I think repo.save here is not needed as the Create method already saves the changes
+
+			_bookingCartService.ClearCart(); // Clear cart after saving
+
+			TempData["Success"] = "Booking finalized successfully!";
+			return View("BookingConfirmation", booking);
+		}
 
 	}
 }
