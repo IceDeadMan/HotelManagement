@@ -1,0 +1,45 @@
+﻿@model HotelManagement.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Details";
+    var nights = (Model.EndDate - Model.StartDate).Days;
+}
+
+<h2>My Stay</h2>
+
+<p><strong>Booking ID:</strong> @Model.Id</p>
+<p><strong>Status:</strong> @Model.Status</p>
+<p><strong>Check-in:</strong> @Model.StartDate.ToShortDateString() after 14:00</p>
+<p><strong>Check-out:</strong> @Model.EndDate.ToShortDateString() until 12:00</p>
+<p><strong>Total Nights:</strong> @nights</p>
+
+<h4>Rooms</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Price/Night</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model.Rooms)
+        {
+            <tr>
+                <td>@room.RoomNumber</td>
+                <td>@room.RoomType?.Name</td>
+                <td>@room.RoomType?.Capacity</td>
+                <td>@room.RoomType?.Price.ToString("C")</td>
+                <td>@(((room.RoomType?.Price ?? 0) * nights).ToString("C"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p class="fw-bold">
+    Total Price: @Model.Rooms.Sum(r => (r.RoomType?.Price ?? 0) * nights).ToString("C")
+</p>
+
+<a class="btn btn-secondary" asp-action="MyBookings">Back to My Bookings</a>

@@ -155,7 +155,7 @@ namespace HotelManagement.Controllers
 		}
 
 		// View for user bookings
-		public IActionResult MyBookings()
+		public async Task<IActionResult> MyBookings()
 		{
 			// Get current logged-in user ID (assuming you store it as GUID string in NameIdentifier)
 			// for now placehiolder USER1
@@ -168,10 +168,25 @@ namespace HotelManagement.Controllers
 				return RedirectToAction("Login", "Account"); // or handle accordingly
 			}
 
-			var bookings = _bookingRepository.GetBookingsByUserId(userId);
+			var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
 
 			// We will pass bookings as ViewBag or directly to View
 			return View(bookings);
+		}
+
+		public async Task<IActionResult> BookingDetails(Guid id)
+		{
+			var booking = await _bookingRepository.GetBookingAsync(id);
+			
+			if (booking == null)
+				return NotFound();
+
+			// For now, just ensure the booking belongs to the current user (placeholder logic)
+			var userId = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd291"); // replace later
+			if (booking.ApplicationUserId != userId)
+				return Forbid();
+
+			return View(booking);
 		}
 	}
 }

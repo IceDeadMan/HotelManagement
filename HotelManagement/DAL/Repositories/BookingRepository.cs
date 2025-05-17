@@ -9,13 +9,22 @@ namespace HotelManagement.DAL.Repositories
         {
         }
 
-        public IEnumerable<Booking> GetBookingsByUserId(Guid userId)
+        public async Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(Guid userId)
         {
-            return _context.Bookings
-                .Include(b => b.Rooms) // im not sure if this is needed
-                    .ThenInclude(r => r.RoomType) // im not sure if this is needed
+            return await _context.Bookings
+                .Include(b => b.Rooms)
+                    .ThenInclude(r => r.RoomType)
                 .Where(b => b.ApplicationUserId == userId)
-                .ToList();
+                .ToListAsync();
+        }
+
+
+        public async Task<Booking?> GetBookingAsync(Guid bookingId)
+        {
+            return await _context.Bookings
+                .Include(b => b.Rooms)
+                .ThenInclude(r => r.RoomType)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
         }
     }
 }
