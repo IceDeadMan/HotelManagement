@@ -1,5 +1,7 @@
 ﻿using HotelManagement.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using HotelManagement.Models;
+
 
 namespace HotelManagement.Controllers
 {
@@ -14,10 +16,48 @@ namespace HotelManagement.Controllers
             _eventRepository = eventRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> EventsList()
         {
             var events = await _eventRepository.GetAllAsync();
             return View(events);
         }
+
+        [HttpPost]
+        // todo
+        //[Authorize(Roles = "Manager,Staff")]
+        public IActionResult CreateEvent(string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
+        {
+            var fullDateTime = DatePart.Date + TimePart;
+
+            var newEvent = new Event
+            {
+                Name = Name,
+                Description = Description,
+                Date = fullDateTime,
+                Capacity = Capacity
+            };
+
+            _eventRepository.Create(newEvent);
+
+            return RedirectToAction("EventsList");
+        }
+
+        [HttpPost]
+        // todo
+        //[Authorize(Roles = "Manager,Staff")]
+        public IActionResult DeleteEvent(Guid id)
+        {
+            if (_eventRepository.Exists(id))
+            {
+                _eventRepository.Delete(id);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Event not found.");
+            }
+
+            return RedirectToAction("EventsList");
+        }
+
     }
 }
