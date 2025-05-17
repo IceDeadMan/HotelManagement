@@ -1,6 +1,7 @@
 ﻿using HotelManagement.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace HotelManagement.Controllers
@@ -23,8 +24,7 @@ namespace HotelManagement.Controllers
         }
 
         [HttpPost]
-        // todo
-        //[Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager,Staff")]
         public IActionResult CreateEvent(string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
         {
             var fullDateTime = DatePart.Date + TimePart;
@@ -43,8 +43,7 @@ namespace HotelManagement.Controllers
         }
 
         [HttpPost]
-        // todo
-        //[Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager,Staff")]
         public IActionResult DeleteEvent(Guid id)
         {
             if (_eventRepository.Exists(id))

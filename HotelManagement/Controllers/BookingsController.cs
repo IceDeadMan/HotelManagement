@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 using HotelManagement.Services;
 using HotelManagement.Models.DTOs;
 using HotelManagement.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace HotelManagement.Controllers
 {
@@ -31,6 +34,7 @@ namespace HotelManagement.Controllers
 		}
 
 		// View for starting a new booking with filters
+		[Authorize]
 		public async Task<IActionResult> StartBooking()
 		{
 			var cart = _bookingCartService.GetCart();
@@ -46,6 +50,7 @@ namespace HotelManagement.Controllers
 
 		// Add room to booking cart
 		[HttpPost]
+		[Authorize]
 		public IActionResult AddToBookingCart([FromBody] BookingRequest dto)
 		{
 			if (dto.StartDate > dto.EndDate)
@@ -55,8 +60,6 @@ namespace HotelManagement.Controllers
 
 			var cart = _bookingCartService.GetCart();
 
-			_logger.LogInformation("DTO StartDate: {StartDate}, EndDate: {EndDate}", dto.StartDate, dto.EndDate);
-			_logger.LogInformation("Room Count: {RoomCount}", cart.RoomIds.Count);
 			if (cart.RoomIds.Count == 0)
 			{
 				cart.StartDate = dto.StartDate;
@@ -66,7 +69,6 @@ namespace HotelManagement.Controllers
 			{
 				return BadRequest("Stay duration must be the same for all rooms.");
 			}
-			_logger.LogInformation("Cart start date: {StartDate}, end date: {EndDate}", cart.StartDate, cart.EndDate);
 			if (!cart.RoomIds.Contains(dto.RoomId))
 			{
 				cart.RoomIds.Add(dto.RoomId);
@@ -77,6 +79,7 @@ namespace HotelManagement.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public IActionResult RemoveFromBookingCart([FromBody] BookingRequest dto)
 		{
 			Console.WriteLine($"Removing Room: {dto.RoomId}");
@@ -91,6 +94,7 @@ namespace HotelManagement.Controllers
 		}
 
 		// Proceed to checkout
+		[Authorize]
 		public IActionResult BookingCart()
 		{
 			var cart = _bookingCartService.GetCart();
@@ -121,7 +125,8 @@ namespace HotelManagement.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult FinalizeBooking()
+		[Authorize]
+		public async Task<IActionResult> FinalizeBooking()
 		{
 			var cart = _bookingCartService.GetCart();
 
@@ -131,49 +136,63 @@ namespace HotelManagement.Controllers
 				return RedirectToAction("BookingCart");
 			}
 
-			// This is used because the number of rooms in a single booking will generally be low,
-			// but we can implement GetRoomsByIds later
-			var rooms = cart.RoomIds.Select(id => _roomRepository.GetById(id)).ToList();
+			var rooms = await _roomRepository.GetRoomsByIdsAsync(cart.RoomIds);
+
+			// Check if all rooms are still available in the given date range
+			var unavailableRooms = new List<Room>();
+			foreach (var room in rooms)
+			{
+				bool isAvailable = await _roomRepository.IsRoomAvailableAsync(room.Id, cart.StartDate, cart.EndDate);
+				if (!isAvailable)
+				{
+					unavailableRooms.Add(room);
+				}
+			}
+
+			if (unavailableRooms.Any())
+			{
+				var names = string.Join(", ", unavailableRooms.Select(r => r.RoomNumber ?? $"Room {r.Id}"));
+				TempData["Error"] = $"Sorry, the following room(s) are no longer available: {names}. Please update your booking.";
+				return RedirectToAction("BookingCart");
+			}
+
+			var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
 			var booking = new Booking
 			{
 				StartDate = cart.StartDate,
 				EndDate = cart.EndDate,
 				Status = BookingStatus.Pending,
-				// user placeholder - USER1
-				ApplicationUserId = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd291"),
+				ApplicationUserId = userId,
 				Rooms = rooms
 			};
 
 			_bookingRepository.Create(booking);
-			// I think repo.save here is not needed as the Create method already saves the changes
-
-			_bookingCartService.ClearCart(); // Clear cart after saving
+			_bookingCartService.ClearCart();
 
 			TempData["Success"] = "Booking finalized successfully!";
 			return View("BookingConfirmation", booking);
 		}
 
+
 		// View for user bookings
+		[Authorize]
 		public async Task<IActionResult> MyBookings()
 		{
-			// Get current logged-in user ID (assuming you store it as GUID string in NameIdentifier)
-			// for now placehiolder USER1
-			//var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			var userIdString = "67019a3d-04de-444b-bb6c-6ef934dcd291"; // Placeholder for logged-in user
+			var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier); // Retrieves logged-in user's ID
 
 			if (!Guid.TryParse(userIdString, out Guid userId))
 			{
 				// User not logged in or invalid ID
-				return RedirectToAction("Login", "Account"); // or handle accordingly
+				return RedirectToAction("Login", "Account"); // Optional fallback
 			}
 
 			var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
 
-			// We will pass bookings as ViewBag or directly to View
 			return View(bookings);
 		}
 
+		[Authorize]
 		public async Task<IActionResult> BookingDetails(Guid id)
 		{
 			var booking = await _bookingRepository.GetBookingAsync(id);
@@ -181,8 +200,7 @@ namespace HotelManagement.Controllers
 			if (booking == null)
 				return NotFound();
 
-			// For now, just ensure the booking belongs to the current user (placeholder logic)
-			var userId = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd291"); // replace later
+			var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 			if (booking.ApplicationUserId != userId)
 				return Forbid();
 

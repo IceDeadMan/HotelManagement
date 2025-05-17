@@ -14,6 +14,15 @@
     <a class="btn btn-primary" asp-controller="Bookings" asp-action="StartBooking">Create Booking</a>
     return;
 }
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <h2>Booking Summary</h2>
 <p>Check-in: <strong>@startDate.ToShortDateString()</strong></p>
 <p>Check-out: <strong>@endDate.ToShortDateString()</strong></p>

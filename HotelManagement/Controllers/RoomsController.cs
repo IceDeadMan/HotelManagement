@@ -38,6 +38,7 @@ namespace HotelManagement.Controllers
 
 		public async Task<IActionResult> AvailableRooms(DateTime start, DateTime end, Guid roomTypeId)
 		{
+			// this is not using the IsRoomAvailableAsync method since filtering the rooms in memory should be better for performance
 			var allRoomTypes = await _roomTypeRepository.GetAllAsync();
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
 			var cart = _bookingCartService.GetCart();

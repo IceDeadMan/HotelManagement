@@ -2,6 +2,8 @@
 using System.Text.Json;
 using HotelManagement.Models;
 using HotelManagement.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HotelManagement.Services
 {
@@ -21,23 +23,37 @@ namespace HotelManagement.Services
 			_httpContextAccessor = httpContextAccessor;
 		}
 
+		/// <summary>
+		/// Get the session key for the booking cart.
+		/// This is based on the user ID for authenticated users.
+		/// </summary>
+		/// <returns></returns>
+		private string GetSessionKey()
+		{
+			var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			return userId != null ? $"BookingCart_{userId}" : SessionKey; // fallback to shared for anon
+		}
+
+
 		public BookingCartSession GetCart()
 		{
-			var session = _httpContextAccessor.HttpContext.Session;
-			var data = session.GetString(SessionKey);
+			var key = GetSessionKey();
+			var data = _httpContextAccessor.HttpContext.Session.GetString(key);
 			return data == null ? new BookingCartSession() : JsonSerializer.Deserialize<BookingCartSession>(data, _jsonOptions);
 		}
 
+
 		public void SaveCart(BookingCartSession cart)
 		{
-			var session = _httpContextAccessor.HttpContext.Session;
+			var key = GetSessionKey();
 			var data = JsonSerializer.Serialize(cart, _jsonOptions);
-			session.SetString(SessionKey, data);
+			_httpContextAccessor.HttpContext.Session.SetString(key, data);
 		}
 
 		public void ClearCart()
 		{
-			_httpContextAccessor.HttpContext.Session.Remove(SessionKey);
+			var key = GetSessionKey();
+			_httpContextAccessor.HttpContext.Session.Remove(key);
 		}
 	}
 }

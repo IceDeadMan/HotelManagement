@@ -2,6 +2,7 @@
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using HotelManagement.Models.Users;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace HotelManagement.Controllers
@@ -58,6 +59,14 @@ namespace HotelManagement.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            return View(user);
         }
     }
 }
