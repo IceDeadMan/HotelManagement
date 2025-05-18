@@ -2,6 +2,10 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+
+<!-- Event List View -->
+<!-- This view displays a list of events and allows admins/staff to create/delete new events. -->
+<!-- Users can attend events. -->
 @{
     ViewData["Title"] = "Events List";
     var isAdmin = User.IsInRole("Manager") || User.IsInRole("Staff");

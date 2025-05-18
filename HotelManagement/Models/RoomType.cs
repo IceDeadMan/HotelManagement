@@ -1,5 +1,10 @@
 ﻿namespace HotelManagement.Models
 {
+    /// <summary>
+    /// Room Type class represents a type of room in the hotel management system.
+    /// This class is used to track the name, description, capacity, and price of the room type,
+    /// as well as the associated rooms of the room type.
+    /// </summary>
     public class RoomType : BaseModel
     {
         public string? Name { get; set; }

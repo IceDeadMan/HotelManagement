@@ -1,5 +1,10 @@
 ﻿namespace HotelManagement.Models
 {
+    /// <summary>
+    /// Represents an food item in the hotel management system.
+    /// This class is used to track the name, price, and description of the food item,
+    /// as well as the associated food orders and reviews for the food item.
+    /// </summary>
     public class Food : BaseModel
     {
         public string? Name { get; set; }

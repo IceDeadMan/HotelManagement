@@ -2,6 +2,11 @@
 
 namespace HotelManagement.Models
 {
+    /// <summary>
+    /// Represents an booking in the hotel management system.
+    /// This class is used to track the start and end dates of the booking,
+    /// the status of the booking, and the associated user and rooms.
+    /// </summary>
     public class Booking : BaseModel
     {
         public DateTime StartDate { get; set; }

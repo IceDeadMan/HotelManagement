@@ -1,4 +1,8 @@
-﻿@{
+﻿
+<!-- Booking Cart View -->
+<!-- This view displays the booking cart with the selected rooms, their types, and prices.
+     It allows the user to remove rooms from the cart and finalize the booking. -->
+@{
 	ViewData["Title"] = "Booking Cart";
     var startDate = (DateTime)ViewBag.StartDate;
     var endDate = (DateTime)ViewBag.EndDate;
@@ -7,6 +11,7 @@
     var totalPrice = (decimal)ViewBag.TotalPrice;
 }
 
+<!-- If the cart is empty, display a message and a button to create a new booking -->
 @if (roomDetails == null || roomDetails.Count == 0)
 {
     <h2>Your booking cart is empty.</h2>
@@ -15,6 +20,7 @@
     return;
 }
 
+<!-- Display any success or error messages -->
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -23,11 +29,13 @@
     </div>
 }
 
+<!-- Display the booking summary -->
 <h2>Booking Summary</h2>
 <p>Check-in: <strong>@startDate.ToShortDateString()</strong></p>
 <p>Check-out: <strong>@endDate.ToShortDateString()</strong></p>
 <p>Total Nights: <strong>@nights</strong></p>
 
+<!-- Display the list of rooms in the booking cart -->
 <table class="table">
     <thead>
         <tr>

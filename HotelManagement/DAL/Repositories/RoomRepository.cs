@@ -3,25 +3,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// RoomRepository class for managing Room entities in the database.
+    /// Provides methods to check room availability, retrieve rooms by IDs, and get room details.
+    /// </summary>
     public class RoomRepository : BaseRepository<Room>
     {
         public RoomRepository(HotelManagementDbContext context) : base(context)
         {
         }
 
+        /// <summary>
+        /// Checks if a room is available for booking within the specified date range.
+        /// That means that the room is not already booked during the specified period.
+        /// </summary>
+        /// <param name="roomId">The ID of the room to check availability for.</param>
+        /// <param name="startDate">The start date of the booking period.</param>
+        /// <param name="endDate">The end date of the booking period.</param>
+        /// <returns>True if the room is available, false otherwise.</returns>
         public async Task<bool> IsRoomAvailableAsync(Guid roomId, DateTime startDate, DateTime endDate)
-    {
-        return !await _context.Bookings
-            .Include(b => b.Rooms)
-            //.Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
-            .AnyAsync(b =>
-                b.Rooms.Any(r => r.Id == roomId) &&
-                b.StartDate < endDate &&
-                b.EndDate > startDate
-            );
-    }
+        {
+            return !await _context.Bookings
+                .Include(b => b.Rooms)
+                //.Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
+                .AnyAsync(b =>
+                    b.Rooms.Any(r => r.Id == roomId) &&
+                    b.StartDate < endDate &&
+                    b.EndDate > startDate
+                );
+        }
 
-
+        /// <summary>
+        /// Retrieves a list of rooms by their IDs, including their related entities.
+        /// </summary>
+        /// <param name="roomIds">A list of room IDs to retrieve.</param>
+        /// <returns>A list of Room entities with their related entities.</returns>
         public async Task<List<Room>> GetRoomsByIdsAsync(List<Guid> roomIds)
         {
             return await _context.Rooms
@@ -34,6 +50,11 @@ namespace HotelManagement.DAL.Repositories
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a specific room by its ID, including its related entities.
+        /// </summary>
+        /// <param name="id">The ID of the room to retrieve.</param>
+        /// <returns>The Room entity with the specified ID, or null if not found.</returns>
         public async Task<Room?> GetRoomWithDetailsAsync(Guid id)
         {
             return await _context.Rooms
@@ -45,6 +66,10 @@ namespace HotelManagement.DAL.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        /// <summary>
+        /// Retrieves all rooms with their details, including related entities.
+        /// </summary>
+        /// <returns>A list of all Room entities with their related entities.</returns>
         public async Task<List<Room>> GetAllRoomsWithDetailAsync()
         {
             return await _context.Rooms

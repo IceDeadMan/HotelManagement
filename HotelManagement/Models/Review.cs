@@ -1,5 +1,10 @@
 ﻿namespace HotelManagement.Models
 {
+    /// <summary>
+    /// Represents a Review in the hotel management system.
+    /// This class is used to track the comment, rating, and review date of the review,
+    /// as well as the associated user, room, or food item for the review.
+    /// </summary>
     public class Review : BaseModel
     {
         public string? Comment { get; set; }

@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HotelManagement.Controllers
 {
+    /// <summary>
+    /// UsersController handles user registration, login, and profile management.
+    /// It uses ASP.NET Identity for user management and authentication.
+    /// </summary>
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

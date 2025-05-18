@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagement.Controllers
 {
+    /// <summary>
+    /// HomeController handles the main page and privacy policy of the hotel management system.
+    /// </summary>
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

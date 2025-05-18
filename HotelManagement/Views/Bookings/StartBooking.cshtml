@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<HotelManagement.Models.RoomType>
 @using HotelManagement.Models
 
+<!-- Start Booking View -->
+<!-- This view allows the user to select a room type and stay duration for booking. -->
+<!-- It displays available rooms based on the selected criteria. -->
+<!-- It allows adding/removing rooms to/from the booking cart. -->
+
 @{
 	ViewData["Title"] = "Create Booking";
 	var rooms = ViewBag.AvailableRooms as List<Room> ?? new List<Room>();
@@ -12,6 +17,8 @@
 	var endCart = ViewBag.EndCart is DateTime dtEnd ? dtEnd.ToString("yyyy-MM-dd") : "miss";
 }
 
+<!-- Form for selecting room type and stay duration -->
+<!-- This form submits the selected criteria to the AvailableRooms action -->
 <form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
 	<div class="row mb-4">
 		<div class="col-md-6">
@@ -49,6 +56,8 @@
 	</div>
 	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
 </form>
+
+<!-- Current cart for dev/debug only -->
 <div>
 	(dev)Current cart: @string.Join(", ", (List<Guid>)ViewBag.RoomIdsInCart)
 
@@ -58,6 +67,7 @@
 	<p> Number of rooms in cart: @roomIdsInCart.Count()</p>
 </div>
 
+<!-- Display available rooms based on the selected criteria -->
 @if (rooms.Any())
 {
 	<h4 class="mt-4">Available Rooms</h4>

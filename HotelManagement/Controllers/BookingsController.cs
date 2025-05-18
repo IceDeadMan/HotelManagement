@@ -11,6 +11,12 @@ using System.Security.Claims;
 
 namespace HotelManagement.Controllers
 {
+	/// <summary>
+	/// BookingsController handles the booking process, including adding rooms to the booking cart,
+	/// finalizing bookings, and viewing user bookings.
+	/// It uses the BookingCartService to manage the booking cart and interacts with the RoomTypeRepository,
+	/// RoomRepository, and BookingRepository to retrieve and manipulate data.
+	/// </summary>
 	public class BookingsController : Controller
 	{
 		private readonly ILogger<BookingsController> _logger;
@@ -33,7 +39,10 @@ namespace HotelManagement.Controllers
 			_bookingRepository = bookingRepository;
 		}
 
-		// View for starting a new booking with filters
+		/// <summary>
+		/// StartBooking initializes the booking process by retrieving all room types.
+		/// </summary>
+		/// <returns> A view with all room types and the current booking cart details. </returns>
 		[Authorize]
 		public async Task<IActionResult> StartBooking()
 		{
@@ -48,7 +57,12 @@ namespace HotelManagement.Controllers
 			return View(roomTypes);
 		}
 
-		// Add room to booking cart
+		/// <summary>
+		/// AddToBookingCart adds a room to the booking.
+		/// It checks if the room is already in the cart and if the stay duration is consistent.
+		/// </summary>
+		/// <param name="dto"> The booking request containing room ID and date range. </param>
+		/// <returns> A JSON response indicating success or failure. </returns>
 		[HttpPost]
 		[Authorize]
 		public IActionResult AddToBookingCart([FromBody] BookingRequest dto)
@@ -78,22 +92,29 @@ namespace HotelManagement.Controllers
 			return Json(new { success = true });
 		}
 
+		/// <summary>
+		/// RemoveFromBookingCart removes a room from the booking cart.
+		/// </summary>
+		/// <param name="dto"> The booking request containing room ID. </param>
+		/// <returns> A JSON response indicating success. </returns>
 		[HttpPost]
 		[Authorize]
 		public IActionResult RemoveFromBookingCart([FromBody] BookingRequest dto)
 		{
-			Console.WriteLine($"Removing Room: {dto.RoomId}");
 			var cart = _bookingCartService.GetCart();
 			if (cart.RoomIds.Contains(dto.RoomId))
 			{
-				Console.WriteLine($"Removing Room: {dto.RoomId}");
 				cart.RoomIds.Remove(dto.RoomId);
 				_bookingCartService.SaveCart(cart);
 			}
 			return Json(new { success = true });
 		}
 
-		// Proceed to checkout
+		/// <summary>
+		/// BookingCart displays the current booking cart details.
+		/// It retrieves the room details and calculates the total price based on the selected rooms and stay duration.
+		/// </summary>
+		/// <returns> A view with the booking cart details. </returns>
 		[Authorize]
 		public IActionResult BookingCart()
 		{
@@ -123,6 +144,10 @@ namespace HotelManagement.Controllers
 			return View("BookingCart");
 		}
 
+		/// <summary>
+		/// FinalizeBooking processes the booking by checking room availability and creating a booking record.
+		/// </summary>
+		/// <returns> A view with the booking confirmation or an error message. </returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[Authorize]
@@ -175,7 +200,10 @@ namespace HotelManagement.Controllers
 		}
 
 
-		// View for user bookings
+		/// <summary>
+		/// MyBookings retrieves the bookings made by the logged-in user.
+		/// </summary>
+		/// <returns> A view with the user's bookings. </returns>
 		[Authorize]
 		public async Task<IActionResult> MyBookings()
 		{
@@ -192,11 +220,16 @@ namespace HotelManagement.Controllers
 			return View(bookings);
 		}
 
+		/// <summary>
+		/// BookingDetails retrieves the details of a specific booking.
+		/// </summary>
+		/// <param name="id"> The ID of the booking. </param>
+		/// <returns> A view with the booking details or a not found error. </returns>
 		[Authorize]
 		public async Task<IActionResult> BookingDetails(Guid id)
 		{
 			var booking = await _bookingRepository.GetBookingAsync(id);
-			
+
 			if (booking == null)
 				return NotFound();
 
