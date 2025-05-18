@@ -47,6 +47,7 @@ namespace HotelManagement.DAL.Repositories
                 .Include(r => r.Reviews)
                 .Include(r => r.RoomType)
                 .Where(r => roomIds.Contains(r.Id))
+                .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .ToListAsync();
         }
 
@@ -63,6 +64,7 @@ namespace HotelManagement.DAL.Repositories
                 .Include(r => r.FoodOrders)
                 .Include(r => r.Reviews)
                 .Include(r => r.RoomType)
+                .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -78,6 +80,7 @@ namespace HotelManagement.DAL.Repositories
                 .Include(r => r.FoodOrders)
                 .Include(r => r.Reviews)
                 .Include(r => r.RoomType)
+                .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .ToListAsync();
         }
     }
