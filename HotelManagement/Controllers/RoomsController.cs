@@ -1,6 +1,7 @@
 ﻿using HotelManagement.DAL.Repositories;
 using HotelManagement.Services;
 using Microsoft.AspNetCore.Mvc;
+using HotelManagement.ViewModels;
 
 namespace HotelManagement.Controllers
 {
@@ -37,14 +38,35 @@ namespace HotelManagement.Controllers
 		/// </summary>
 		public async Task<IActionResult> RoomDetails(Guid id)
 		{
-			var room = await _roomRepository.GetRoomWithDetailsAsync(id);
+        var room = await _roomRepository.GetRoomWithDetailsAsync(id);
+        if (room == null)
+            return NotFound();
 
-			if (room == null)
-			{
-				return NotFound();
-			}
-			return View(room);
-		}
+        var viewModel = new RoomDetailViewModel
+        {
+            RoomNumber = room.RoomNumber!,
+            Description = room.Description!,
+            RoomTypeName = room.RoomType?.Name ?? "",
+			RoomTypeDescription = room.RoomType?.Description ?? "",
+			RoomTypePrice = room.RoomType?.Price ?? 0,
+            RoomTypeCapacity = room.RoomType?.Capacity ?? 0,
+            Bookings = room.Bookings.Select(b => new RoomDetailBookingViewModel
+            {
+                GuestName = b.ApplicationUser?.UserName ?? "Unknown",
+                StartDate = b.StartDate,
+                EndDate = b.EndDate
+            }).ToList(),
+            Reviews = room.Reviews.Select(r => new ReviewViewModel
+            {
+                ReviewerUsername = r.ApplicationUser?.UserName ?? "Anonymous",
+                Rating = r.Rating,
+                Comment = r.Comment,
+                ReviewDate = r.ReviewDate
+            }).ToList()
+        };
+
+        return View(viewModel);
+    }
 
 		/// <summary>
 		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
