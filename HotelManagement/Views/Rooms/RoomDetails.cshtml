@@ -9,7 +9,11 @@
 	<div class="card shadow-sm">
 		<div class="card-body">
 			<h3 class="card-title">Room @Model.RoomNumber</h3>
-			<p class="card-text"><strong>Description:</strong> @Model.Description</p>
+			<p class="card-text"><strong>Type:</strong> @Model.RoomType.Name</p>
+			<p class="card-text"><strong>Capacity:</strong> @Model.RoomType.Capacity</p>
+			<p class="card-text"><strong>Description:</strong> @Model.RoomType.Description</p>
+			<p class="card-text"><strong>Price:</strong> @Model.RoomType.Price.ToString("C")</p>
+
 
 			@if (Model.Bookings?.Any() == true)
 			{
@@ -31,7 +35,8 @@
 			}
 
 			<!-- Calendar -->
-			<div id="calendar" class="mt-4"></div>
+			<h5 class="mt-4">Calendar</h5>
+			<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
 
 			<a asp-action="RoomsList" class="btn btn-secondary mt-4">Back to List</a>
 			<script>
@@ -61,6 +66,31 @@
 					calendar.render();
 				});
 			</script>
+
+			<!-- Reviews Section -->
+			@if (Model.Reviews?.Any() == true)
+			{
+				<h5 class="mt-5">Guest Reviews</h5>
+				<ul class="list-group">
+					@foreach (var review in Model.Reviews.OrderByDescending(r => r.ReviewDate))
+					{
+						<li class="list-group-item">
+							<div class="d-flex justify-content-between">
+								<div>
+									@review.Rating/10
+									<br />
+									@review.Comment
+								</div>
+								<small class="text-muted">@review.ReviewDate.ToShortDateString(), By: @review.ApplicationUser?.UserName</small>
+							</div>
+						</li>
+					}
+				</ul>
+			}
+			else
+			{
+				<p class="text-muted mt-4">No reviews for this room yet.</p>
+			}
 		</div>
 	</div>
 </div>

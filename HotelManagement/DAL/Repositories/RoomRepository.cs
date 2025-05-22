@@ -62,7 +62,7 @@ namespace HotelManagement.DAL.Repositories
                 .Include(r => r.Bookings)
                 .Include(r => r.ActivityRecords)
                 .Include(r => r.FoodOrders)
-                .Include(r => r.Reviews)
+                .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser)// for usernames 
                 .Include(r => r.RoomType)
                 .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .FirstOrDefaultAsync(r => r.Id == id);
