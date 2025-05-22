@@ -43,6 +43,8 @@ namespace HotelManagement
 
 			app.UseAuthorization();
 
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Users}/{action=Login}/{id?}");
