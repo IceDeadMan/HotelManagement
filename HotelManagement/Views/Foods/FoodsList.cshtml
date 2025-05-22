@@ -1,0 +1,76 @@
+﻿@model List<HotelManagement.Models.Food>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!-- Food List View -->
+<!-- This view displays a list of food items and allows admins/staff to create/delete new food items. -->
+<!-- Users can order food items. -->
+@{
+    ViewData["Title"] = "Food Menu";
+    var isAdmin = User.IsInRole("Manager") || User.IsInRole("Staff");
+}
+
+<h3>Food Menu</h3>
+
+<div class="container">
+    @* Admin Create Form *@
+    @if (isAdmin)
+    {
+        <div class="card mb-4 border-success shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-success">Add New Food Item</h5>
+                <form asp-action="CreateFood" method="post" class="row g-2">
+                    <div class="col-md-4">
+                        <input type="text" name="Name" class="form-control" placeholder="Food Name" required />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="Description" class="form-control" placeholder="Description" required />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="Price" class="form-control" placeholder="Price" step="0.01" min="0" required />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    @* Food List Table *@
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th style="width: 200px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var food in Model)
+                {
+                    <tr>
+                        <td>@food.Name</td>
+                        <td>@food.Description</td>
+                        <td>$@food.Price.ToString("F2")</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary">Order (not implemented)</a>
+                                <a class="btn btn-sm btn-outline-secondary">Review (not implemented)</a>
+                                @if (isAdmin)
+                                {
+                                    <form asp-action="DeleteFood" asp-route-id="@food.Id" method="post" onsubmit="return confirm('Delete this food item?');">
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
