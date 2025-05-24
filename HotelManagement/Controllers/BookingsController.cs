@@ -7,6 +7,7 @@ using HotelManagement.Models.DTOs;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using HotelManagement.ViewModels;
 
 
 namespace HotelManagement.Controllers
@@ -239,6 +240,56 @@ namespace HotelManagement.Controllers
 
 			return View(booking);
 		}
+
+		/// <summary>
+		/// BookingRoomDetails retrieves the details of a specific room ina current booking viewed by the user.
+		/// It includes the booking details, food orders, activity records, and user review for that room.
+		/// </summary>
+		/// <param name="roomId"> The ID of the room. </param>
+		/// <param name="bookingId"> The ID of the booking. </param>
+		/// <returns> A view with the room details, booking information, food orders, activity records, and user review. </returns>
+		[HttpPost]
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> BookingRoomDetails(Guid roomId, Guid bookingId)
+
+		{
+			var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+			var booking = await _bookingRepository.GetBookingAsync(bookingId);
+
+			var room = await _roomRepository.GetRoomWithDetailsAsync(roomId);
+			if (room == null)
+				return NotFound();
+
+			// Filter room's food orders and activity records by booking date range and user
+			var filteredFoodOrders = room.FoodOrders
+				.Where(o => o.ApplicationUserId == userId && o.OrderDate >= booking.StartDate && o.OrderDate <= booking.EndDate)
+				.OrderByDescending(o => o.OrderDate)
+				.ToList();
+
+			var filteredActivities = room.ActivityRecords
+				.Where(a => a.ApplicationUserId == userId && a.Date >= booking.StartDate && a.Date <= booking.EndDate)
+				.OrderByDescending(a => a.Date)
+				.ToList();
+
+			// Get the user's single review for this room (editable)
+			var review = room.Reviews
+				.FirstOrDefault(r => r.ApplicationUserId == userId);
+
+			var model = new BookingRoomDetailViewModel
+			{
+				Room = room,
+				Booking = booking,
+				FoodOrders = filteredFoodOrders,
+				ActivityRecords = filteredActivities,
+				Review = review
+			};
+
+			return View(model);
+		}
+
+		
 	}
 }
 

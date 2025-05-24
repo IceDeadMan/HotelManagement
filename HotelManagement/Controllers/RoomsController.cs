@@ -50,7 +50,7 @@ namespace HotelManagement.Controllers
 			RoomTypeDescription = room.RoomType?.Description ?? "",
 			RoomTypePrice = room.RoomType?.Price ?? 0,
             RoomTypeCapacity = room.RoomType?.Capacity ?? 0,
-            Bookings = room.Bookings.Select(b => new RoomDetailBookingViewModel
+            Bookings = room.Bookings.Select(b => new BookingSummaryViewModel
             {
                 GuestName = b.ApplicationUser?.UserName ?? "Unknown",
                 StartDate = b.StartDate,

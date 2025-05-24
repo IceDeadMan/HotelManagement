@@ -1,0 +1,90 @@
+﻿@model HotelManagement.ViewModels.BookingRoomDetailViewModel
+<!-- Booking Room Details View -->
+<!-- This view displays the details of a specific room in a booking, including food orders, service requests, and reviews. -->
+@{
+    ViewData["Title"] = "Room Details";
+    var nights = (Model.Booking.EndDate - Model.Booking.StartDate).Days;
+}
+
+<h2>Room @Model.Room.RoomNumber</h2>
+<p><strong>Booking Period:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights nights)</p>
+<p><strong>Room Type:</strong> @Model.Room.RoomType?.Name</p>
+<p><strong>Description:</strong> @Model.Room.Description</p>
+
+<hr />
+
+<h4>Food Orders During Stay</h4>
+@if (Model.FoodOrders.Any())
+{
+    <ul>
+        @foreach (var order in Model.FoodOrders)
+        {
+            <li>
+                <strong>@order.OrderDate.ToShortDateString():</strong> @order.Description
+                (Status: @order.Status)
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No food orders placed during this stay.</p>
+}
+
+<hr />
+
+<h4>Service Requests</h4>
+@if (Model.ActivityRecords.Any())
+{
+    <ul>
+        @foreach (var activity in Model.ActivityRecords)
+        {
+            <li>
+                <strong>@activity.Date.ToShortDateString():</strong> @activity.Type - @activity.Description
+                (Status: @activity.Status)
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No service activities recorded for this stay.</p>
+}
+
+<hr />
+
+<h4>Your Review</h4>
+@if (Model.Review != null)
+{
+    <form asp-action="EditRoomReview" method="post">
+        <input type="hidden" name="RoomId" value="@Model.Room.Id" />
+        <input type="hidden" name="ReviewId" value="@Model.Review.Id" />
+        <div class="mb-2">
+            <label for="Rating">Rating (out of 10)</label>
+            <input type="number" name="Rating" value="@Model.Review.Rating" class="form-control" min="1" max="10" required />
+        </div>
+        <div class="mb-2">
+            <label for="Comment">Comment</label>
+            <textarea name="Comment" class="form-control">@Model.Review.Comment</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Review</button>
+    </form>
+}
+else
+{
+    <form asp-action="AddRoomReview" method="post">
+        <input type="hidden" name="RoomId" value="@Model.Room.Id" />
+        <div class="mb-2">
+            <label for="Rating">Rating (out of 10)</label>
+            <input type="number" name="Rating" class="form-control" min="1" max="10" required />
+        </div>
+        <div class="mb-2">
+            <label for="Comment">Comment</label>
+            <textarea name="Comment" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Submit Review</button>
+    </form>
+}
+
+<a class="btn btn-secondary mt-3" asp-action="BookingDetails" asp-route-id="@Model.Booking.Id">Back to Booking</a>
+

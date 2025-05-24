@@ -29,19 +29,46 @@
     <tbody>
         @foreach (var room in Model.Rooms)
         {
-            <tr>
+            var subtotal = (room.RoomType?.Price ?? 0) * nights;
+            <tr class="clickable-row"
+                data-room-id="@room.Id"
+                data-booking-id="@Model.Id"
+                style="cursor:pointer;">
                 <td>@room.RoomNumber</td>
                 <td>@room.RoomType?.Name</td>
                 <td>@room.RoomType?.Capacity</td>
                 <td>@room.RoomType?.Price.ToString("C")</td>
-                <td>@(((room.RoomType?.Price ?? 0) * nights).ToString("C"))</td>
+                <td>@subtotal.ToString("C")</td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Hidden POST form -->
+<form id="roomDetailForm" method="post" asp-controller="Bookings" asp-action="BookingRoomDetails" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="roomId" id="roomIdInput" />
+    <input type="hidden" name="bookingId" id="bookingIdInput" />
+</form>
 
 <p class="fw-bold">
     Total Price: @Model.Rooms.Sum(r => (r.RoomType?.Price ?? 0) * nights).ToString("C")
 </p>
 
 <a class="btn btn-secondary" asp-action="MyBookings">Back to My Bookings</a>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', function () {
+                const roomId = this.dataset.roomId;
+                const bookingId = this.dataset.bookingId;
+
+                document.getElementById('roomIdInput').value = roomId;
+                document.getElementById('bookingIdInput').value = bookingId;
+
+                document.getElementById('roomDetailForm').submit();
+            });
+        });
+    </script>
+}
