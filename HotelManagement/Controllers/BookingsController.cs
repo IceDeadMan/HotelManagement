@@ -25,19 +25,22 @@ namespace HotelManagement.Controllers
 		private readonly BookingCartService _bookingCartService;
 		private readonly RoomRepository _roomRepository;
 		private readonly BookingRepository _bookingRepository;
+		private readonly ReviewRepository _reviewRepository;
 
 		public BookingsController(
 			ILogger<BookingsController> logger,
 			RoomTypeRepository roomTypeRepository,
 			BookingCartService bookingCartService,
 			RoomRepository roomRepository,
-			BookingRepository bookingRepository)
+			BookingRepository bookingRepository,
+			ReviewRepository reviewRepository)
 		{
 			_logger = logger;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
 			_roomRepository = roomRepository;
 			_bookingRepository = bookingRepository;
+			_reviewRepository = reviewRepository;
 		}
 
 		/// <summary>
@@ -287,6 +290,67 @@ namespace HotelManagement.Controllers
 			};
 
 			return View(model);
+		}
+
+		/// <summary>
+		/// AddRoomReview allows a user to submit a review for a room they have booked.
+		/// </summary>
+		/// <param name="RoomId"> The ID of the room being reviewed. </param>
+		/// <param name="Rating"> The rating given by the user (1-5). </param>
+		/// <param name="Comment"> The comment provided by the user. </param>
+		/// <returns> A redirect to the BookingRoomDetails view with a success message. </returns>
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize]
+		public IActionResult AddRoomReview(Guid RoomId, int Rating, string Comment)
+		{
+			// Review actions are here for now, maybe create a separate ReviewsController later
+			// if we want to manage reviews separately and delete them, etc.
+			var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+			var review = new Review
+			{
+				Id = Guid.NewGuid(),
+				RoomId = RoomId,
+				ApplicationUserId = userId,
+				Rating = Rating,
+				Comment = Comment,
+				ReviewDate = DateTime.UtcNow
+			};
+
+			_reviewRepository.Create(review);
+
+			TempData["SuccessMessage"] = "Review submitted successfully.";
+
+			return Json(new { success = true, message = "Review submitted successfully." });
+		}
+
+		/// <summary>
+		/// EditRoomReview allows a user to edit their existing review for a room.
+		/// Each user can post only one review per room, so this updates the existing review.
+		/// </summary>
+		/// <param name="ReviewId"> The ID of the review being edited. </param>
+		/// <param name="Rating"> The new rating given by the user (1-5). </param>
+		/// <param name="Comment"> The new comment provided by the user. </param>
+		/// /// <returns> A redirect to the BookingRoomDetails view with a success message. </returns>
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize]
+		public IActionResult EditRoomReview(Guid ReviewId, int Rating, string Comment)
+		{
+			var review = _reviewRepository.GetById(ReviewId);
+			if (review == null || review.ApplicationUserId != Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+				return NotFound();
+
+			review.Rating = Rating;
+			review.Comment = Comment;
+			review.ReviewDate = DateTime.UtcNow;
+
+			_reviewRepository.Update(review);
+
+			TempData["SuccessMessage"] = "Review updated successfully.";
+
+			return Json(new { success = true, message = "Review updated successfully." });
 		}
 
 		

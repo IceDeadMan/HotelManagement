@@ -30,9 +30,15 @@ namespace HotelManagement
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // For unhandled exceptions (500 errors)
+                app.UseExceptionHandler("/Error/500");
+
+                // For other status codes like 404, 403, etc.
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            }
+            else
+            {
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
