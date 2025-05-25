@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
+using HotelManagement.ViewModels;
+using System.Security.Claims;
 
 namespace HotelManagement.Controllers
 {
@@ -13,11 +15,13 @@ namespace HotelManagement.Controllers
     {
         private readonly ILogger<FoodsController> _logger;
         private readonly FoodRepository _foodRepository;
+        private readonly RoomRepository _roomRepository;
 
-        public FoodsController(ILogger<FoodsController> logger, FoodRepository foodRepository)
+        public FoodsController(ILogger<FoodsController> logger, FoodRepository foodRepository, RoomRepository roomRepository)
         {
             _logger = logger;
             _foodRepository = foodRepository;
+            _roomRepository = roomRepository;
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace HotelManagement.Controllers
 
             _foodRepository.Create(newFood);
 
-            return RedirectToAction("FoodsList");
+            return RedirectToAction("FoodMenu");
         }
 
         /// <summary>
@@ -68,7 +72,27 @@ namespace HotelManagement.Controllers
             {
                 _foodRepository.Delete(id);
             }
-            return RedirectToAction("FoodsList");
+            return RedirectToAction("FoodMenu");
+        }
+
+        public async Task<IActionResult> FoodMenu()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentDate = DateTime.Now;
+
+            // Fetch foods
+            var foods = await _foodRepository.GetAllAsync();
+
+            // Get rooms the user currently has access to (via booking overlap)
+            var availableRooms = await _roomRepository.GetRoomsBookedByUserAsync(Guid.Parse(userId), currentDate);
+
+            var viewModel = new FoodOrderCreateViewModel
+            {
+                Foods = foods.ToList(),
+                AvailableRooms = availableRooms
+            };
+
+            return View(viewModel);
         }
     }
 }

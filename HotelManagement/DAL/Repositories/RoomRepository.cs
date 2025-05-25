@@ -83,5 +83,22 @@ namespace HotelManagement.DAL.Repositories
                 .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// Retrieves a list of rooms that are currently booked by a specific user.
+        /// </summary>
+        /// <param name="userId">The ID of the user to check for booked rooms.</param>
+        /// <param name="currentDate">The current date to check for bookings.</param>
+        /// <returns>A list of Room entities that are booked by the specified user on the current date.</returns>
+        public async Task<List<Room>> GetRoomsBookedByUserAsync(Guid userId, DateTime currentDate)
+        {
+            return await _context.Rooms
+                .Include(r => r.Bookings)
+                .Where(r => r.Bookings.Any(b =>
+                    b.ApplicationUserId == userId &&
+                    b.StartDate <= currentDate &&
+                    b.EndDate >= currentDate))
+                .ToListAsync();
+        }
     }
 }
