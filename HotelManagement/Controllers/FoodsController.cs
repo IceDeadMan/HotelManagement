@@ -25,7 +25,7 @@ namespace HotelManagement.Controllers
         }
 
         /// <summary>
-        /// FoodsList displays a list of all food items.
+        /// FoodsList displays a list of all food items. Replaced by FoodMenu
         /// </summary>
         /// <returns>Returns a view with the list of food items.</returns>    
         public async Task<IActionResult> FoodsList()
@@ -75,12 +75,19 @@ namespace HotelManagement.Controllers
             return RedirectToAction("FoodMenu");
         }
 
+        /// <summary>
+        /// FoodMenu displays the food menu for ordering food.
+        /// It fetches all food items and available rooms for the logged-in user.
+        /// Staff and managers can also create and delete food items.
+        /// If the user is not logged in, he wont be able to order food, but can still view the menu.
+        /// </summary>
+        /// <returns> A view with the food menu and available rooms for ordering.</returns>
         public async Task<IActionResult> FoodMenu()
         {
             var currentDate = DateTime.Now;
 
             // Fetch all foods for display
-            var foods = await _foodRepository.GetAllAsync();
+            var foods = await _foodRepository.GetAllWithReviewsAsync();
 
             // Default values
             var availableRooms = new List<Room>();

@@ -21,5 +21,12 @@ namespace HotelManagement.DAL.Repositories
                 .Where(r => r.FoodId == foodId)
                 .ToList();
         }
+
+        
+        public Review? GetByFoodIdAndUserId(Guid foodId, Guid userId)
+        {
+            return _context.Reviews
+                .SingleOrDefault(r => r.FoodId == foodId && r.ApplicationUserId == userId);
+        }
     }
 }

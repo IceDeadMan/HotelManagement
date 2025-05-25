@@ -15,5 +15,13 @@ namespace HotelManagement.DAL.Repositories
                 .Where(f => foodIds.Contains(f.Id))
                 .ToListAsync();
         }
+
+        public async Task<List<Food>> GetAllWithReviewsAsync()
+        {
+            return await _context.Foods
+                .Include(f => f.Reviews)
+                .ThenInclude(r => r.ApplicationUser)
+                .ToListAsync();
+        }
     }
 }

@@ -1,0 +1,72 @@
+﻿@model Food
+<div class="modal fade" id="foodReviewModal-@Model.Id" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reviews for @Model.Name</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if (Model.Reviews.Any())
+        {
+            <ul class="list-group mb-3">
+                @foreach (var review in Model.Reviews.OrderByDescending(r => r.ReviewDate))
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="text-warning">
+                                    @{
+                                        double starValue = review.Rating / 2.0;
+                                        for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (starValue >= i)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else if (starValue >= i - 0.5)
+                                            {
+                                                <i class="fas fa-star-half-alt"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    }
+                                    <small class="text-muted">@(review.Rating)</small>
+                                </div>
+                                <br />
+                                @review.Comment
+                            </div>
+                            <small class="text-muted text-end">
+                                @review.ReviewDate.ToShortDateString()<br />
+                                by: @review.ApplicationUser?.UserName
+                            </small>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No reviews yet for this food item.</p>
+        }
+
+        <!-- Add/Edit Review Form -->
+        <form method="post" asp-action="SubmitFoodReview" asp-controller="Reviews">
+            <input type="hidden" name="FoodId" value="@Model.Id" />
+            <div class="mb-2">
+                <label>Rating (1–10)</label>
+                <input type="number" name="Rating" class="form-control" min="1" max="10" required />
+            </div>
+            <div class="mb-2">
+                <label>Comment</label>
+                <textarea name="Comment" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit/Update Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
