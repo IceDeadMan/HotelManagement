@@ -22,8 +22,22 @@ namespace HotelManagement.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Register() => View();
-        public IActionResult Login() => View();
+        public IActionResult Register()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(controllerName: "Rooms", actionName: "RoomsList");
+            }
+            return View();
+        }
+        public IActionResult Login()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(controllerName: "Rooms", actionName: "RoomsList");
+            }
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)

@@ -77,14 +77,24 @@ namespace HotelManagement.Controllers
 
         public async Task<IActionResult> FoodMenu()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentDate = DateTime.Now;
 
-            // Fetch foods
+            // Fetch all foods for display
             var foods = await _foodRepository.GetAllAsync();
 
-            // Get rooms the user currently has access to (via booking overlap)
-            var availableRooms = await _roomRepository.GetRoomsBookedByUserAsync(Guid.Parse(userId), currentDate);
+            // Default values
+            var availableRooms = new List<Room>();
+
+            // Only attempt room check if user is logged in
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    availableRooms = await _roomRepository.GetRoomsBookedByUserAsync(Guid.Parse(userId), currentDate);
+                }
+            }
 
             var viewModel = new FoodOrderCreateViewModel
             {

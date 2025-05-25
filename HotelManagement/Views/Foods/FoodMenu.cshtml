@@ -15,38 +15,50 @@
 
 <div class="container">
     <!-- Order Creation Form -->
-    <div class="card border-primary shadow-sm mb-4">
-        <div class="card-body">
-            <h5 class="card-title text-primary">Create Food Order</h5>
-            <form id="food-order-form" method="post" asp-action="CreateOrder" asp-controller="FoodOrders">
-                @Html.AntiForgeryToken()
+    @if (Model.AvailableRooms.Any())
+    {
+        <!-- Order Creation Form -->
+        <div class="card border-primary shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-primary">Create Food Order</h5>
+                <form id="food-order-form" method="post" asp-action="CreateOrder" asp-controller="Food">
+                    @Html.AntiForgeryToken()
 
-                <div class="mb-3">
-                    <label for="roomSelect" class="form-label">Select Room</label>
-                    <select id="roomSelect" name="SelectedRoomId" class="form-select" required>
-                        <option value="">-- Choose Room --</option>
-                        @foreach (var room in Model.AvailableRooms)
-                        {
-                            <option value="@room.Id">Room @room.RoomNumber</option>
-                        }
-                    </select>
-                </div>
+                    <div class="mb-3">
+                        <label for="roomSelect" class="form-label">Select Room</label>
+                        <select id="roomSelect" name="SelectedRoomId" class="form-select" required>
+                            <option value="">-- Choose Room --</option>
+                            @foreach (var room in Model.AvailableRooms)
+                            {
+                                <option value="@room.Id">Room @room.RoomNumber</option>
+                            }
+                        </select>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="orderDescription" class="form-label">Description</label>
-                    <textarea id="orderDescription" name="Description" class="form-control" rows="2" required></textarea>
-                </div>
+                    <div class="mb-3">
+                        <label for="orderDescription" class="form-label">Description</label>
+                        <textarea id="orderDescription" name="Description" class="form-control" rows="2" required></textarea>
+                    </div>
 
-                <h6>Selected Foods</h6>
-                <ul class="list-group mb-3" id="selected-foods-list"></ul>
+                    <h6>Selected Foods</h6>
+                    <ul class="list-group mb-3" id="selected-foods-list"></ul>
 
-                <!-- Hidden inputs for selected food IDs -->
-                <div id="foodInputs"></div>
+                    <!-- Hidden inputs for selected food IDs -->
+                    <div id="foodInputs"></div>
 
-                <button type="submit" class="btn btn-success">Place Order</button>
-            </form>
+                    <button type="submit" class="btn btn-success">Place Order</button>
+                </form>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <!-- Info Message -->
+        <div class="alert alert-info shadow-sm">
+            To order food, please <a href="/Users/Login">log in</a> and make a booking in the hotel.
+        </div>
+    }
+
     @* Admin Create Form *@
     @if (isAdmin)
     {
