@@ -1,4 +1,5 @@
 ﻿@model HotelManagement.ViewModels.BookingRoomDetailViewModel
+@using HotelManagement.Enums
 <!-- Booking Room Details View -->
 <!-- This view displays the details of a specific room in a booking, including food orders, service requests, and reviews. -->
 <!-- It provides all the functionality like ordering food,- services and reviewing the room. -->
@@ -59,6 +60,31 @@ else
 {
     <p>No service activities recorded for this stay.</p>
 }
+<form id="add-activity-form" method="post">
+    @Html.AntiForgeryToken()
+
+    <label>Service Type</label>
+    <div>
+        @foreach (var type in Enum.GetValues(typeof(ActivityType)).Cast<ActivityType>())
+        {
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Type" value="@type" required />
+                <label class="form-check-label">@type.ToString()</label>
+            </div>
+        }
+    </div>
+
+    <div class="mb-2">
+        <label for="Description">Description</label>
+        <textarea name="Description" class="form-control" required></textarea>
+    </div>
+
+    <!-- Hidden values -->
+    <input type="hidden" name="BookingId" value="@Model.Booking.Id" />
+    <input type="hidden" name="RoomId" value="@Model.Room.Id" />
+
+    <button type="submit" class="btn btn-primary">Request Service</button>
+</form>
 
 <hr />
 
@@ -104,49 +130,52 @@ else
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            function handleReviewSubmit(e, url) {
-                e.preventDefault();
+        function handleFormSubmit(e, url) {
+            e.preventDefault();
 
-                const form = e.target;
-                const formData = new FormData(form);
-                const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+            const form = e.target;
+            const formData = new FormData(form);
+            const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
 
-                fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error("Network response was not OK");
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        //alert(data.message);
-                        window.location.reload(); // Reload to see the updated review
-                    } else {
-                        alert("Something went wrong");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error submitting review:", error);
-                    alert("Failed to submit review");
-                });
-            }
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Network response was not OK");
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // Or dynamically update the activity list here
+                } else {
+                    alert("Something went wrong");
+                }
+            })
+            .catch(error => {
+                console.error("Error submitting form:", error);
+                alert("Failed to submit");
+            });
+        }
 
+        const addReviewForm = document.getElementById("add-review-form");
+        const editReviewForm = document.getElementById("edit-review-form");
+        const addActivityForm = document.getElementById("add-activity-form");
 
-            const addForm = document.getElementById("add-review-form");
-            const editForm = document.getElementById("edit-review-form");
+        if (addReviewForm) {
+            addReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("AddRoomReview", "Bookings")'));
+        }
 
-            if (addForm) {
-                addForm.addEventListener("submit", e => handleReviewSubmit(e, '@Url.Action("AddRoomReview", "Bookings")'));
-            }
+        if (editReviewForm) {
+            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Bookings")'));
+        }
 
-            if (editForm) {
-                editForm.addEventListener("submit", e => handleReviewSubmit(e, '@Url.Action("EditRoomReview", "Bookings")'));
-            }
-        });
+        if (addActivityForm) {
+            addActivityForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("Add", "ActivityRecords")'));
+        }
+    });
     </script>
 }
