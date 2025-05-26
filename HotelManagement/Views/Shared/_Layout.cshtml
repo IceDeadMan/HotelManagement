@@ -12,6 +12,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
 	<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reception.css" />
     <link rel="stylesheet" href="~/HotelManagement.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
@@ -26,34 +27,43 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav">
+                        <!-- Public Buttons -->
                         <li class="nav-item me-3">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link nav-public" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="RoomsList">Rooms</a>
+                            <a class="nav-link nav-public" asp-controller="Rooms" asp-action="RoomsList">Rooms</a>
                         </li>
-                        @if (User.Identity.IsAuthenticated){
+                        <li class="nav-item me-3">
+                            <a class="nav-link nav-public" asp-controller="Events" asp-action="EventsList">Events</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link nav-public" asp-controller="Foods" asp-action="FoodMenu">Food Menu</a>
+                        </li>
+
+                        <!-- Authenticated Buttons -->
+                        @if (User.Identity.IsAuthenticated)
+                        {
                             <li class="nav-item me-3">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="StartBooking">Book a Room</a>
+                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="StartBooking">Book a Room</a>
                             </li>
                             @await Component.InvokeAsync("BookingCartNav")
                             <li class="nav-item me-3">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="MyBookings">My Bookings</a>
+                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="MyBookings">My Bookings</a>
                             </li>
                         }
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="EventsList">Events</a>
-                        </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Foods" asp-action="FoodMenu">Food Menu</a>
-                        </li>
-                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+
+                        <!-- Role-Based Buttons -->
+                        @if (User.IsInRole("Manager") || User.IsInRole("Staff") || User.IsInRole("Receptionist"))
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="FoodOrders" asp-action="FoodOrdersList">Food Orders</a>
+                                <a class="nav-link nav-role" asp-controller="Bookings" asp-action="Reception">Reception</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">Service Activities</a>
+                                <a class="nav-link nav-role" asp-controller="FoodOrders" asp-action="FoodOrdersList">Food Orders</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link nav-role" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">Service Activities</a>
                             </li>
                         }
                     </ul>

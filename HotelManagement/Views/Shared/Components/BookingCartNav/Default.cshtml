@@ -4,7 +4,7 @@
 <!-- It is used in the navigation bar to allow users to quickly access their booking cart
 and to display the notification of the number of rooms in the cart. -->
 <li class="nav-item position-relative me-3">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="BookingCart">
+    <a class="nav-link nav-auth" asp-area="" asp-controller="Bookings" asp-action="BookingCart">
         Booking Cart
         @if (Model > 0)
         {

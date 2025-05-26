@@ -142,6 +142,13 @@ namespace HotelManagement.Controllers
             return Json(new { success = true, message = "Review updated successfully." });
         }
 
+        // I think this one is currently used, maybe remove the other AddFoodReview and EditFoodReview methods
+        /// <summary>
+        /// SubmitFoodReview allows a user to submit a review for food.
+        /// If the user has already submitted a review for the same food, it updates the existing review.
+        /// /// </summary>
+        /// <param name="review"> The review object containing food ID, rating, comment, and user ID. </param>
+        /// /// <returns> A redirect to the FoodMenu view with a success message. </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SubmitFoodReview(Review review)

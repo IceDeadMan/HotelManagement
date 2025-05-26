@@ -292,6 +292,7 @@ namespace HotelManagement.Controllers
 			return View(model);
 		}
 
+		// todo these review actions are already in the ReviewsController, these should be deleted and fix calls
 		/// <summary>
 		/// AddRoomReview allows a user to submit a review for a room they have booked.
 		/// </summary>
@@ -351,6 +352,78 @@ namespace HotelManagement.Controllers
 			TempData["SuccessMessage"] = "Review updated successfully.";
 
 			return Json(new { success = true, message = "Review updated successfully." });
+		}
+
+		/// <summary>
+		/// Reception displays the reception view with all bookings categorized by their status.
+		/// It includes today's bookings, ongoing bookings, bookings before check-in, and past or cancelled bookings.
+		/// </summary>
+		/// <returns> A view with categorized booking summaries for the reception desk. </returns>
+		[Authorize(Roles = "Manager,Staff,Receptionist")]
+		public async Task<IActionResult> Reception()
+		{
+			var allBookings = await _bookingRepository.GetBookingSummariesAsync();
+			var today = DateTime.Today;
+
+			var viewModel = new ReceptionViewModel
+			{
+				TodaysBookings = allBookings
+					.Where(b =>
+						(b.StartDate.Date == today && b.Status == BookingStatus.Pending) ||
+						(b.EndDate.Date == today && (b.Status == BookingStatus.Confirmed || b.Status == BookingStatus.Pending)))// or Pending for now
+					.ToList(),
+
+				OngoingBookings = allBookings
+					.Where(b =>
+						b.Status == BookingStatus.Confirmed &&
+						(
+							(b.StartDate.Date < today && b.EndDate.Date > today) ||
+							(b.StartDate.Date == today) // Just checked in today
+						))
+					.ToList(),
+
+				BeforeCheckIn = allBookings
+					.Where(b =>
+						(b.Status == BookingStatus.Pending || b.Status == BookingStatus.Confirmed) &&// or confirmed for now
+						b.StartDate.Date > today)
+					.ToList(),
+
+				PastOrCancelledBookings = allBookings
+					.Where(b =>
+						b.Status == BookingStatus.Completed ||
+						b.Status == BookingStatus.Cancelled ||
+						(b.EndDate.Date == today && b.Status == BookingStatus.Completed)) // Checked out today
+					.ToList()
+			};
+
+			return View(viewModel);
+		}
+
+
+		/// <summary>
+		/// ChangeStatus allows authorized users to change the status of a booking.
+		/// Should be used by receptionist to chek in or check out guests or to cancel bookings.
+		/// </summary>
+		[HttpPost]
+		[Authorize(Roles = "Manager,Staff,Receptionist")]//maybe remove staff
+		public async Task<IActionResult> ChangeStatus(Guid id, BookingStatus newStatus)
+		{
+			await _bookingRepository.ChangeStatusAsync(id, newStatus);
+			return RedirectToAction(nameof(Reception));
+		}
+		
+		/// <summary>
+		/// Delete removes a booking by its ID.
+		/// This action is restricted to authorized users with specific roles.
+		/// </summary>
+		/// <param name="id"> The ID of the booking to be deleted. </param>
+		/// <returns> A redirect to the reception view after deletion. </returns>
+		[HttpPost]
+		[Authorize(Roles = "Manager,Staff,Receptionist")]
+		public IActionResult Delete(Guid id)
+		{
+			_bookingRepository.Delete(id);
+			return RedirectToAction(nameof(Reception));
 		}
 
 		

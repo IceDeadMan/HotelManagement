@@ -1,0 +1,82 @@
+﻿@using HotelManagement.Models;
+@using HotelManagement.Models.DTOs;
+@using HotelManagement.Enums;
+@using HotelManagement.ViewModels;
+@model IEnumerable<ReceptionBookingSummary>
+<!-- Reception Booking List Partial View -->
+<!-- This partial view displays a list of bookings with options to change their status.
+     It is used in the Reception view to manage bookings. -->
+
+<table class="table table-bordered reception-bookings-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Rooms</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var booking in Model)
+    {
+        <tr>
+            <td>@booking.UserName</td>
+            <td>
+                <span class="@(booking.StartDate.Date == DateTime.Today ? "date-today" : "")">
+                    @booking.StartDate.ToShortDateString()
+                </span>
+            </td>
+            <td>
+                <span class="@(booking.EndDate.Date == DateTime.Today ? "date-today" : "")">
+                    @booking.EndDate.ToShortDateString()
+                </span>
+            </td>
+            <td class="@(booking.Status switch {
+                BookingStatus.Pending => "status-pending",
+                BookingStatus.Confirmed => "status-confirmed",
+                BookingStatus.Completed => "status-completed",
+                BookingStatus.Cancelled => "status-cancelled",
+                _ => ""
+            })">
+                @booking.Status
+            </td>
+            <td>@string.Join(", ", booking.RoomNumbers)</td>
+            <td>
+                <form asp-action="ChangeStatus" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@booking.Id" />
+
+                    @* Check-In: Only if today is StartDate and status is Pending *@
+                    @if (booking.Status == BookingStatus.Pending && booking.StartDate.Date == DateTime.Today)
+                    {
+                        <button type="submit" name="newStatus" value="Confirmed" class="btn btn-success btn-sm">Check In</button>
+                    }
+
+                    @* Check-Out: Only if today is EndDate and status is Confirmed (or Pending for now) *@
+                    @if ((booking.Status == BookingStatus.Confirmed || booking.Status == BookingStatus.Pending) && booking.EndDate.Date == DateTime.Today)
+                    {
+                        <button type="submit" name="newStatus" value="Completed" class="btn btn-primary btn-sm">Check Out</button>
+                    }
+
+                    @* Cancel: Always show if not already cancelled or completed *@
+                    @if (booking.Status != BookingStatus.Completed && booking.Status != BookingStatus.Cancelled)
+                    {
+                        <button type="submit" name="newStatus" value="Cancelled" class="btn btn-danger btn-sm">Cancel</button>
+                    }
+                </form>
+
+                @* Delete: Only for past/cancelled bookings *@
+                @if (booking.Status == BookingStatus.Completed || booking.Status == BookingStatus.Cancelled)
+                {
+                    <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this booking?');">
+                        <input type="hidden" name="id" value="@booking.Id" />
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
