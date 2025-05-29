@@ -44,9 +44,8 @@
     </tbody>
 </table>
 
-<!-- Hidden POST form -->
-<form id="roomDetailForm" method="post" asp-controller="Bookings" asp-action="BookingRoomDetails" style="display:none;">
-    @Html.AntiForgeryToken()
+<!-- Hidden GET form -->
+<form id="roomDetailForm" method="get" asp-controller="Bookings" asp-action="BookingRoomDetails" style="display:none;">
     <input type="hidden" name="roomId" id="roomIdInput" />
     <input type="hidden" name="bookingId" id="bookingIdInput" />
 </form>

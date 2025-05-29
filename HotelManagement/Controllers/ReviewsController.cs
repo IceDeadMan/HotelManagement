@@ -61,7 +61,7 @@ namespace HotelManagement.Controllers
         /// <param name="Rating"> The new rating given by the user (1-5). </param>
         /// <param name="Comment"> The new comment provided by the user. </param>
         /// /// <returns> A redirect to the BookingRoomDetails view with a success message. </returns>
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         [Authorize]
         public IActionResult EditRoomReview(Guid ReviewId, int Rating, string Comment)

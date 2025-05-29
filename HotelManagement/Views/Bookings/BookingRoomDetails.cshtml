@@ -130,7 +130,7 @@ else
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-        function handleFormSubmit(e, url) {
+        function handleFormSubmit(e, url, method = "POST") {
             e.preventDefault();
 
             const form = e.target;
@@ -138,7 +138,7 @@ else
             const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
 
             fetch(url, {
-                method: 'POST',
+                method: method,
                 body: formData,
                 headers: {
                     'RequestVerificationToken': token
@@ -166,15 +166,15 @@ else
         const addActivityForm = document.getElementById("add-activity-form");
 
         if (addReviewForm) {
-            addReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("AddRoomReview", "Bookings")'));
+            addReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("AddRoomReview", "Reviews")'), 'POST');
         }
 
         if (editReviewForm) {
-            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Bookings")'));
+            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Reviews")'), 'PUT');
         }
 
         if (addActivityForm) {
-            addActivityForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("Add", "ActivityRecords")'));
+            addActivityForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("Add", "ActivityRecords")'), 'POST');
         }
     });
     </script>
