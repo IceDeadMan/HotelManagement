@@ -51,14 +51,16 @@ namespace HotelManagement.Controllers
 		public async Task<IActionResult> StartBooking()
 		{
 			var cart = _bookingCartService.GetCart();
-			var roomIdsInCart = cart.RoomIds;
-			var startCart = cart.StartDate;
-			var endCart = cart.EndDate;
 			var roomTypes = await _roomTypeRepository.GetAllAsync();
-			ViewBag.RoomIdsInCart = roomIdsInCart;
-			ViewBag.StartCart = startCart;
-			ViewBag.EndCart = endCart;
-			return View(roomTypes);
+
+			var viewModel = new StartBookingViewModel
+			{
+				RoomTypes = roomTypes.ToList(),
+				SelectedRoomTypeId = Guid.Empty, // Default to no room type selected
+				Cart = cart
+			};
+
+			return View(viewModel);
 		}
 
 		/// <summary>
@@ -124,7 +126,13 @@ namespace HotelManagement.Controllers
 		{
 			var cart = _bookingCartService.GetCart();
 
-			var roomDetails = new List<(Room room, RoomType roomType)>();
+			var viewModel = new BookingCartViewModel
+			{
+				StartDate = cart.StartDate,
+				EndDate = cart.EndDate
+			};
+
+			viewModel.Nights = (cart.EndDate - cart.StartDate).Days;
 
 			foreach (var roomId in cart.RoomIds)
 			{
@@ -134,19 +142,25 @@ namespace HotelManagement.Controllers
 				var roomType = _roomTypeRepository.GetById(room.RoomTypeId);
 				if (roomType == null) continue;
 
-				roomDetails.Add((room, roomType));
+				var item = new BookingCartViewModel.RoomCartItem
+				{
+					RoomId = room.Id.ToString(),
+					RoomNumber = room.RoomNumber,
+					RoomTypeDescription = roomType.Description,
+					Capacity = roomType.Capacity,
+					PricePerNight = roomType.Price,
+					Subtotal = roomType.Price * viewModel.Nights
+				};
+
+				viewModel.RoomDetails.Add(item);
 			}
 
-			ViewBag.StartDate = cart.StartDate;
-			ViewBag.EndDate = cart.EndDate;
-			ViewBag.RoomDetails = roomDetails;
+			viewModel.TotalPrice = viewModel.RoomDetails.Sum(i => i.Subtotal);
 
-			int nights = (cart.EndDate - cart.StartDate).Days;
-			ViewBag.Nights = nights;
-			ViewBag.TotalPrice = roomDetails.Sum(r => r.roomType.Price * nights);
-
-			return View("BookingCart");
+			return View("BookingCart", viewModel);
 		}
+
+
 
 		/// <summary>
 		/// FinalizeBooking processes the booking by checking room availability and creating a booking record.
@@ -348,7 +362,7 @@ namespace HotelManagement.Controllers
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);
 			return RedirectToAction(nameof(Reception));
 		}
-		
+
 		/// <summary>
 		/// Delete removes a booking by its ID.
 		/// This action is restricted to authorized users with specific roles.
@@ -362,8 +376,40 @@ namespace HotelManagement.Controllers
 			_bookingRepository.Delete(id);
 			return RedirectToAction(nameof(Reception));
 		}
-
 		
+		/// <summary>
+		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
+		/// If filters out the rooms that are already booked during the selected dates.
+		/// /</summary>
+		/// <param name="start">The start date of the stay.</param>
+		/// <param name="end">The end date of the stay.</param>
+		/// <param name="roomTypeId">The ID of the selected room type.</param>
+		/// <returns> A view with available rooms based on the selected criteria. </returns>
+		public async Task<IActionResult> AvailableRooms(DateTime start, DateTime end, Guid roomTypeId)
+		{
+
+			var allRoomTypes = await _roomTypeRepository.GetAllAsync();
+			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
+			var cart = _bookingCartService.GetCart();
+
+			// this is not using the IsRoomAvailableAsync method since filtering the rooms in memory should be better for performance
+			var availableRooms = rooms
+				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
+							!r.Bookings.Any(b => b.StartDate < end && b.EndDate > start))
+				.ToList();
+			
+			var viewModel = new StartBookingViewModel
+			{
+				RoomTypes = allRoomTypes.ToList(),
+				SelectedRoomTypeId = roomTypeId,
+				StartDate = start.ToString("yyyy-MM-dd"),
+				EndDate = end.ToString("yyyy-MM-dd"),
+				Cart = cart,
+				AvailableRooms = availableRooms
+			};
+
+			return View("StartBooking", viewModel);
+		}
 	}
 }
 

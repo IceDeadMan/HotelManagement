@@ -1,26 +1,22 @@
-﻿
+﻿@model BookingCartViewModel
+@using HotelManagement.Models
+@using HotelManagement.ViewModels;
+
 <!-- Booking Cart View -->
 <!-- This view displays the booking cart with the selected rooms, their types, and prices.
      It allows the user to remove rooms from the cart and finalize the booking. -->
+
 @{
-	ViewData["Title"] = "Booking Cart";
-    var startDate = (DateTime)ViewBag.StartDate;
-    var endDate = (DateTime)ViewBag.EndDate;
-    var nights = (int)ViewBag.Nights;
-    var roomDetails = ViewBag.RoomDetails as List<(HotelManagement.Models.Room, HotelManagement.Models.RoomType)>;
-    var totalPrice = (decimal)ViewBag.TotalPrice;
+    ViewData["Title"] = "Booking Cart";
 }
 
-<!-- If the cart is empty, display a message and a button to create a new booking -->
-@if (roomDetails == null || roomDetails.Count == 0)
+@if (Model.RoomDetails == null || !Model.RoomDetails.Any())
 {
     <h2>Your booking cart is empty.</h2>
-    // Go to create booking page
     <a class="btn btn-primary" asp-controller="Bookings" asp-action="StartBooking">Create Booking</a>
     return;
 }
 
-<!-- Display any success or error messages -->
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -29,13 +25,11 @@
     </div>
 }
 
-<!-- Display the booking summary -->
 <h2>Booking Summary</h2>
-<p>Check-in: <strong>@startDate.ToShortDateString()</strong></p>
-<p>Check-out: <strong>@endDate.ToShortDateString()</strong></p>
-<p>Total Nights: <strong>@nights</strong></p>
+<p>Check-in: <strong>@Model.StartDate.ToShortDateString()</strong></p>
+<p>Check-out: <strong>@Model.EndDate.ToShortDateString()</strong></p>
+<p>Total Nights: <strong>@Model.Nights</strong></p>
 
-<!-- Display the list of rooms in the booking cart -->
 <table class="table">
     <thead>
         <tr>
@@ -48,17 +42,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var (room, type) in roomDetails)
+        @foreach (var item in Model.RoomDetails)
         {
             <tr>
-                <td>@room.RoomNumber</td>
-                <td>@type.Description</td>
-                <td>@type.Capacity</td>
-                <td>@type.Price.ToString("C")</td>
-                <td>@((type.Price * nights).ToString("C"))</td>
+                <td>@item.RoomNumber</td>
+                <td>@item.RoomTypeDescription</td>
+                <td>@item.Capacity</td>
+                <td>@item.PricePerNight.ToString("C")</td>
+                <td>@item.Subtotal.ToString("C")</td>
                 <td>
-                    <form  class="remove-room-form" asp-controller="Bookings" asp-action="RemoveFromBookingCart" method="post">
-                        <input type="hidden" name="roomId" value="@room.Id" />
+                    <form class="remove-room-form" asp-controller="Bookings" asp-action="RemoveFromBookingCart" method="post">
+                        <input type="hidden" name="roomId" value="@item.RoomId" />
                         <button type="submit" class="btn btn-danger">Remove</button>
                     </form>
                 </td>
@@ -67,7 +61,7 @@
     </tbody>
 </table>
 
-<h4>Total: @totalPrice.ToString("C")</h4>
+<h4>Total: @Model.TotalPrice.ToString("C")</h4>
 
 <form asp-controller="Bookings" asp-action="FinalizeBooking" method="post">
     <button type="submit" class="btn btn-success">Finalize Booking</button>
@@ -75,43 +69,41 @@
 
 @section Scripts {
     <script>
-        // Remove room from booking cart
         document.querySelectorAll(".remove-room-form").forEach(form => {
-			form.addEventListener("submit", async function (e) {
-				e.preventDefault();
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
 
-				const formData = new FormData(form);
-				const actionUrl = form.getAttribute("action");
+                const formData = new FormData(form);
+                const actionUrl = form.getAttribute("action");
 
-				const data = {};
-				formData.forEach((value, key) => {
-					data[key] = value;
-				});
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
 
-				const response = await fetch(actionUrl, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
-					},
-					body: JSON.stringify(data)
-				});
+                const response = await fetch(actionUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify(data)
+                });
 
-				if (response.ok) {
-					const result = await response.json();
-					if (result.success) {
-						//alert("Action successful!"); //todo maybe popup
-						// maybe update the button text/state here instead of reloading
-						location.reload();
-					} else {
-						alert("Action failed.");
-					}
-				} else {
-					const error = await response.text();
-					alert("Request failed: " + error);
-				}
-			});
-		});
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert("Action failed.");
+                    }
+                } else {
+                    const error = await response.text();
+                    alert("Request failed: " + error);
+                }
+            });
+        });
     </script>
 }
+
 
