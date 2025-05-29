@@ -5,6 +5,7 @@ using HotelManagement.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.Models;
+using AutoMapper;
 
 namespace HotelManagement.Controllers
 {
@@ -15,27 +16,20 @@ namespace HotelManagement.Controllers
     {
         private readonly FoodOrderRepository _foodOrderRepository;
         private readonly FoodRepository _foodRepository;
+        private readonly IMapper _mapper;
 
-        public FoodOrdersController(FoodOrderRepository foodOrderRepository, FoodRepository foodRepository)
+        public FoodOrdersController(FoodOrderRepository foodOrderRepository, FoodRepository foodRepository, IMapper mapper)
         {
             _foodOrderRepository = foodOrderRepository;
             _foodRepository = foodRepository;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> FoodOrdersList()
         {
             var orders = await _foodOrderRepository.GetAllWithDetailsAsync();
 
-            var viewModel = orders.Select(o => new FoodOrderViewModel
-            {
-                Id = o.Id,
-                Description = o.Description,
-                OrderDate = o.OrderDate,
-                Status = o.Status,
-                GuestName = o.ApplicationUser?.UserName,
-                RoomNumber = o.Room?.RoomNumber,
-                Foods = o.Foods.Select(f => f.Name).ToList()
-            }).ToList();
+            var viewModel = _mapper.Map<List<FoodOrderViewModel>>(orders);
 
             return View(viewModel);
         }

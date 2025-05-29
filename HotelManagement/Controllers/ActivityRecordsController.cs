@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
 using System.Security.Claims;
 using System;
+using AutoMapper;
 
 namespace HotelManagement.Controllers
 {
@@ -17,26 +18,19 @@ namespace HotelManagement.Controllers
     public class ActivityRecordsController : Controller
     {
         private readonly ActivityRecordRepository _activityRecordRepository;
+        private readonly IMapper _mapper;
 
-        public ActivityRecordsController(ActivityRecordRepository activityRecordRepository)
+        public ActivityRecordsController(ActivityRecordRepository activityRecordRepository, IMapper mapper)
         {
             _activityRecordRepository = activityRecordRepository;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> ActivityRecordsList()
         {
             var activities = await _activityRecordRepository.GetAllWithDetailsAsync();
 
-            var viewModel = activities.Select(a => new ActivityRecordViewModel
-            {
-                Id = a.Id,
-                GuestName = a.ApplicationUser?.UserName,
-                RoomNumber = a.Room?.RoomNumber,
-                Type = a.Type,
-                Description = a.Description,
-                Date = a.Date,
-                Status = a.Status
-            }).ToList();
+            var viewModel = _mapper.Map<List<ActivityRecordViewModel>>(activities);
 
             return View(viewModel);
         }

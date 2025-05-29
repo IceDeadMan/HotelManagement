@@ -2,6 +2,7 @@
 using HotelManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.ViewModels;
+using AutoMapper;
 
 namespace HotelManagement.Controllers
 {
@@ -15,20 +16,24 @@ namespace HotelManagement.Controllers
 		private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
+		private readonly IMapper _mapper;
 
-		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService)
-		{
-			_logger = logger;
-			_roomRepository = roomRepository;
-			_roomTypeRepository = roomTypeRepository;
-			_bookingCartService = bookingCartService;
-		}
+        public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository,
+								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
+								IMapper mapper)
+        {
+            _logger = logger;
+            _roomRepository = roomRepository;
+            _roomTypeRepository = roomTypeRepository;
+            _bookingCartService = bookingCartService;
+            _mapper = mapper;
+        }
 
-		/// <summary>
-		/// RoomsList displays a list of all rooms with their details.
-		/// </summary>
-		/// <returns> A view with all rooms and their details. </returns>
-		public async Task<IActionResult> RoomsList()
+        /// <summary>
+        /// RoomsList displays a list of all rooms with their details.
+        /// </summary>
+        /// <returns> A view with all rooms and their details. </returns>
+        public async Task<IActionResult> RoomsList()
 		{
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
 			return View(rooms);
@@ -42,30 +47,11 @@ namespace HotelManagement.Controllers
 			if (room == null)
 				return NotFound();
 
-			var viewModel = new RoomDetailViewModel
-			{
-				RoomNumber = room.RoomNumber!,
-				Description = room.Description!,
-				RoomTypeName = room.RoomType?.Name ?? "",
-				RoomTypeDescription = room.RoomType?.Description ?? "",
-				RoomTypePrice = room.RoomType?.Price ?? 0,
-				RoomTypeCapacity = room.RoomType?.Capacity ?? 0,
-				Bookings = room.Bookings.Select(b => new BookingSummaryViewModel
-				{
-					GuestName = b.ApplicationUser?.UserName ?? "Unknown",
-					StartDate = b.StartDate,
-					EndDate = b.EndDate
-				}).ToList(),
-				Reviews = room.Reviews.Select(r => new ReviewViewModel
-				{
-					ReviewerUsername = r.ApplicationUser?.UserName ?? "Anonymous",
-					Rating = r.Rating,
-					Comment = r.Comment,
-					ReviewDate = r.ReviewDate
-				}).ToList()
-			};
+            var viewModel = _mapper.Map<RoomDetailViewModel>(room);
+            viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
+            viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
 
-			return View(viewModel);
+            return View(viewModel);
 		}
 	}
 }
