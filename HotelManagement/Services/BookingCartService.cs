@@ -10,7 +10,7 @@ namespace HotelManagement.Services
 	/// <summary>
 	/// BookingCartService manages the booking cart for users.
 	/// It uses session storage to persist the cart data across requests.
-	/// It is used mainy for adding multiple rooms to the booking during different steps of the booking process
+	/// It is used mainly for adding multiple rooms to the booking during different steps of the booking process
 	/// The cart contains the start and end dates of the booking and a list of room IDs selected for the booking.
 	/// The cart is stored in the session using a unique key based on the user ID for authenticated users.
 	/// </summary>

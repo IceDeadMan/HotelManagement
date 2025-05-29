@@ -73,11 +73,13 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
         [Authorize]
         public async Task<IActionResult> Profile()
         {
