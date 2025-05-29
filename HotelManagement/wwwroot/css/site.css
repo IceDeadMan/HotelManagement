@@ -20,3 +20,30 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Common base for all nav links */
+.nav-link {
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-shadow: none;
+    transition: text-shadow 0.2s ease;
+}
+
+/* Public buttons */
+.nav-link.nav-public {
+    color: #0b0b0b!important;
+}
+
+/* Authenticated user buttons — soft blue glow */
+.nav-link.nav-auth {
+    color: #0b0b0b!important;
+    /*color: #004085!important;*/
+    text-shadow: 0 0 6px rgb(124, 187, 255);
+}
+
+/* Role-specific buttons — soft green glow */
+.nav-link.nav-role {
+    color: #0b0b0b!important;
+    /*color: #1c7226!important;*/
+    text-shadow: 0 0 6px rgb(139, 252, 153);
+}

@@ -1,0 +1,17 @@
+﻿@model int
+<!-- Booking Cart Navigation -->
+<!-- This component displays the booking cart icon with the number of rooms in the cart. -->
+<!-- It is used in the navigation bar to allow users to quickly access their booking cart
+and to display the notification of the number of rooms in the cart. -->
+<li class="nav-item position-relative me-3">
+    <a class="nav-link nav-auth" asp-area="" asp-controller="Bookings" asp-action="BookingCart">
+        Booking Cart
+        @if (Model > 0)
+        {
+            <span class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger">
+                @Model
+                <span class="visually-hidden">rooms in cart</span>
+            </span>
+        }
+    </a>
+</li>

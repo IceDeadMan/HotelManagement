@@ -3,6 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// BaseRepository provides a generic implementation for CRUD operations on entities.
+    /// It implements the IRepository interface and uses Entity Framework Core for database operations.
+    /// </summary>
+    /// typeparam name="TModel">The type of the model that the repository will manage.</typeparam>
     public class BaseRepository<TModel> : IRepository<TModel>, IDisposable where TModel : class, IModel
     {
         protected readonly HotelManagementDbContext _context;

@@ -1,4 +1,5 @@
 using HotelManagement.DAL.Repositories;
+using HotelManagement.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement
@@ -17,29 +18,42 @@ namespace HotelManagement
 
             builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			builder.Services.AddScoped<BookingCartService>();
+			builder.Services.AddSession();
 
-            AddRepositories(builder.Services);
+
+			AddRepositories(builder.Services);
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // For unhandled exceptions (500 errors)
+                app.UseExceptionHandler("/Error/500");
+
+                // For other status codes like 404, 403, etc.
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            }
+            else
+            {
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+			app.UseSession();
 
-            app.UseAuthorization();
+			app.UseAuthorization();
+
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Users}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
             app.Run();
@@ -54,6 +68,7 @@ namespace HotelManagement
             services.AddScoped<FoodOrderRepository, FoodOrderRepository>();
             services.AddScoped<ReviewRepository, ReviewRepository>();
             services.AddScoped<EventRepository, EventRepository>();
+            services.AddScoped<RoomTypeRepository, RoomTypeRepository>();
         }
     }
 }

@@ -1,0 +1,117 @@
+﻿@model HotelManagement.ViewModels.RoomDetailViewModel
+<!-- Room Details View -->
+<!-- This view displays the details of a room, including its bookings in a calendar and guest reviews. -->
+@{
+	ViewData["Title"] = "Room Details";
+}
+
+<div class="container mt-4">
+	<div class="card shadow-sm">
+		<div class="card-body">
+			<h3 class="card-title">Room @Model.RoomNumber</h3>
+			<p class="card-text"><strong>Type:</strong> @Model.RoomTypeName</p>
+			<p class="card-text"><strong>Capacity:</strong> @Model.RoomTypeCapacity</p>
+			<p class="card-text"><strong>Description:</strong> @Model.Description</p>
+			<p class="card-text"><strong>Type Description: </strong>@Model.RoomTypeDescription</p>
+			<p class="card-text"><strong>Price:</strong> @Model.RoomTypePrice.ToString("C")</p>
+
+			@if (Model.Bookings?.Any() == true)
+			{
+				<h5 class="mt-4">Bookings:</h5>
+				<ul class="list-group">
+					@foreach (var booking in Model.Bookings)
+					{
+						<li class="list-group-item">
+							<strong>Guest:</strong> @booking.GuestName
+							| <strong>From:</strong> @booking.StartDate.ToShortDateString()
+							| <strong>To:</strong> @booking.EndDate.ToShortDateString()
+						</li>
+					}
+				</ul>
+			}
+			else
+			{
+				<p class="text-muted mt-4">No bookings for this room yet.</p>
+			}
+
+			<!-- Calendar -->
+			<h5 class="mt-4">Calendar</h5>
+			<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
+
+			<a asp-action="RoomsList" class="btn btn-secondary mt-4">Back to List</a>
+
+			<!-- Generate calendar events from bookings -->
+			<script>
+				const bookings = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+					Model.Bookings.Select(b => new {
+						title = "Booked",
+						start = b.StartDate.ToString("yyyy-MM-dd"),
+						end = b.EndDate.AddDays(1).ToString("yyyy-MM-dd")
+					})
+				));
+			</script>
+
+			<!-- Initialize FullCalendar -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function () {
+					var calendarEl = document.getElementById('calendar');
+
+					var calendar = new FullCalendar.Calendar(calendarEl, {
+						initialView: 'dayGridMonth',
+						height: 'auto',
+						events: bookings,
+						eventColor: '#dc3545',
+						selectable: true
+					});
+
+					calendar.render();
+				});
+			</script>
+
+			<!-- Reviews Section -->
+			@if (Model.Reviews?.Any() == true)
+			{
+				<h5 class="mt-5">Guest Reviews</h5>
+				<ul class="list-group">
+					@foreach (var review in Model.Reviews.OrderByDescending(r => r.ReviewDate))
+					{
+						<li class="list-group-item">
+							<div class="d-flex justify-content-between">
+								<div>
+									<div class="text-warning">
+										@{
+											double starValue = review.Rating / 2.0;
+											for (int i = 1; i <= 5; i++)
+											{
+												if (starValue >= i)
+												{
+													<i class="fas fa-star"></i> <!-- Full star -->
+												}
+												else if (starValue >= i - 0.5)
+												{
+													<i class="fas fa-star-half-alt"></i> <!-- Half star -->
+												}
+												else
+												{
+													<i class="far fa-star"></i> <!-- Empty star -->
+												}
+											}
+										}
+										<small class="text-muted">@(review.Rating / 2.0)</small>
+									</div>
+									<br />
+									@review.Comment
+								</div>
+								<small class="text-muted">@review.ReviewDate.ToShortDateString(), By: @review.ReviewerUsername</small>
+							</div>
+						</li>
+					}
+				</ul>
+			}
+			else
+			{
+				<p class="text-muted mt-4">No reviews for this room yet.</p>
+			}
+		</div>
+	</div>
+</div>

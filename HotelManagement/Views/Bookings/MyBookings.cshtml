@@ -1,0 +1,53 @@
+﻿<!-- MyBookings.cshtml -->
+<!-- This view displays the user's bookings in a table format. -->
+<!-- It includes a link to view the details of each booking. -->
+@model IEnumerable<HotelManagement.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<h2>My Bookings</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no bookings yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Status</th>
+                <th>Rooms</th>
+                <th>Total Nights</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model)
+            {
+                var nights = (booking.EndDate - booking.StartDate).Days;
+
+                <tr onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">
+                    <td>@booking.Id</td>
+                    <td>@booking.StartDate.ToShortDateString()</td>
+                    <td>@booking.EndDate.ToShortDateString()</td>
+                    <td>@booking.Status.ToString()</td>
+                    <td>
+                        <ul>
+                        @foreach (var room in booking.Rooms)
+                        {
+                            <li>Room @room.RoomNumber - @room.RoomType?.Name</li>
+                        }
+                        </ul>
+                    </td>
+                    <td>@nights</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

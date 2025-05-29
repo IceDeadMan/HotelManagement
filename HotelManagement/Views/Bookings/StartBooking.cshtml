@@ -1,0 +1,225 @@
+﻿@model IEnumerable<HotelManagement.Models.RoomType>
+@using HotelManagement.Models
+
+<!-- Start Booking View -->
+<!-- This view allows the user to select a room type and stay duration for booking. -->
+<!-- It displays available rooms based on the selected criteria. -->
+<!-- It allows adding/removing rooms to/from the booking cart. -->
+
+@{
+	ViewData["Title"] = "Create Booking";
+	var rooms = ViewBag.AvailableRooms as List<Room> ?? new List<Room>();
+	var selectedRoomTypeId = ViewBag.SelectedRoomTypeId as Guid?;
+	var startDate = ViewBag.StartDate as string ?? "";
+	var endDate = ViewBag.EndDate as string ?? "";
+	var roomIdsInCart = ViewBag.RoomIdsInCart as List<Guid> ?? new List<Guid>();
+	var startCart = ViewBag.StartCart is DateTime dtStart ? dtStart.ToString("yyyy-MM-dd") : "miss";
+	var endCart = ViewBag.EndCart is DateTime dtEnd ? dtEnd.ToString("yyyy-MM-dd") : "miss";
+}
+
+<!-- Form for selecting room type and stay duration -->
+<!-- This form submits the selected criteria to the AvailableRooms action -->
+<form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
+	<div class="row mb-4">
+		<div class="col-md-6">
+			<label class="form-label">Room Type</label>
+			<div class="d-flex flex-column gap-2">
+				<div class="form-check border rounded p-3 @(selectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
+					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(selectedRoomTypeId == Guid.Empty ? "checked" : "") />
+					<label class="form-check-label w-100" for="roomTypeAny">
+						-- Any --
+					</label>
+				</div>
+
+				@foreach (var type in Model)
+				{
+					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("C")} per night";
+					var isSelected = (type.Id == selectedRoomTypeId);
+					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
+						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
+						<label class="form-check-label w-100" for="roomType_@type.Id">
+							@label
+						</label>
+					</div>
+				}
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<label for="stayDuration" class="form-label">Stay Duration</label>
+			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder="Select stay duration" readonly />
+			<div id="stayDurationError" class="text-danger mt-1" style="display:none;">Please select a valid stay duration.</div>
+			<div id="staySummary" class="mt-2 text-muted"></div>
+			<input type="hidden" name="start" value="@startDate" />
+			<input type="hidden" name="end" value="@endDate" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
+</form>
+
+<!-- Current cart for dev/debug only -->
+<div>
+	(dev)Current cart: @string.Join(", ", (List<Guid>)ViewBag.RoomIdsInCart)
+
+	<p>Start: @startCart</p>
+	<p>End: @endCart</p>
+
+	<p> Number of rooms in cart: @roomIdsInCart.Count()</p>
+</div>
+
+<!-- Display available rooms based on the selected criteria -->
+@if (rooms.Any())
+{
+	<h4 class="mt-4">Available Rooms</h4>
+
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+		@foreach (var room in rooms)
+		{
+			bool isInCart = roomIdsInCart != null && roomIdsInCart.Contains(room.Id);
+			<div class="col">
+				<div class="card h-100">
+					<div class="card-body">
+						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<p class="card-text">@room.RoomType.Description</p>
+						<p>Type: <strong>@room.RoomType?.Name</strong></p>
+						<p>(dev)ID: <strong>@room.Id</strong></p>
+						<p>Capacity: <strong>@room.RoomType?.Capacity</strong></p>
+						<p>Price: <strong>@room.RoomType?.Price.ToString("C")</strong></p>
+
+						<form class="booking-cart-form" asp-controller="Bookings" asp-action="@(isInCart ? "RemoveFromBookingCart" : "AddToBookingCart")" method="post">
+							<input type="hidden" name="roomId" value="@room.Id" />
+							<input type="hidden" name="startDate" value="@ViewBag.StartDate" />
+							<input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+
+							<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success") w-100">
+								@(isInCart ? "Remove Room" : "Book Room")
+							</button>
+
+							@Html.AntiForgeryToken()
+						</form>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+}
+
+
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="~/js/utils.js"></script>
+	<script>
+		const staySummary = document.getElementById("staySummary");
+		const startInput = document.querySelector("input[name='start']");
+		const endInput = document.querySelector("input[name='end']");
+		const errorDiv = document.getElementById("stayDurationError");
+
+		function updateStaySummary(startStr, endStr) {
+			if (!startStr || !endStr) {
+				staySummary.style.display = "none";
+				return;
+			}
+
+			const start = new Date(startStr);
+			const end = new Date(endStr);
+
+			if (start >= end) {
+				staySummary.style.display = "none";
+				return;
+			}
+
+			const nights = getNights(start, end);
+			staySummary.innerHTML = `
+				Check-in: <strong>${formatDateDisplay(start)}</strong><br>
+				Check-out: <strong>${formatDateDisplay(end)}</strong><br>
+				Nights: <strong>${nights}</strong>
+			`;
+			staySummary.style.display = "block";
+		}
+
+		flatpickr("#stayDuration", {
+			mode: "range",
+			dateFormat: "Y-m-d",
+			altInput: true,
+			altFormat: "d.m.Y",
+			//minDate: "today", // allow past dates for testing
+			defaultDate: [
+				"@startDate",
+				"@endDate"
+			],
+			onClose: function (selectedDates) {
+				if (selectedDates.length === 2 && selectedDates[0] < selectedDates[1]) {
+					startInput.value = formatDateLocal(selectedDates[0]);
+					endInput.value = formatDateLocal(selectedDates[1]);
+					updateStaySummary(startInput.value, endInput.value);
+					errorDiv.style.display = "none";
+				} else {
+					startInput.value = "";
+					endInput.value = "";
+					staySummary.style.display = "none";
+				}
+			}
+		});
+
+		document.querySelector("form").addEventListener("submit", function (e) {
+			const start = startInput.value;
+			const end = endInput.value;
+
+			if (!start || !end) {
+				e.preventDefault();
+				errorDiv.style.display = "block";
+				staySummary.style.display = "none";
+			} else {
+				errorDiv.style.display = "none";
+			}
+		});
+
+		// Run summary update on initial page load
+		window.addEventListener("DOMContentLoaded", function () {
+			updateStaySummary(startInput.value, endInput.value);
+		});
+
+		// Add/remove room to booking
+		document.querySelectorAll(".booking-cart-form").forEach(form => {
+			form.addEventListener("submit", async function (e) {
+				e.preventDefault();
+
+				const formData = new FormData(form);
+				const actionUrl = form.getAttribute("action");
+
+				const data = {};
+				formData.forEach((value, key) => {
+					data[key] = value;
+				});
+
+				const response = await fetch(actionUrl, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
+					},
+					body: JSON.stringify(data)
+				});
+
+				if (response.ok) {
+					const result = await response.json();
+					if (result.success) {
+						//alert("Action successful!"); //todo maybe popup
+						// maybe update the button text/state here instead of reloading
+						location.reload();
+					} else {
+						alert("Action failed.");
+					}
+				} else {
+					const error = await response.text();
+					alert("Request failed: " + error);
+				}
+			});
+		});
+
+
+	</script>
+}
+
+
+

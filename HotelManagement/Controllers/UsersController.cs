@@ -2,10 +2,15 @@
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using HotelManagement.Models.Users;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace HotelManagement.Controllers
 {
+    /// <summary>
+    /// UsersController handles user registration, login, and profile management.
+    /// It uses ASP.NET Identity for user management and authentication.
+    /// </summary>
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -17,8 +22,22 @@ namespace HotelManagement.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Register() => View();
-        public IActionResult Login() => View();
+        public IActionResult Register()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(controllerName: "Rooms", actionName: "RoomsList");
+            }
+            return View();
+        }
+        public IActionResult Login()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(controllerName: "Rooms", actionName: "RoomsList");
+            }
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -58,6 +77,14 @@ namespace HotelManagement.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            return View(user);
         }
     }
 }

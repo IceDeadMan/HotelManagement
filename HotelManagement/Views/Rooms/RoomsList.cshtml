@@ -1,28 +1,38 @@
 ﻿@model IEnumerable<HotelManagement.Models.Room>
+<!-- Rooms List View -->
+<!-- This view displays a list of all rooms in a hotel. -->
+<!-- Will probably be used mainly for Hotel Manager to view, add and delete rooms. -->
 @{
 	ViewData["Title"] = "Rooms List";
 }
 
 <h3>Rooms List</h3>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Room Number</th>
-			<th>Room Type</th>
-			@*<th>Actions</th>*@
-		</tr>
-	</thead>
-	<tbody>
+
+<div class="container">
+	<div class="row row-cols-1 row-cols-md-3 g-4">
 		@foreach (var room in Model)
 		{
-			<tr>
-				<td>@room.RoomNumber</td>
-				<td>@room.Description</td>
-				@*<td>
-				 	<a asp-action="Edit" asp-route-id="@room.Id">Edit</a> |
-				 	<a asp-action="Delete" asp-route-id="@room.Id">Delete</a>
-				</td>*@
-			</tr>
+			var roomTypeName = room.RoomType?.Name ?? "";
+			var roomTypeDescription = room.RoomType?.Description ?? "";
+			var roomCapacity = room.RoomType?.Capacity ?? 0;
+
+			<div class="col">
+				<div class="card h-100 shadow-sm">
+					<div class="card-body">
+						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<p class="card-text">@room.Description</p>
+
+						<hr />
+						<p><strong>Type:</strong> @roomTypeName</p>
+						<p><strong>Description:</strong> @roomTypeDescription</p>
+						<p><strong>Capacity:</strong> @roomCapacity guests</p>
+					</div>
+					<div class="card-footer bg-transparent border-top-0">
+						<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
+					</div>
+				</div>
+			</div>
 		}
-	</tbody>
-</table>
+	</div>
+
+</div>
