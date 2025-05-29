@@ -51,14 +51,16 @@ namespace HotelManagement.Controllers
 		public async Task<IActionResult> StartBooking()
 		{
 			var cart = _bookingCartService.GetCart();
-			var roomIdsInCart = cart.RoomIds;
-			var startCart = cart.StartDate;
-			var endCart = cart.EndDate;
 			var roomTypes = await _roomTypeRepository.GetAllAsync();
-			ViewBag.RoomIdsInCart = roomIdsInCart;
-			ViewBag.StartCart = startCart;
-			ViewBag.EndCart = endCart;
-			return View(roomTypes);
+
+			var viewModel = new StartBookingViewModel
+			{
+				RoomTypes = roomTypes.ToList(),
+				SelectedRoomTypeId = Guid.Empty, // Default to no room type selected
+				Cart = cart
+			};
+
+			return View(viewModel);
 		}
 
 		/// <summary>
@@ -124,7 +126,13 @@ namespace HotelManagement.Controllers
 		{
 			var cart = _bookingCartService.GetCart();
 
-			var roomDetails = new List<(Room room, RoomType roomType)>();
+			var viewModel = new BookingCartViewModel
+			{
+				StartDate = cart.StartDate,
+				EndDate = cart.EndDate
+			};
+
+			viewModel.Nights = (cart.EndDate - cart.StartDate).Days;
 
 			foreach (var roomId in cart.RoomIds)
 			{
@@ -134,19 +142,25 @@ namespace HotelManagement.Controllers
 				var roomType = _roomTypeRepository.GetById(room.RoomTypeId);
 				if (roomType == null) continue;
 
-				roomDetails.Add((room, roomType));
+				var item = new BookingCartViewModel.RoomCartItem
+				{
+					RoomId = room.Id.ToString(),
+					RoomNumber = room.RoomNumber,
+					RoomTypeDescription = roomType.Description,
+					Capacity = roomType.Capacity,
+					PricePerNight = roomType.Price,
+					Subtotal = roomType.Price * viewModel.Nights
+				};
+
+				viewModel.RoomDetails.Add(item);
 			}
 
-			ViewBag.StartDate = cart.StartDate;
-			ViewBag.EndDate = cart.EndDate;
-			ViewBag.RoomDetails = roomDetails;
+			viewModel.TotalPrice = viewModel.RoomDetails.Sum(i => i.Subtotal);
 
-			int nights = (cart.EndDate - cart.StartDate).Days;
-			ViewBag.Nights = nights;
-			ViewBag.TotalPrice = roomDetails.Sum(r => r.roomType.Price * nights);
-
-			return View("BookingCart");
+			return View("BookingCart", viewModel);
 		}
+
+
 
 		/// <summary>
 		/// FinalizeBooking processes the booking by checking room availability and creating a booking record.
@@ -251,9 +265,8 @@ namespace HotelManagement.Controllers
 		/// <param name="roomId"> The ID of the room. </param>
 		/// <param name="bookingId"> The ID of the booking. </param>
 		/// <returns> A view with the room details, booking information, food orders, activity records, and user review. </returns>
-		[HttpPost]
+		[HttpGet]
 		[Authorize]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> BookingRoomDetails(Guid roomId, Guid bookingId)
 
 		{
@@ -290,68 +303,6 @@ namespace HotelManagement.Controllers
 			};
 
 			return View(model);
-		}
-
-		// todo these review actions are already in the ReviewsController, these should be deleted and fix calls
-		/// <summary>
-		/// AddRoomReview allows a user to submit a review for a room they have booked.
-		/// </summary>
-		/// <param name="RoomId"> The ID of the room being reviewed. </param>
-		/// <param name="Rating"> The rating given by the user (1-5). </param>
-		/// <param name="Comment"> The comment provided by the user. </param>
-		/// <returns> A redirect to the BookingRoomDetails view with a success message. </returns>
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		[Authorize]
-		public IActionResult AddRoomReview(Guid RoomId, int Rating, string Comment)
-		{
-			// Review actions are here for now, maybe create a separate ReviewsController later
-			// if we want to manage reviews separately and delete them, etc.
-			var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-			var review = new Review
-			{
-				Id = Guid.NewGuid(),
-				RoomId = RoomId,
-				ApplicationUserId = userId,
-				Rating = Rating,
-				Comment = Comment,
-				ReviewDate = DateTime.UtcNow
-			};
-
-			_reviewRepository.Create(review);
-
-			TempData["SuccessMessage"] = "Review submitted successfully.";
-
-			return Json(new { success = true, message = "Review submitted successfully." });
-		}
-
-		/// <summary>
-		/// EditRoomReview allows a user to edit their existing review for a room.
-		/// Each user can post only one review per room, so this updates the existing review.
-		/// </summary>
-		/// <param name="ReviewId"> The ID of the review being edited. </param>
-		/// <param name="Rating"> The new rating given by the user (1-5). </param>
-		/// <param name="Comment"> The new comment provided by the user. </param>
-		/// /// <returns> A redirect to the BookingRoomDetails view with a success message. </returns>
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		[Authorize]
-		public IActionResult EditRoomReview(Guid ReviewId, int Rating, string Comment)
-		{
-			var review = _reviewRepository.GetById(ReviewId);
-			if (review == null || review.ApplicationUserId != Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
-				return NotFound();
-
-			review.Rating = Rating;
-			review.Comment = Comment;
-			review.ReviewDate = DateTime.UtcNow;
-
-			_reviewRepository.Update(review);
-
-			TempData["SuccessMessage"] = "Review updated successfully.";
-
-			return Json(new { success = true, message = "Review updated successfully." });
 		}
 
 		/// <summary>
@@ -411,7 +362,7 @@ namespace HotelManagement.Controllers
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);
 			return RedirectToAction(nameof(Reception));
 		}
-		
+
 		/// <summary>
 		/// Delete removes a booking by its ID.
 		/// This action is restricted to authorized users with specific roles.
@@ -425,8 +376,40 @@ namespace HotelManagement.Controllers
 			_bookingRepository.Delete(id);
 			return RedirectToAction(nameof(Reception));
 		}
-
 		
+		/// <summary>
+		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
+		/// If filters out the rooms that are already booked during the selected dates.
+		/// /</summary>
+		/// <param name="start">The start date of the stay.</param>
+		/// <param name="end">The end date of the stay.</param>
+		/// <param name="roomTypeId">The ID of the selected room type.</param>
+		/// <returns> A view with available rooms based on the selected criteria. </returns>
+		public async Task<IActionResult> AvailableRooms(DateTime start, DateTime end, Guid roomTypeId)
+		{
+
+			var allRoomTypes = await _roomTypeRepository.GetAllAsync();
+			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
+			var cart = _bookingCartService.GetCart();
+
+			// this is not using the IsRoomAvailableAsync method since filtering the rooms in memory should be better for performance
+			var availableRooms = rooms
+				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
+							!r.Bookings.Any(b => b.StartDate < end && b.EndDate > start))
+				.ToList();
+			
+			var viewModel = new StartBookingViewModel
+			{
+				RoomTypes = allRoomTypes.ToList(),
+				SelectedRoomTypeId = roomTypeId,
+				StartDate = start.ToString("yyyy-MM-dd"),
+				EndDate = end.ToString("yyyy-MM-dd"),
+				Cart = cart,
+				AvailableRooms = availableRooms
+			};
+
+			return View("StartBooking", viewModel);
+		}
 	}
 }
 

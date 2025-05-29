@@ -2,6 +2,7 @@
 using HotelManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.ViewModels;
+using AutoMapper;
 
 namespace HotelManagement.Controllers
 {
@@ -15,20 +16,24 @@ namespace HotelManagement.Controllers
 		private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
+		private readonly IMapper _mapper;
 
-		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService)
-		{
-			_logger = logger;
-			_roomRepository = roomRepository;
-			_roomTypeRepository = roomTypeRepository;
-			_bookingCartService = bookingCartService;
-		}
+        public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository,
+								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
+								IMapper mapper)
+        {
+            _logger = logger;
+            _roomRepository = roomRepository;
+            _roomTypeRepository = roomTypeRepository;
+            _bookingCartService = bookingCartService;
+            _mapper = mapper;
+        }
 
-		/// <summary>
-		/// RoomsList displays a list of all rooms with their details.
-		/// </summary>
-		/// <returns> A view with all rooms and their details. </returns>
-		public async Task<IActionResult> RoomsList()
+        /// <summary>
+        /// RoomsList displays a list of all rooms with their details.
+        /// </summary>
+        /// <returns> A view with all rooms and their details. </returns>
+        public async Task<IActionResult> RoomsList()
 		{
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
 			return View(rooms);
@@ -38,69 +43,15 @@ namespace HotelManagement.Controllers
 		/// </summary>
 		public async Task<IActionResult> RoomDetails(Guid id)
 		{
-        var room = await _roomRepository.GetRoomWithDetailsAsync(id);
-        if (room == null)
-            return NotFound();
+			var room = await _roomRepository.GetRoomWithDetailsAsync(id);
+			if (room == null)
+				return NotFound();
 
-        var viewModel = new RoomDetailViewModel
-        {
-            RoomNumber = room.RoomNumber!,
-            Description = room.Description!,
-            RoomTypeName = room.RoomType?.Name ?? "",
-			RoomTypeDescription = room.RoomType?.Description ?? "",
-			RoomTypePrice = room.RoomType?.Price ?? 0,
-            RoomTypeCapacity = room.RoomType?.Capacity ?? 0,
-            Bookings = room.Bookings.Select(b => new BookingSummaryViewModel
-            {
-                GuestName = b.ApplicationUser?.UserName ?? "Unknown",
-                StartDate = b.StartDate,
-                EndDate = b.EndDate
-            }).ToList(),
-            Reviews = room.Reviews.Select(r => new ReviewViewModel
-            {
-                ReviewerUsername = r.ApplicationUser?.UserName ?? "Anonymous",
-                Rating = r.Rating,
-                Comment = r.Comment,
-                ReviewDate = r.ReviewDate
-            }).ToList()
-        };
+            var viewModel = _mapper.Map<RoomDetailViewModel>(room);
+            viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
+            viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
 
-        return View(viewModel);
-    }
-
-		/// <summary>
-		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
-		/// If filters out the rooms that are already booked during the selected dates.
-		/// /</summary>
-		/// <param name="start">The start date of the stay.</param>
-		/// <param name="end">The end date of the stay.</param>
-		/// <param name="roomTypeId">The ID of the selected room type.</param>
-		/// <returns> A view with available rooms based on the selected criteria. </returns>
-		public async Task<IActionResult> AvailableRooms(DateTime start, DateTime end, Guid roomTypeId)
-		{
-
-			var allRoomTypes = await _roomTypeRepository.GetAllAsync();
-			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
-			var cart = _bookingCartService.GetCart();
-			var roomIdsInCart = cart.RoomIds;
-			var startCart = cart.StartDate;
-			var endCart = cart.EndDate;
-
-			// this is not using the IsRoomAvailableAsync method since filtering the rooms in memory should be better for performance
-			var availableRooms = rooms
-				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
-							!r.Bookings.Any(b => b.StartDate < end && b.EndDate > start))
-				.ToList();
-
-			ViewBag.AvailableRooms = availableRooms;
-			ViewBag.StartDate = start.ToString("yyyy-MM-dd");
-			ViewBag.EndDate = end.ToString("yyyy-MM-dd");
-			ViewBag.SelectedRoomTypeId = roomTypeId;
-			ViewBag.AvailableRooms = availableRooms;
-			ViewBag.RoomIdsInCart = roomIdsInCart;
-			ViewBag.StartCart = startCart;
-			ViewBag.EndCart = endCart;
-			return View("~/Views/Bookings/StartBooking.cshtml", allRoomTypes);
+            return View(viewModel);
 		}
 	}
 }

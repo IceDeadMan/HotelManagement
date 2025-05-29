@@ -1,5 +1,6 @@
-﻿@model IEnumerable<HotelManagement.Models.RoomType>
+﻿@model StartBookingViewModel
 @using HotelManagement.Models
+@using HotelManagement.ViewModels;
 
 <!-- Start Booking View -->
 <!-- This view allows the user to select a room type and stay duration for booking. -->
@@ -8,33 +9,26 @@
 
 @{
 	ViewData["Title"] = "Create Booking";
-	var rooms = ViewBag.AvailableRooms as List<Room> ?? new List<Room>();
-	var selectedRoomTypeId = ViewBag.SelectedRoomTypeId as Guid?;
-	var startDate = ViewBag.StartDate as string ?? "";
-	var endDate = ViewBag.EndDate as string ?? "";
-	var roomIdsInCart = ViewBag.RoomIdsInCart as List<Guid> ?? new List<Guid>();
-	var startCart = ViewBag.StartCart is DateTime dtStart ? dtStart.ToString("yyyy-MM-dd") : "miss";
-	var endCart = ViewBag.EndCart is DateTime dtEnd ? dtEnd.ToString("yyyy-MM-dd") : "miss";
 }
 
 <!-- Form for selecting room type and stay duration -->
 <!-- This form submits the selected criteria to the AvailableRooms action -->
-<form method="get" asp-controller="Rooms" asp-action="AvailableRooms">
+<form method="get" asp-controller="Bookings" asp-action="AvailableRooms">
 	<div class="row mb-4">
 		<div class="col-md-6">
 			<label class="form-label">Room Type</label>
 			<div class="d-flex flex-column gap-2">
-				<div class="form-check border rounded p-3 @(selectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
-					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(selectedRoomTypeId == Guid.Empty ? "checked" : "") />
+				<div class="form-check border rounded p-3 @(Model.SelectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
+					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(Model.SelectedRoomTypeId == Guid.Empty ? "checked" : "") />
 					<label class="form-check-label w-100" for="roomTypeAny">
 						-- Any --
 					</label>
 				</div>
 
-				@foreach (var type in Model)
+				@foreach (var type in Model.RoomTypes)
 				{
 					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("C")} per night";
-					var isSelected = (type.Id == selectedRoomTypeId);
+					var isSelected = (type.Id == Model.SelectedRoomTypeId);
 					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
 						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
 						<label class="form-check-label w-100" for="roomType_@type.Id">
@@ -50,32 +44,32 @@
 			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder="Select stay duration" readonly />
 			<div id="stayDurationError" class="text-danger mt-1" style="display:none;">Please select a valid stay duration.</div>
 			<div id="staySummary" class="mt-2 text-muted"></div>
-			<input type="hidden" name="start" value="@startDate" />
-			<input type="hidden" name="end" value="@endDate" />
+			<input type="hidden" name="start" value="@Model.StartDate" />
+			<input type="hidden" name="end" value="@Model.EndDate" />
 		</div>
 	</div>
 	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
 </form>
 
 <!-- Current cart for dev/debug only -->
-<div>
-	(dev)Current cart: @string.Join(", ", (List<Guid>)ViewBag.RoomIdsInCart)
+ <div>
+	(dev)Current cart: @string.Join(", ", (List<Guid>)Model.Cart.RoomIds ?? new List<Guid>())
 
-	<p>Start: @startCart</p>
-	<p>End: @endCart</p>
+	<p>Start: @Model.Cart.StartDate</p>
+	<p>End: @Model.Cart.EndDate</p>
 
-	<p> Number of rooms in cart: @roomIdsInCart.Count()</p>
-</div>
+	<p> Number of rooms in cart: @Model.Cart.RoomIds.Count()</p>
+</div>  
 
 <!-- Display available rooms based on the selected criteria -->
-@if (rooms.Any())
+@if (Model.AvailableRooms.Any())
 {
 	<h4 class="mt-4">Available Rooms</h4>
 
 	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-		@foreach (var room in rooms)
+		@foreach (var room in Model.AvailableRooms)
 		{
-			bool isInCart = roomIdsInCart != null && roomIdsInCart.Contains(room.Id);
+			bool isInCart = Model.Cart.RoomIds != null && Model.Cart.RoomIds.Contains(room.Id);
 			<div class="col">
 				<div class="card h-100">
 					<div class="card-body">
@@ -88,8 +82,8 @@
 
 						<form class="booking-cart-form" asp-controller="Bookings" asp-action="@(isInCart ? "RemoveFromBookingCart" : "AddToBookingCart")" method="post">
 							<input type="hidden" name="roomId" value="@room.Id" />
-							<input type="hidden" name="startDate" value="@ViewBag.StartDate" />
-							<input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+							<input type="hidden" name="startDate" value="@Model.StartDate" />
+							<input type="hidden" name="endDate" value="@Model.EndDate" />
 
 							<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success") w-100">
 								@(isInCart ? "Remove Room" : "Book Room")
@@ -144,8 +138,8 @@
 			altFormat: "d.m.Y",
 			//minDate: "today", // allow past dates for testing
 			defaultDate: [
-				"@startDate",
-				"@endDate"
+				"@Model.StartDate",
+				"@Model.EndDate"
 			],
 			onClose: function (selectedDates) {
 				if (selectedDates.length === 2 && selectedDates[0] < selectedDates[1]) {
@@ -216,8 +210,6 @@
 				}
 			});
 		});
-
-
 	</script>
 }
 

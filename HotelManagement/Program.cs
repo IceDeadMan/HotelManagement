@@ -1,4 +1,5 @@
 using HotelManagement.DAL.Repositories;
+using HotelManagement.MapperProfiles;
 using HotelManagement.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ namespace HotelManagement
 			builder.Services.AddScoped<BookingCartService>();
 			builder.Services.AddSession();
 
+            builder.Services.AddAutoMapper(typeof(FoodOrderMapperProfile).Assembly);
 
 			AddRepositories(builder.Services);
 
