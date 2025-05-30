@@ -1,4 +1,6 @@
-﻿namespace HotelManagement.Models
+﻿using HotelManagement.Models.JoinEntities;
+
+namespace HotelManagement.Models
 {
     /// <summary>
     /// Represents an event in the hotel management system.
@@ -12,6 +14,10 @@
         public DateTime Date { get; set; }
         public int Capacity { get; set; }
 
-        public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+        // Staff members
+        public ICollection<ApplicationUser> StaffMembers { get; set; } = new List<ApplicationUser>();
+
+        // Registered guests
+        public ICollection<EventRegistration> Registrations { get; set; } = new List<EventRegistration>();
     }
 }

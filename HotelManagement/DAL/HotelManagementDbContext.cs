@@ -23,6 +23,7 @@ namespace HotelManagement.DAL
         public DbSet<Event> Events { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<FoodOrderFood> FoodOrderFoods { get; set; }
+        public DbSet<EventRegistration> EventRegistrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,17 +67,30 @@ namespace HotelManagement.DAL
                     });
 
             modelBuilder.Entity<Event>()
-                .HasMany(e => e.Users)
-                .WithMany(u => u.Events)
+                .HasMany(e => e.StaffMembers)
+                .WithMany(u => u.AssignedEvents)
                 .UsingEntity<Dictionary<string, object>>(
-                    "EventUsers",
-                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UsersId"),
-                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventsId"),
+                    "EventStaff",
+                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
+                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventId"),
                     je =>
                     {
-                        je.HasKey("UsersId", "EventsId");
-                        je.ToTable("EventUsers");
+                        je.HasKey("UserId", "EventId");
+                        je.ToTable("EventStaff");
                     });
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasKey(er => new { er.EventId, er.UserId });
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(er => er.Event)
+                .WithMany(e => e.Registrations)
+                .HasForeignKey(er => er.EventId);
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(er => er.User)
+                .WithMany(u => u.EventRegistrations)
+                .HasForeignKey(er => er.UserId);
 
 
 
