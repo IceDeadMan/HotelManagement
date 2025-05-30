@@ -47,3 +47,11 @@ body {
     /*color: #1c7226!important;*/
     text-shadow: 0 0 6px rgb(139, 252, 153);
 }
+
+.disabled-btn {
+    pointer-events: none;
+    opacity: 1;
+    color: #6c757d !important;       /* Force gray text */
+    border-color: #6c757d !important; /* Force gray border */
+    background-color: transparent !important;
+}

@@ -310,7 +310,7 @@ namespace HotelManagement.Controllers
 		/// It includes today's bookings, ongoing bookings, bookings before check-in, and past or cancelled bookings.
 		/// </summary>
 		/// <returns> A view with categorized booking summaries for the reception desk. </returns>
-		[Authorize(Roles = "Manager,Staff,Receptionist")]
+		[Authorize(Roles = "Manager,Receptionist")]
 		public async Task<IActionResult> Reception()
 		{
 			var allBookings = await _bookingRepository.GetBookingSummariesAsync();
@@ -356,7 +356,7 @@ namespace HotelManagement.Controllers
 		/// Should be used by receptionist to chek in or check out guests or to cancel bookings.
 		/// </summary>
 		[HttpPost]
-		[Authorize(Roles = "Manager,Staff,Receptionist")]//maybe remove staff
+		[Authorize(Roles = "Manager,Receptionist")]//maybe remove staff
 		public async Task<IActionResult> ChangeStatus(Guid id, BookingStatus newStatus)
 		{
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);
@@ -369,13 +369,13 @@ namespace HotelManagement.Controllers
 		/// </summary>
 		/// <param name="id"> The ID of the booking to be deleted. </param>
 		/// <returns> A redirect to the reception view after deletion. </returns>
-		[HttpPost]
-		[Authorize(Roles = "Manager,Staff,Receptionist")]
-		public IActionResult Delete(Guid id)
-		{
-			_bookingRepository.Delete(id);
-			return RedirectToAction(nameof(Reception));
-		}
+		// [HttpPost]
+		// [Authorize(Roles = "Manager,Receptionist")]
+		// public IActionResult Delete(Guid id)
+		// {
+		// 	_bookingRepository.Delete(id);
+		// 	return RedirectToAction(nameof(Reception));
+		// }
 		
 		/// <summary>
 		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.

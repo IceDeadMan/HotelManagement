@@ -54,14 +54,20 @@
                         }
 
                         <!-- Role-Based Buttons -->
-                        @if (User.IsInRole("Manager") || User.IsInRole("Staff") || User.IsInRole("Receptionist"))
+                        @if (User.IsInRole("Manager") || User.IsInRole("Receptionist"))
                         {
                             <li class="nav-item me-3">
                                 <a class="nav-link nav-role" asp-controller="Bookings" asp-action="Reception">Reception</a>
                             </li>
+                        }
+                        @if (User.IsInRole("Manager") || User.IsInRole("KitchenStaff"))
+                        {
                             <li class="nav-item me-3">
                                 <a class="nav-link nav-role" asp-controller="FoodOrders" asp-action="FoodOrdersList">Food Orders</a>
                             </li>
+                        }
+                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+                        {
                             <li class="nav-item me-3">
                                 <a class="nav-link nav-role" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">Service Activities</a>
                             </li>
