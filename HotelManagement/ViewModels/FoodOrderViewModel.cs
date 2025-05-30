@@ -14,5 +14,6 @@ public class FoodOrderViewModel
     public OrderStatus Status { get; set; }
     public string? GuestName { get; set; }
     public string? RoomNumber { get; set; }
+    public bool IsAvailable { get; set; }
     public List<string> Foods { get; set; } = new();
 }

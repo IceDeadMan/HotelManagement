@@ -77,5 +77,15 @@ namespace Tests.RepositoryTests
             Assert.Null(foodItem);
         }
 
+        [Fact]
+        public void UpdateStatus_UpdatesAvailability()
+        {
+            var foodId = Guid.Parse("a9063d88-88c6-40db-a7e9-868afeb45811");
+            _foodRepository.UpdateStatus(foodId, false);
+            var updatedFood = _foodRepository.GetById(foodId);
+            Assert.NotNull(updatedFood);
+            Assert.False(updatedFood.IsAvailable);
+        }
+
     }
 }
