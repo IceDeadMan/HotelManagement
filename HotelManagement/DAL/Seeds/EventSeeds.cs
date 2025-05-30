@@ -1,4 +1,5 @@
 ﻿using HotelManagement.Models;
+using HotelManagement.Models.JoinEntities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
@@ -28,9 +29,17 @@ namespace HotelManagement.DAL.Seeds
             );
 
             // Add users to event
-            modelBuilder.Entity("EventUsers").HasData(
-                new { EventsId = Event1.Id, UsersId = UserSeeds.User1.Id },
-                new { EventsId = Event1.Id, UsersId = UserSeeds.User2.Id }
+            modelBuilder.Entity<EventRegistration>().HasData(
+                new
+                {
+                    EventId = Event1.Id,
+                    UserId = UserSeeds.User1.Id,
+                    NumberOfParticipants = 2
+                }
+            );
+
+            modelBuilder.Entity("EventStaff").HasData(
+                new { EventId = Event1.Id, UserId = UserSeeds.User3.Id }
             );
         }
     }
