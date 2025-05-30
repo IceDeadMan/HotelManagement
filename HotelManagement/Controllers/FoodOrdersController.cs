@@ -35,12 +35,13 @@ namespace HotelManagement.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Manager,KitchenStaff")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(Guid id, OrderStatus status)
         {
             await _foodOrderRepository.UpdateStatusAsync(id, status);
-            return RedirectToAction("FoodOrdersList");
+            return Json(new { success = true, message = "Status updated successfully." });
         }
 
         [HttpPost]
