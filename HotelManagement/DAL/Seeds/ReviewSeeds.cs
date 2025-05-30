@@ -45,9 +45,59 @@ namespace HotelManagement.DAL.Seeds
             ReviewDate = DateTime.Now
         };
 
+        public static readonly Review Review5 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7295"),
+            ApplicationUserId = UserSeeds.User6.Id,
+            RoomId = RoomSeeds.Room3.Id,
+            Rating = 10,
+            Comment = "Absolutely loved the view and comfort!",
+            ReviewDate = DateTime.Now
+        };
+
+        public static readonly Review Review6 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7296"),
+            ApplicationUserId = UserSeeds.User7.Id,
+            RoomId = RoomSeeds.Room4.Id,
+            Rating = 6,
+            Comment = "Room was okay, but a bit noisy.",
+            ReviewDate = DateTime.Now
+        };
+
+        public static readonly Review Review7 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7297"),
+            ApplicationUserId = UserSeeds.User6.Id,
+            FoodId = FoodSeeds.Food3.Id,
+            Rating = 9,
+            Comment = "Loved the creamy Alfredo sauce!",
+            ReviewDate = DateTime.Now
+        };
+
+        public static readonly Review Review8 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7298"),
+            ApplicationUserId = UserSeeds.User7.Id,
+            FoodId = FoodSeeds.Food4.Id,
+            Rating = 7,
+            Comment = "Tasty salad, but could use more dressing.",
+            ReviewDate = DateTime.Now
+        };
+
+        public static readonly Review Review9 = new Review
+        {
+            Id = Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7299"),
+            ApplicationUserId = UserSeeds.User7.Id,
+            FoodId = FoodSeeds.Food5.Id,
+            Rating = 4,
+            Comment = "Fries were soggy and under-seasoned.",
+            ReviewDate = DateTime.Now
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Review>().HasData(Review1, Review2, Review3, Review4);
+            modelBuilder.Entity<Review>().HasData(Review1, Review2, Review3, Review4, Review5, Review6, Review7, Review8, Review9);
         }
     }
 }
