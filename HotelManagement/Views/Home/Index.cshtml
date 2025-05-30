@@ -1,4 +1,7 @@
-﻿<!-- Home View -->
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!-- Home View -->
 <!-- This is the home page of the hotel management application.
  -->
 @{
@@ -6,7 +9,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to our Hotel Management App</h1>
+    <h1 class="display-4">@Localizer["Welcome"] to our Hotel Management App</h1>
     <p>We offer a wide range of services to make your stay comfortable and enjoyable.</p>
 	<a class="btn btn-primary" asp-area="" asp-controller="Rooms" asp-action="RoomsList">Our Rooms</a>
     <p>To book a stay in our hotel, please <a href="/Users/Login">log in</a> or <a href="/Users/Register">register</a>.</p>

@@ -2,6 +2,9 @@ using HotelManagement.DAL.Repositories;
 using HotelManagement.MapperProfiles;
 using HotelManagement.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace HotelManagement
 {
@@ -12,7 +15,22 @@ namespace HotelManagement
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("sk")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedUICultures = supportedCultures;
+            });
 
             builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -28,6 +46,8 @@ namespace HotelManagement
 			AddRepositories(builder.Services);
 
             var app = builder.Build();
+
+            app.UseRequestLocalization();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

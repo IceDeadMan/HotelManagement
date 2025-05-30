@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Localization    
+
+<!DOCTYPE html>
 <!-- _Layout.cshtml -->
 <!-- This is the main layout file for the HotelManagement application. -->
 <!-- It includes the footer, and navigation bar. -->
@@ -87,6 +90,19 @@
                                 <a class="btn btn-outline-secondary" asp-area="" asp-controller="Users" asp-action="Register">Register</a>
                             </li>
                         }
+                        <li>
+                            <form id="selectLanguage" method="post" asp-controller="Home" asp-action="SetLanguage" class="language-selector">
+                                @{
+                                    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+                                    var currentUICulture = requestCultureFeature?.RequestCulture.UICulture.Name ?? "en";
+                                }
+                                <select name="culture" onchange="this.form.submit()">
+                                    <option value="en" selected="@(currentUICulture == "en" ? "selected" : null)">English</option>
+                                    <option value="sk" selected="@(currentUICulture == "sk" ? "selected" : null)">Slovak</option>
+                                </select>
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>
