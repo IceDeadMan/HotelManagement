@@ -36,7 +36,7 @@ namespace HotelManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager,KitchenStaff")]
         public async Task<IActionResult> UpdateStatus(Guid id, OrderStatus status)
         {
             await _foodOrderRepository.UpdateStatusAsync(id, status);
