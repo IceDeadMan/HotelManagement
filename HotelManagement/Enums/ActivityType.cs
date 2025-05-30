@@ -3,6 +3,7 @@
     public enum ActivityType
     {
         Cleaning,
-        Maintenance
+        Maintenance,
+        Other
     }
 }
