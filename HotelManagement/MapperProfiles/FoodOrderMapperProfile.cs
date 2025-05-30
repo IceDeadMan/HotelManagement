@@ -14,7 +14,9 @@ namespace HotelManagement.MapperProfiles
                 .ForMember(dest => dest.RoomNumber,
                            opt => opt.MapFrom(src => src.Room != null ? src.Room.RoomNumber : null))
                 .ForMember(dest => dest.Foods,
-                           opt => opt.MapFrom(src => src.Foods.Select(f => f.Name).ToList()));
+                           opt => opt.MapFrom(src => src.FoodOrderFoods
+                               .Select(fof => $"{fof.Food!.Name} x{fof.Quantity}")
+                               .ToList()));
         }
     }
 }

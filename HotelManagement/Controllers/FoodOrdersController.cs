@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.Models;
 using AutoMapper;
+using HotelManagement.Models.JoinEntities;
 
 namespace HotelManagement.Controllers
 {
@@ -63,7 +64,13 @@ namespace HotelManagement.Controllers
                 Description = model.Description,
                 OrderDate = DateTime.Now,
                 Status = OrderStatus.Pending,
-                Foods = foodItems.ToList()
+                FoodOrderFoods = model.SelectedFoodIds
+                    .GroupBy(id => id)
+                    .Select(group => new FoodOrderFood
+                    {
+                        FoodId = group.Key,
+                        Quantity = group.Count() // If multiple selections represent quantity
+                    }).ToList()
             };
 
             _foodOrderRepository.Create(order);

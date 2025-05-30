@@ -1,4 +1,6 @@
-﻿namespace HotelManagement.Models
+﻿using HotelManagement.Models.JoinEntities;
+
+namespace HotelManagement.Models
 {
     /// <summary>
     /// Represents an food item in the hotel management system.
@@ -11,7 +13,7 @@
         public decimal Price { get; set; }
         public string? Description { get; set; }
 
-        public ICollection<FoodOrder> FoodOrders { get; set; } = new List<FoodOrder>();
+        public ICollection<FoodOrderFood> FoodOrderFoods { get; set; } = new List<FoodOrderFood>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

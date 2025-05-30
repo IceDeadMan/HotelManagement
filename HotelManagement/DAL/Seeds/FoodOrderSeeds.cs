@@ -1,6 +1,7 @@
 ﻿using HotelManagement.Models;
 using HotelManagement.Enums;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.Models.JoinEntities;
 
 namespace HotelManagement.DAL.Seeds
 {
@@ -31,10 +32,25 @@ namespace HotelManagement.DAL.Seeds
             modelBuilder.Entity<FoodOrder>().HasData(FoodOrder1, FoodOrder2);
 
             // Seed the join table between food orders and foods
-            modelBuilder.Entity("FoodOrderFoods").HasData(
-                new { FoodOrdersId = FoodOrder1.Id, FoodsId = FoodSeeds.Food1.Id },
-                new { FoodOrdersId = FoodOrder1.Id, FoodsId = FoodSeeds.Food2.Id },
-                new { FoodOrdersId = FoodOrder2.Id, FoodsId = FoodSeeds.Food3.Id }
+            modelBuilder.Entity<FoodOrderFood>().HasData(
+                new FoodOrderFood
+                {
+                    FoodOrderId = FoodOrder1.Id,
+                    FoodId = FoodSeeds.Food1.Id,
+                    Quantity = 2
+                },
+                new FoodOrderFood
+                {
+                    FoodOrderId = FoodOrder1.Id,
+                    FoodId = FoodSeeds.Food2.Id,
+                    Quantity = 1
+                },
+                new FoodOrderFood
+                {
+                    FoodOrderId = FoodOrder2.Id,
+                    FoodId = FoodSeeds.Food3.Id,
+                    Quantity = 3
+                }
             );
         }
     }

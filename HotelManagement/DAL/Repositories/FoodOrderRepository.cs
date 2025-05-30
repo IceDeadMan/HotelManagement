@@ -19,7 +19,8 @@ namespace HotelManagement.DAL.Repositories
             return await _context.FoodOrders
                 .Include(o => o.ApplicationUser)
                 .Include(o => o.Room)
-                .Include(o => o.Foods)
+                .Include(o => o.FoodOrderFoods)
+                    .ThenInclude(fof => fof.Food)
                 .ToListAsync();
         }
 
