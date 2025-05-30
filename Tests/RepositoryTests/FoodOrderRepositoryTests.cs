@@ -4,6 +4,7 @@ using HotelManagement.Models;
 using HotelManagement.Enums;
 using Tests.TestUtilities;
 using HotelManagement.DAL.Seeds;
+using HotelManagement.Models.JoinEntities;
 
 namespace Tests.RepositoryTests
 {
@@ -50,13 +51,27 @@ namespace Tests.RepositoryTests
                 Status = OrderStatus.Pending,
                 ApplicationUserId = UserSeeds.User1.Id,
                 RoomId = RoomSeeds.Room1.Id,
-                Foods = new List<Food> { foodItem }
+                FoodOrderFoods = new List<FoodOrderFood>
+        {
+            new FoodOrderFood
+            {
+                FoodId = foodItem.Id,
+                Quantity = 1
+            }
+        }
             };
+
             var newFoodOrderId = _foodOrderRepository.Create(newFoodOrder);
             var createdFoodOrder = _foodOrderRepository.GetById(newFoodOrderId);
 
             Assert.NotNull(createdFoodOrder);
             Assert.Equal(OrderStatus.Pending, createdFoodOrder.Status);
+
+            // Also assert the join entity was saved properly
+            Assert.NotNull(createdFoodOrder.FoodOrderFoods);
+            Assert.Single(createdFoodOrder.FoodOrderFoods);
+            Assert.Equal(foodItem.Id, createdFoodOrder.FoodOrderFoods.First().FoodId);
+            Assert.Equal(1, createdFoodOrder.FoodOrderFoods.First().Quantity);
         }
 
         [Fact]
