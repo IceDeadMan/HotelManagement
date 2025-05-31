@@ -1,5 +1,6 @@
 ﻿using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.Enums;
 
 namespace HotelManagement.DAL.Repositories
 {
@@ -85,7 +86,7 @@ namespace HotelManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Retrieves a list of rooms that are currently booked by a specific user.
+        /// Retrieves a list of rooms that are currently booked (Confirmed status) by a specific user.
         /// </summary>
         /// <param name="userId">The ID of the user to check for booked rooms.</param>
         /// <param name="currentDate">The current date to check for bookings.</param>
@@ -97,7 +98,8 @@ namespace HotelManagement.DAL.Repositories
                 .Where(r => r.Bookings.Any(b =>
                     b.ApplicationUserId == userId &&
                     b.StartDate <= currentDate &&
-                    b.EndDate >= currentDate))
+                    b.EndDate >= currentDate &&
+                    b.Status == BookingStatus.Confirmed)) // Only include confirmed bookings
                 .ToListAsync();
         }
     }

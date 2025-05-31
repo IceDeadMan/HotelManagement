@@ -321,7 +321,7 @@ namespace HotelManagement.Controllers
 				TodaysBookings = allBookings
 					.Where(b =>
 						(b.StartDate.Date == today && b.Status == BookingStatus.Pending) ||
-						(b.EndDate.Date == today && (b.Status == BookingStatus.Confirmed || b.Status == BookingStatus.Pending)))// or Pending for now
+						(b.EndDate.Date == today && (b.Status == BookingStatus.Confirmed)))// or Pending for now
 					.ToList(),
 
 				OngoingBookings = allBookings
@@ -335,15 +335,14 @@ namespace HotelManagement.Controllers
 
 				BeforeCheckIn = allBookings
 					.Where(b =>
-						(b.Status == BookingStatus.Pending || b.Status == BookingStatus.Confirmed) &&// or confirmed for now
+						(b.Status == BookingStatus.Pending) &&
 						b.StartDate.Date > today)
 					.ToList(),
 
 				PastOrCancelledBookings = allBookings
 					.Where(b =>
 						b.Status == BookingStatus.Completed ||
-						b.Status == BookingStatus.Cancelled ||
-						(b.EndDate.Date == today && b.Status == BookingStatus.Completed)) // Checked out today
+						b.Status == BookingStatus.Cancelled )
 					.ToList()
 			};
 
