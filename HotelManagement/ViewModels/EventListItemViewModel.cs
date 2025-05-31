@@ -13,9 +13,6 @@ public class EventListItemViewModel
     public int TotalRegisteredParticipants { get; set; }
     public bool IsUserRegistered { get; set; }
 
-    public List<ApplicationUser> AssignedStaff { get; set; } = new();
-    public List<EventRegistration> Registrations { get; set; } = new(); // Optional
-
     // For modals
-    public List<ApplicationUser> AllAssignableStaff { get; set; } = new(); // For dropdown
+    public List<ApplicationUser> AllAssignableStaff { get; set; } = new(); 
 }

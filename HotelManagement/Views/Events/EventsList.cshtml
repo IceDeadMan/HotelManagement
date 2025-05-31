@@ -1,6 +1,7 @@
 ﻿@model HotelManagement.ViewModels.EventListViewModel
 @using Microsoft.AspNetCore.Identity
 @using HotelManagement.Models
+@inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 
 <!-- Event List View -->
@@ -9,6 +10,7 @@
 @{
     ViewData["Title"] = "Events List";
     var isAdmin = Model.IsManager;
+    var isStaff = User.IsInRole("Staff");
     var currentUserId = Model.CurrentUserId;
 }
 
@@ -73,7 +75,7 @@
                         <p><strong>Date:</strong> @eventItem.Event.Date.ToString("dd/MM/yyyy")</p>
                         <p><strong>Time:</strong> @eventItem.Event.Date.ToString("HH:mm")</p>
                         <p><strong>Free spots:</strong> @(@eventItem.Event.Capacity - eventItem.TotalRegisteredParticipants) / @eventItem.Event.Capacity</p>
-                        @if (isAdmin && eventItem.Event.StaffMembers != null && eventItem.Event.StaffMembers.Any())
+                        @if ((isAdmin || isStaff) && eventItem.Event.StaffMembers != null && eventItem.Event.StaffMembers.Any())
                         {
                             <p><strong>Assigned Staff:</strong></p>
                             <ul>

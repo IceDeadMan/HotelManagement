@@ -31,13 +31,12 @@
                         </div>
                     </form>
 
-                    @* Now list the assigned staff OUTSIDE the Assign form *@
-                    @if (Model.AssignedStaff != null && Model.AssignedStaff.Any())
+                    @if (Model.Event.StaffMembers != null && Model.Event.StaffMembers.Any())
                     {
                         <hr />
                         <p><strong>Already Assigned:</strong></p>
                         <ul class="list-group">
-                            @foreach (var assigned in Model.AssignedStaff)
+                            @foreach (var assigned in Model.Event.StaffMembers)
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     @assigned.UserName

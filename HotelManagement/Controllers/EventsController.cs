@@ -46,9 +46,7 @@ namespace HotelManagement.Controllers
                     Event = e,
                     TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 99,
                     IsUserRegistered = e.Registrations.Any(r => r.UserId == currentUserId),
-                    AssignedStaff = e.StaffMembers.ToList(),
-                    Registrations = e.Registrations.ToList(),
-                    AllAssignableStaff = isManager ? _userManager.GetUsersInRoleAsync("Staff").Result.ToList() : new()
+                    AllAssignableStaff = isManager ? _userManager.GetUsersInRoleAsync("Staff").Result.ToList() : new List<ApplicationUser>(),
                 }).ToList()
             };
 
@@ -106,7 +104,13 @@ namespace HotelManagement.Controllers
             return RedirectToAction("EventsList");
         }
 
-
+        /// <summary>
+        /// RegisterToEvent allows users to register for an event.
+        /// It takes the event ID and the number of participants as parameters.
+        /// If the event has enough capacity and the user is not already registered, it registers the user.
+        /// </summary>
+        [HttpPost]
+        [Authorize]
         public IActionResult RegisterToEvent(Guid eventId, int numberOfParticipants)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -135,6 +139,12 @@ namespace HotelManagement.Controllers
             return RedirectToAction("EventsList");
         }
 
+        /// <summary>
+        /// UnregisterFromEvent allows users to unregister from an event.
+        /// It takes the event ID as a parameter and removes the user's registration if they are registered.
+        /// </summary>
+        [HttpPost]
+        [Authorize]
         public IActionResult UnregisterFromEvent(Guid eventId)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -156,7 +166,14 @@ namespace HotelManagement.Controllers
             return RedirectToAction("EventsList");
         }
 
+
+        /// <summary>
+        /// AssignStaffToEvent allows managers to assign staff members to an event.
+        /// It takes the event ID and the staff user ID as parameters.
+        /// If the event exists, it assigns the staff member to the event.
+        /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public IActionResult AssignStaffToEvent(Guid eventId, Guid staffUserId)
         {
             var eventItem = _eventRepository.GetByIdWithDetails(eventId);
@@ -170,7 +187,13 @@ namespace HotelManagement.Controllers
             return RedirectToAction("EventsList");
         }
 
+        /// <summary>
+        /// UnassignStaffFromEvent allows managers to unassign staff members from an event.
+        /// It takes the event ID and the staff user ID as parameters.
+        /// If the event exists, it unassigns the staff member from the event.
+        /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public IActionResult UnassignStaffFromEvent(Guid eventId, Guid staffUserId)
         {
             var eventItem = _eventRepository.GetByIdWithDetails(eventId);
