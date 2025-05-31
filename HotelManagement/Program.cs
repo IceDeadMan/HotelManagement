@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using Serilog;
+using HotelManagement.Logging;
 
 namespace HotelManagement
 {
@@ -14,6 +16,22 @@ namespace HotelManagement
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(
+                    "Logging/all-log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Logger(l => l
+                    .Filter.ByIncludingOnly(logEvent =>
+                        logEvent.Properties.ContainsKey("SourceContext") &&
+                        logEvent.Properties["SourceContext"].ToString().Contains("AuditLogger"))
+                    .WriteTo.File(
+                        "Logging/user-actions-.txt", rollingInterval: RollingInterval.Day))
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
+            builder.Services.AddSingleton<AuditLogger>();
 
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);

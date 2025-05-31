@@ -3,6 +3,7 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using HotelManagement.Models.Users;
 using Microsoft.AspNetCore.Authorization;
+using HotelManagement.Logging;
 
 
 namespace HotelManagement.Controllers
@@ -15,11 +16,14 @@ namespace HotelManagement.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly AuditLogger _auditLogger;
 
-        public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+                               AuditLogger auditLogger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _auditLogger = auditLogger;
         }
 
         public IActionResult Register()
@@ -67,7 +71,10 @@ namespace HotelManagement.Controllers
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
 
             if (result.Succeeded)
+            {
+                _auditLogger.Log("Login", $"User {model.Username} logged in successfully.");
                 return RedirectToAction("RoomsList", "Rooms");
+            }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
