@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using HotelManagement.ViewModels;
+
 
 
 namespace HotelManagement.Controllers
@@ -14,11 +18,13 @@ namespace HotelManagement.Controllers
     {
         private readonly ILogger<EventsController> _logger;
         private readonly EventRepository _eventRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EventsController(ILogger<EventsController> logger, EventRepository eventRepository)
+        public EventsController(ILogger<EventsController> logger, EventRepository eventRepository, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _eventRepository = eventRepository;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -26,8 +32,27 @@ namespace HotelManagement.Controllers
         /// </summary>
         public async Task<IActionResult> EventsList()
         {
-            var events = await _eventRepository.GetAllAsync();
-            return View(events);
+            var currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var events = await _eventRepository.GetAllWithDetailsAsync();
+            var isManager = User.IsInRole("Manager");
+
+            var viewModel = new EventListViewModel
+            {
+                CurrentUserId = currentUserId.ToString(),
+                IsManager = isManager,
+                Events = events.Select(e => new EventListItemViewModel
+                {
+                    Event = e,
+                    TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 99,
+                    IsUserRegistered = e.Registrations.Any(r => r.UserId == currentUserId),
+                    AssignedStaff = e.StaffMembers.ToList(),
+                    Registrations = e.Registrations.ToList(),
+                    AllAssignableStaff = isManager ? _userManager.GetUsersInRoleAsync("Staff").Result.ToList() : new()
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         /// <summary>
@@ -41,7 +66,7 @@ namespace HotelManagement.Controllers
         /// <param name="Capacity">The capacity of the event.</param>
         /// <returns>Redirects to the EventsList view after creating the event.</returns>
         [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager")]
         public IActionResult CreateEvent(string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
         {
             var fullDateTime = DatePart.Date + TimePart;
@@ -66,7 +91,7 @@ namespace HotelManagement.Controllers
         /// <param name="id">The ID of the event to delete.</param>
         /// <returns>Redirects to the EventsList view after deleting the event.</returns>
         [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager")]
         public IActionResult DeleteEvent(Guid id)
         {
             if (_eventRepository.Exists(id))
@@ -75,9 +100,87 @@ namespace HotelManagement.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "Event not found.");
+                TempData["Error"] = "Event not found.";
             }
 
+            return RedirectToAction("EventsList");
+        }
+
+
+        public IActionResult RegisterToEvent(Guid eventId, int numberOfParticipants)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var eventItem = _eventRepository.GetByIdWithDetails(eventId);
+
+            if (eventItem == null)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("EventsList");
+            }
+
+            if (eventItem.Capacity < numberOfParticipants)
+            {
+                TempData["Error"] = "Not enough capacity for the selected number of participants.";
+                return RedirectToAction("EventsList");
+            }
+
+            if (_eventRepository.IsUserRegisteredToEvent(eventId, userId))
+            {
+                TempData["Error"] = "You are already registered for this event.";
+                return RedirectToAction("EventsList");
+            }
+
+            _eventRepository.RegisterUserToEvent(eventId, userId, numberOfParticipants);
+            TempData["Success"] = "You have successfully registered for the event.";
+            return RedirectToAction("EventsList");
+        }
+
+        public IActionResult UnregisterFromEvent(Guid eventId)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var eventItem = _eventRepository.GetByIdWithDetails(eventId);
+
+            if (eventItem == null)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("EventsList");
+            }
+
+            if (!_eventRepository.IsUserRegisteredToEvent(eventId, userId))
+            {
+                TempData["Error"] = "You are not registered for this event.";
+                return RedirectToAction("EventsList");
+            }
+
+            _eventRepository.UnregisterUserFromEvent(eventId, userId);
+            return RedirectToAction("EventsList");
+        }
+
+        [HttpPost]
+        public IActionResult AssignStaffToEvent(Guid eventId, Guid staffUserId)
+        {
+            var eventItem = _eventRepository.GetByIdWithDetails(eventId);
+            if (eventItem == null)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("EventsList");
+            }
+
+            _eventRepository.AssignStaffToEvent(eventId, staffUserId);
+            return RedirectToAction("EventsList");
+        }
+
+        [HttpPost]
+        public IActionResult UnassignStaffFromEvent(Guid eventId, Guid staffUserId)
+        {
+            var eventItem = _eventRepository.GetByIdWithDetails(eventId);
+            if (eventItem == null)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction("EventsList");
+            }
+
+            _eventRepository.UnassignStaffFromEvent(eventId, staffUserId);
             return RedirectToAction("EventsList");
         }
 

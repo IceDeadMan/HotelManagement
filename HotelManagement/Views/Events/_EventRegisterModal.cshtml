@@ -1,0 +1,25 @@
+﻿@model HotelManagement.ViewModels.EventListItemViewModel
+
+<div class="modal fade" id="registerModal-@Model.Event.Id" tabindex="-1" aria-labelledby="registerModalLabel-@Model.Event.Id" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="RegisterToEvent" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel-@Model.Event.Id">Register for @Model.Event.Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                    <div class="mb-3">
+                        <label for="numberOfParticipants" class="form-label">Number of Attendees (including you):</label>
+                        <input type="number" name="numberOfParticipants" class="form-control" min="1" max="@(Model.Event.Capacity - Model.TotalRegisteredParticipants)" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
