@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 
 namespace HotelManagement
 {
@@ -14,7 +15,6 @@ namespace HotelManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
@@ -29,7 +29,10 @@ namespace HotelManagement
                 };
 
                 options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
+
+                options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
             });
 
             builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
@@ -47,7 +50,8 @@ namespace HotelManagement
 
             var app = builder.Build();
 
-            app.UseRequestLocalization();
+            var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
