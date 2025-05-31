@@ -356,7 +356,7 @@ namespace HotelManagement.Controllers
 		/// Should be used by receptionist to chek in or check out guests or to cancel bookings.
 		/// </summary>
 		[HttpPost]
-		[Authorize(Roles = "Manager,Receptionist")]//maybe remove staff
+		[Authorize] // removed Receprionist and Manager role check because users can cancel their own bookings
 		public async Task<IActionResult> ChangeStatus(Guid id, BookingStatus newStatus)
 		{
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);

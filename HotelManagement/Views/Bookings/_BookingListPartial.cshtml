@@ -53,27 +53,28 @@
                         <button type="submit" name="newStatus" value="Confirmed" class="btn btn-success btn-sm">Check In</button>
                     }
 
-                    @* Check-Out: Only if today is EndDate and status is Confirmed (or Pending for now) *@
-                    @if ((booking.Status == BookingStatus.Confirmed || booking.Status == BookingStatus.Pending) && booking.EndDate.Date == DateTime.Today)
+                    @* Check-Out: Only if today is EndDate and status is Confirmed *@
+                    @if ((booking.Status == BookingStatus.Confirmed) && booking.EndDate.Date == DateTime.Today)
                     {
                         <button type="submit" name="newStatus" value="Completed" class="btn btn-primary btn-sm">Check Out</button>
                     }
 
-                    @* Cancel: Always show if not already cancelled or completed *@
-                    @if (booking.Status != BookingStatus.Completed && booking.Status != BookingStatus.Cancelled)
+                    @* Cancel: Allow cancel if booking is in pending state*@
+                    @if (booking.Status == BookingStatus.Pending)
                     {
                         <button type="submit" name="newStatus" value="Cancelled" class="btn btn-danger btn-sm">Cancel</button>
                     }
                 </form>
 
+                @* Deletion of booking is not possible*@
                 @* Delete: Only for past/cancelled bookings *@
-                @if (booking.Status == BookingStatus.Completed || booking.Status == BookingStatus.Cancelled)
+                @* @if (booking.Status == BookingStatus.Completed || booking.Status == BookingStatus.Cancelled)
                 {
                     <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this booking?');">
                         <input type="hidden" name="id" value="@booking.Id" />
                         <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
                     </form>
-                }
+                } *@
             </td>
         </tr>
     }

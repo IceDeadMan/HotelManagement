@@ -40,6 +40,7 @@ namespace HotelManagement
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
+                // todo add region for example sk-SK and en-US
                 var supportedCultures = new[]
                 {
                     new CultureInfo("en"),
