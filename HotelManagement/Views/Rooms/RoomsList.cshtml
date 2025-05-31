@@ -1,4 +1,6 @@
-﻿@model IEnumerable<HotelManagement.Models.Room>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<HotelManagement.Models.Room>
 <!-- Rooms List View -->
 <!-- This view displays a list of all rooms in a hotel. -->
 <!-- Will probably be used mainly for Hotel Manager to view, add and delete rooms. -->
@@ -6,7 +8,7 @@
 	ViewData["Title"] = "Rooms List";
 }
 
-<h3>Rooms List</h3>
+<h3>@Localizer["RoomsList"]</h3>
 
 <div class="container">
 	<div class="row row-cols-1 row-cols-md-3 g-4">

@@ -2,6 +2,12 @@ using HotelManagement.DAL.Repositories;
 using HotelManagement.MapperProfiles;
 using HotelManagement.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
+using Serilog;
+using HotelManagement.Logging;
 
 namespace HotelManagement
 {
@@ -11,8 +17,41 @@ namespace HotelManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(
+                    "Logging/all-log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Logger(l => l
+                    .Filter.ByIncludingOnly(logEvent =>
+                        logEvent.Properties.ContainsKey("SourceContext") &&
+                        logEvent.Properties["SourceContext"].ToString().Contains("AuditLogger"))
+                    .WriteTo.File(
+                        "Logging/user-actions-.txt", rollingInterval: RollingInterval.Day))
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
+            builder.Services.AddSingleton<AuditLogger>();
+
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("sk")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+
+                options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+            });
 
             builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -28,6 +67,9 @@ namespace HotelManagement
 			AddRepositories(builder.Services);
 
             var app = builder.Build();
+
+            var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
