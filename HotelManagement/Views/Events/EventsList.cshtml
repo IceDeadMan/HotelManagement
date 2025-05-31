@@ -1,6 +1,6 @@
-﻿@model List<HotelManagement.Models.Event>
+﻿@model HotelManagement.ViewModels.EventListViewModel
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> UserManager
+@using HotelManagement.Models
 @inject SignInManager<ApplicationUser> SignInManager
 
 <!-- Event List View -->
@@ -8,10 +8,23 @@
 <!-- Users can attend events. -->
 @{
     ViewData["Title"] = "Events List";
-    var isAdmin = User.IsInRole("Manager") || User.IsInRole("Staff");
+    var isAdmin = Model.IsManager;
+    var currentUserId = Model.CurrentUserId;
 }
 
 <h3>Events List</h3>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
 
 <div class="container">
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -49,29 +62,73 @@
         }
 
         @* --- Existing Events --- *@
-        @foreach (var eventItem in Model)
+        @foreach (var eventItem in Model.Events)
         {
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">@eventItem.Name</h5>
-                        <p class="card-text">@eventItem.Description</p>
+                        <h5 class="card-title">@eventItem.Event.Name</h5>
+                        <p class="card-text">@eventItem.Event.Description</p>
                         <hr />
-                        <p><strong>Date:</strong> @eventItem.Date.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Time:</strong> @eventItem.Date.ToString("HH:mm")</p>
-                        <p><strong>Capacity:</strong> @eventItem.Capacity guests</p>
+                        <p><strong>Date:</strong> @eventItem.Event.Date.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Time:</strong> @eventItem.Event.Date.ToString("HH:mm")</p>
+                        <p><strong>Free spots:</strong> @(@eventItem.Event.Capacity - eventItem.TotalRegisteredParticipants) / @eventItem.Event.Capacity</p>
+                        @if (isAdmin && eventItem.Event.StaffMembers != null && eventItem.Event.StaffMembers.Any())
+                        {
+                            <p><strong>Assigned Staff:</strong></p>
+                            <ul>
+                                @foreach (var staff in eventItem.Event.StaffMembers)
+                                {
+                                    <li>@staff.UserName</li>
+                                }
+                            </ul>
+                        }
                     </div>
                     <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
-                        <a asp-action="EventAttend" asp-route-id="@eventItem.Id" class="btn btn-primary">Attend(not implemented)</a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            
+                            @if (eventItem.IsUserRegistered)
+                            {
+                                <form asp-action="UnregisterFromEvent" method="post" class="d-inline">
+                                    <input type="hidden" name="eventId" value="@eventItem.Event.Id" />
+                                    <button type="submit" class="btn btn-warning">Cancel Attendance</button>
+                                </form>
+                            }
+                            else if (eventItem.TotalRegisteredParticipants < eventItem.Event.Capacity)
+                            {
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal-@eventItem.Event.Id">Attend</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" disabled>Full</button>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Login to register</span>
+                        }
                         @if (isAdmin)
                         {
-                            <form asp-action="DeleteEvent" asp-route-id="@eventItem.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                            <button class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#assignStaffModal-@eventItem.Event.Id">Assign Staff</button>
+                        }
+                        @if (isAdmin)
+                        {
+                            <form asp-action="DeleteEvent" asp-route-id="@eventItem.Event.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this event?');">
                                 <button type="submit" class="btn btn-outline-danger">Delete</button>
                             </form>
                         }
                     </div>
                 </div>
             </div>
+        }
+        @foreach (var eventItem in Model.Events)
+        {
+            @await Html.PartialAsync("_EventRegisterModal", eventItem)
+            @if (isAdmin)
+            {
+                @await Html.PartialAsync("_AssignStaffModal", eventItem)
+            }
         }
     </div>
 </div>
