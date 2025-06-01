@@ -80,9 +80,10 @@ namespace HotelManagement.Controllers
 			{
 				_roomRepository.Create(room);
                 _auditLogger.Log("CreateRoom", $"Room {room.Id} created successfully.");
-                return RedirectToAction("RoomsList");
+				TempData["Success"] = "Room created successfully.";
+				return RedirectToAction("RoomsList");
 			}
-
+			TempData["Error"] = "Failed to create room.";
 			_auditLogger.Log("CreateRoom", "Room creation failed due to invalid model state.");
             return RedirectToAction("RoomsList");
 		}
@@ -100,7 +101,12 @@ namespace HotelManagement.Controllers
 			{
 				_roomRepository.Delete(id);
                 _auditLogger.Log("DeleteRoom", $"Room {id} deleted successfully.");
-            }
+				TempData["Success"] = "Room deleted successfully.";
+			}
+			else
+			{
+				TempData["Error"] = "Room not found.";
+			}
 			return RedirectToAction("RoomsList");
 		}
 	}

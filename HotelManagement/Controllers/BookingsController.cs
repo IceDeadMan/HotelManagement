@@ -216,7 +216,6 @@ namespace HotelManagement.Controllers
 			_bookingCartService.ClearCart();
 			_auditLogger.Log("FinalizeBooking", "Booking successfully finalized.");
 
-			TempData["Success"] = "Booking finalized successfully!";
 			return View("BookingConfirmation", booking);
 		}
 

@@ -48,7 +48,7 @@ namespace HotelManagement.Controllers
 
             _reviewRepository.Create(review);
 
-            TempData["SuccessMessage"] = "Review submitted successfully.";
+            TempData["Success"] = "Review submitted successfully.";
 
             return Json(new { success = true, message = "Review submitted successfully." });
         }
@@ -76,7 +76,7 @@ namespace HotelManagement.Controllers
 
             _reviewRepository.Update(review);
 
-            TempData["SuccessMessage"] = "Review updated successfully.";
+            TempData["Success"] = "Review updated successfully.";
 
             return Json(new { success = true, message = "Review updated successfully." });
         }
@@ -109,7 +109,7 @@ namespace HotelManagement.Controllers
 
             _reviewRepository.Create(review);
 
-            TempData["SuccessMessage"] = "Review submitted successfully.";
+            TempData["Success"] = "Review submitted successfully.";
 
             return Json(new { success = true, message = "Review submitted successfully." });
         }
@@ -137,7 +137,7 @@ namespace HotelManagement.Controllers
 
             _reviewRepository.Update(review);
 
-            TempData["SuccessMessage"] = "Review updated successfully.";
+            TempData["Success"] = "Review updated successfully.";
 
             return Json(new { success = true, message = "Review updated successfully." });
         }
@@ -175,7 +175,7 @@ namespace HotelManagement.Controllers
                 // Create new review
                 _reviewRepository.Create(review);
             }
-            TempData["SuccessMessage"] = "Review submitted successfully.";
+            TempData["Success"] = "Review submitted successfully.";
             return RedirectToAction(controllerName: "Foods", actionName: "FoodMenu");
         }
     }

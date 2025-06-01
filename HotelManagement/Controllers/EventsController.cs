@@ -81,6 +81,7 @@ namespace HotelManagement.Controllers
             _eventRepository.Create(newEvent);
             _auditLogger.Log("CreateEvent", $"Event '{Name}' created by successfully.");
 
+            TempData["Success"] = "Event created successfully.";
             return RedirectToAction("EventsList");
         }
 
@@ -104,6 +105,7 @@ namespace HotelManagement.Controllers
                 TempData["Error"] = "Event not found.";
             }
 
+            TempData["Success"] = "Event deleted successfully.";
             return RedirectToAction("EventsList");
         }
 

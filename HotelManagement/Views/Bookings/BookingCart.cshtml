@@ -19,14 +19,6 @@
     return;
 }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-        @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=@Localizer["Close"]></button>
-    </div>
-}
-
 <h2>@Localizer["BookingSummary"]</h2>
 <p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToShortDateString()</strong></p>
 <p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToShortDateString()</strong></p>

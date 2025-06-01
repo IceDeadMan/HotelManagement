@@ -11,14 +11,6 @@
     var nights = (Model.Booking.EndDate - Model.Booking.StartDate).Days;
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-
 <h2>@Localizer["Room"] @Model.Room.RoomNumber</h2>
 <p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights nights)</p>
 <p><strong>@Localizer["RoomType"]:</strong> @Model.Room.RoomType?.Name, @Model.Room.RoomType?.Description</p>

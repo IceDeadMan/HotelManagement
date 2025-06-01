@@ -55,8 +55,8 @@ namespace HotelManagement.Controllers
             };
 
             _activityRecordRepository.Create(activity);
+            TempData["Success"] = "Service requested successfully.";
             _auditLogger.Log("CreateActivityRecord", $"Activity for room {roomId} successfully created.");
-            TempData["SuccessMessage"] = "Service requested successfully.";
 
             return Json(new { success = true, message = "Service requested successfully." });
 

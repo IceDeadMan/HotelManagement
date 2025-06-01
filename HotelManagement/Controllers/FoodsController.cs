@@ -55,6 +55,7 @@ namespace HotelManagement.Controllers
             };
 
             _foodRepository.Create(newFood);
+            TempData["Success"] = "Food item created successfully.";
             _auditLogger.Log("CreateFood", $"New food {Name} created successfully.");
 
             return RedirectToAction("FoodMenu");
@@ -74,6 +75,11 @@ namespace HotelManagement.Controllers
             {
                 _foodRepository.Delete(id);
                 _auditLogger.Log("DeleteFood", $"Food with ID {id} deleted successfully.");
+                TempData["Success"] = "Food item deleted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Food item not found.";
             }
             return RedirectToAction("FoodMenu");
         }
