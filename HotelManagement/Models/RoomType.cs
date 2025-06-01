@@ -12,6 +12,8 @@
         public int Capacity { get; set; }
         public decimal Price { get; set; }
 
+        public byte[]? Photo { get; set; }
+
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
     }
 }

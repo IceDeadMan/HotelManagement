@@ -361,4 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/HotelManagement/Logging/all-log-20250601.txt
+
+# Log files
+/HotelManagement/Logging/*.txt
