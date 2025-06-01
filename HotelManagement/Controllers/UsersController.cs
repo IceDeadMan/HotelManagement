@@ -53,10 +53,12 @@ namespace HotelManagement.Controllers
 
             if (result.Succeeded)
             {
+                _auditLogger.Log("Register", $"User {model.Username} registered successfully.");
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("RoomsList", "Rooms");
             }
 
+            _auditLogger.Log("Register", "User registration failed.");
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
 
@@ -76,6 +78,7 @@ namespace HotelManagement.Controllers
                 return RedirectToAction("RoomsList", "Rooms");
             }
 
+            _auditLogger.Log("Login", "Unsuccessful login attempt.");
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
         }
@@ -83,6 +86,7 @@ namespace HotelManagement.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            _auditLogger.Log("Logout", "User logged out.");
             return RedirectToAction("Login");
         }
         [Authorize]
@@ -91,6 +95,7 @@ namespace HotelManagement.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
+            _auditLogger.Log("ProfileView", $"User {user.UserName} accessed their profile.");
             return View(user);
         }
     }

@@ -117,46 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Home" xml:space="preserve">
-    <value>Domov</value>
+  <data name="Password2" xml:space="preserve">
+    <value>Heslo</value>
   </data>
-  <data name="HotelManagement" xml:space="preserve">
-    <value>Správa Hotelu</value>
-  </data>
-  <data name="Rooms" xml:space="preserve">
-    <value>Izby</value>
-  </data>
-  <data name="Events" xml:space="preserve">
-    <value>Akcie</value>
-  </data>
-  <data name="FoodMenu" xml:space="preserve">
-    <value>Ponuka Jedál</value>
-  </data>
-  <data name="BookRoom" xml:space="preserve">
-    <value>Zarezervovať Izbu</value>
-  </data>
-  <data name="MyBookings" xml:space="preserve">
-    <value>Moje Rezervácie</value>
-  </data>
-  <data name="Reception" xml:space="preserve">
-    <value>Recepcia</value>
-  </data>
-  <data name="FoodOrders" xml:space="preserve">
-    <value>Objednávky Jedál</value>
-  </data>
-  <data name="ServiceActivities" xml:space="preserve">
-    <value>Servisné Aktivity</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profil</value>
-  </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Odhlásiť sa</value>
-  </data>
-  <data name="Login" xml:space="preserve">
-    <value>Prihlásiť sa</value>
-  </data>
-  <data name="Register" xml:space="preserve">
+  <data name="Register3" xml:space="preserve">
     <value>Registrovať sa</value>
+  </data>
+  <data name="Username2" xml:space="preserve">
+    <value>Užívateľské heslo</value>
   </data>
 </root>

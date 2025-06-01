@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HotelManagement</title>
+    <title>@ViewData["Title"] - @Localizer["HotelManagement"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<!--Fails/its probably not needed v-->
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
@@ -33,27 +33,27 @@
                     <ul class="navbar-nav">
                         <!-- Public Buttons -->
                         <li class="nav-item me-3">
-                            <a class="nav-link nav-public" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link nav-public" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link nav-public" asp-controller="Rooms" asp-action="RoomsList">Rooms</a>
+                            <a class="nav-link nav-public" asp-controller="Rooms" asp-action="RoomsList">@Localizer["RoomsList"]</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link nav-public" asp-controller="Events" asp-action="EventsList">Events</a>
+                            <a class="nav-link nav-public" asp-controller="Events" asp-action="EventsList">@Localizer["Events"]</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link nav-public" asp-controller="Foods" asp-action="FoodMenu">Food Menu</a>
+                            <a class="nav-link nav-public" asp-controller="Foods" asp-action="FoodMenu">@Localizer["FoodMenu"]</a>
                         </li>
 
                         <!-- Authenticated Buttons -->
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="StartBooking">Book a Room</a>
+                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="StartBooking">@Localizer["BookRoom"]</a>
                             </li>
                             @await Component.InvokeAsync("BookingCartNav")
                             <li class="nav-item me-3">
-                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="MyBookings">My Bookings</a>
+                                <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="MyBookings">@Localizer["MyBookings"]</a>
                             </li>
                         }
 
@@ -61,19 +61,19 @@
                         @if (User.IsInRole("Manager") || User.IsInRole("Receptionist"))
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link nav-role" asp-controller="Bookings" asp-action="Reception">Reception</a>
+                                <a class="nav-link nav-role" asp-controller="Bookings" asp-action="Reception">@Localizer["Reception"]</a>
                             </li>
                         }
                         @if (User.IsInRole("Manager") || User.IsInRole("KitchenStaff"))
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link nav-role" asp-controller="FoodOrders" asp-action="FoodOrdersList">Food Orders</a>
+                                <a class="nav-link nav-role" asp-controller="FoodOrders" asp-action="FoodOrdersList">@Localizer["FoodOrders"]</a>
                             </li>
                         }
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link nav-role" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">Service Activities</a>
+                                <a class="nav-link nav-role" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">@Localizer["ServiceActivities"]</a>
                             </li>
                         }
                     </ul>
@@ -85,16 +85,16 @@
                                 <a class="btn btn-outline-primary" asp-area="" asp-controller="Users" asp-action="Profile">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-danger" asp-area="" asp-controller="Users" asp-action="Logout">Logout</a>
+                                <a class="btn btn-outline-danger" asp-area="" asp-controller="Users" asp-action="Logout">@Localizer["Logout"]</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item me-2">
-                                <a class="btn btn-outline-success" asp-area="" asp-controller="Users" asp-action="Login">Login</a>
+                                <a class="btn btn-outline-success" asp-area="" asp-controller="Users" asp-action="Login">@Localizer["Login"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-secondary" asp-area="" asp-controller="Users" asp-action="Register">Register</a>
+                                <a class="btn btn-outline-secondary" asp-area="" asp-controller="Users" asp-action="Register">@Localizer["Register"]</a>
                             </li>
                         }
                         <li>

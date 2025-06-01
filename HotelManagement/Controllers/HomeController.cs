@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using HotelManagement.Logging;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@ namespace HotelManagement.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly AuditLogger _auditLogger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(AuditLogger auditLogger)
         {
-            _logger = logger;
+            _auditLogger = auditLogger;
         }
 
         public IActionResult Index()
@@ -32,6 +33,7 @@ namespace HotelManagement.Controllers
         {
             if (!string.IsNullOrEmpty(culture))
             {
+                _auditLogger.Log("SetLanguage", $"Language changed to {culture}.");
                 Response.Cookies.Append(
                     CookieRequestCultureProvider.DefaultCookieName,
                     CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
