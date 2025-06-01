@@ -29,6 +29,10 @@ body {
     transition: text-shadow 0.2s ease;
 }
 
+.navbar .nav-link {
+    white-space: nowrap;
+}
+
 /* Public buttons */
 .nav-link.nav-public {
     color: #0b0b0b!important;
