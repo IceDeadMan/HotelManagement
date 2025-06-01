@@ -117,49 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RoomsList" xml:space="preserve">
-    <value>Rooms List</value>
+  <data name="BackToList" xml:space="preserve">
+    <value>Naspät do Zoznamu</value>
   </data>
-  <data name="CreateNewRoom" xml:space="preserve">
-    <value>Create New Room</value>
+  <data name="BookingFrom" xml:space="preserve">
+    <value>Od</value>
   </data>
-  <data name="RoomNumber" xml:space="preserve">
-    <value>Room Number</value>
+  <data name="BookingGuest" xml:space="preserve">
+    <value>Hosť</value>
   </data>
-  <data name="RoomDesc" xml:space="preserve">
-    <value>Description</value>
+  <data name="BookingsForRoom" xml:space="preserve">
+    <value>Rezervácie</value>
   </data>
-  <data name="RoomType" xml:space="preserve">
-    <value>Room Type</value>
+  <data name="BookingTo" xml:space="preserve">
+    <value>Do</value>
   </data>
-  <data name="AddRoom" xml:space="preserve">
-    <value>Add Room</value>
+  <data name="PriceDetail" xml:space="preserve">
+    <value>Cena</value>
   </data>
-  <data name="Room" xml:space="preserve">
-    <value>Room</value>
+  <data name="RoomCalendar" xml:space="preserve">
+    <value>Kalendár</value>
   </data>
-  <data name="Type" xml:space="preserve">
-    <value>Type</value>
+  <data name="RoomCapacityDetail" xml:space="preserve">
+    <value>Kapacita</value>
   </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
+  <data name="RoomDescriptionDetail" xml:space="preserve">
+    <value>Popis</value>
   </data>
-  <data name="Capacity" xml:space="preserve">
-    <value>Capacity</value>
+  <data name="RoomDetails" xml:space="preserve">
+    <value>Detaily Izby</value>
   </data>
-  <data name="ViewDetails" xml:space="preserve">
-    <value>View Details</value>
+  <data name="RoomNoBooking" xml:space="preserve">
+    <value>Zatiaľ žiadne rezervácie na túto izbu.</value>
   </data>
-  <data name="DeleteRoom" xml:space="preserve">
-    <value>Delete</value>
+  <data name="RoomNoReviews" xml:space="preserve">
+    <value>Zatiaľ žiadne rezencie na túto izbu.</value>
   </data>
-  <data name="DeleteRoomText" xml:space="preserve">
-    <value>Are you sure you want to delete this room?</value>
+  <data name="RoomReviews" xml:space="preserve">
+    <value>Recenzie Hosťov</value>
   </data>
-  <data name="SelectType" xml:space="preserve">
-    <value>Select</value>
+  <data name="RoomTypeDescription" xml:space="preserve">
+    <value>Popis Typu Izby</value>
   </data>
-  <data name="Guests" xml:space="preserve">
-    <value>guests</value>
+  <data name="RoomTypeDetail" xml:space="preserve">
+    <value>Typ Izby</value>
   </data>
 </root>

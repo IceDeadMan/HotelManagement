@@ -7,7 +7,7 @@
 <!-- This view displays a list of all rooms in a hotel. -->
 <!-- Managers can create new rooms and delete existing ones. -->
 @{
-	ViewData["Title"] = "Rooms List";
+	ViewData["Title"] = Localizer["RoomsList"];
 }
 
 <h3>@Localizer["RoomsList"]</h3>
@@ -21,27 +21,27 @@
 			<div class="col">
 				<div class="card h-100 border-success shadow-sm">
 					<div class="card-body">
-						<h5 class="card-title text-success">Create New Room</h5>
+						<h5 class="card-title text-success">@Localizer["CreateNewRoom"]</h5>
 						<form asp-action="Create" method="post">
 							<div class="mb-2">
-								<label for="RoomNumber" class="form-label">Room Number</label>
+								<label for="RoomNumber" class="form-label">@Localizer["RoomNumber"]</label>
 								<input type="text" name="RoomNumber" class="form-control" required />
 							</div>
 							<div class="mb-2">
-								<label for="Description" class="form-label">Description</label>
+								<label for="Description" class="form-label">@Localizer["RoomDesc"]</label>
 								<textarea name="Description" class="form-control" rows="2"></textarea>
 							</div>
 							<div class="mb-3">
-								<label for="RoomTypeId" class="form-label">Room Type</label>
+								<label for="RoomTypeId" class="form-label">@Localizer["RoomType"]</label>
 								<select name="RoomTypeId" class="form-select" required>
-									<option value="">-- Select --</option>
+									<option value="">-- @Localizer["SelectType"] --</option>
 									@foreach (var type in Model.RoomTypes)
 									{
-										<option value="@type.Id">@type.Name (@type.Capacity guests)</option>
+										<option value="@type.Id">@type.Name (@type.Capacity @Localizer["Guests"])</option>
 									}
 								</select>
 							</div>
-							<button type="submit" class="btn btn-success w-100">Add Room</button>
+							<button type="submit" class="btn btn-success w-100">@Localizer["AddRoom"]</button>
 						</form>
 					</div>
 				</div>
@@ -57,23 +57,23 @@
 			<div class="col">
 				<div class="card h-100 shadow-sm">
 					<div class="card-body">
-						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<h5 class="card-title">@Localizer["Room"] @room.RoomNumber</h5>
 						<p class="card-text">@room.Description</p>
 
 						<hr />
-						<p><strong>Type:</strong> @roomTypeName</p>
-						<p><strong>Description:</strong> @roomTypeDescription</p>
-						<p><strong>Capacity:</strong> @roomCapacity guests</p>
+						<p><strong>@Localizer["Type"]:</strong> @roomTypeName</p>
+						<p><strong>@Localizer["Description"]:</strong> @roomTypeDescription</p>
+						<p><strong>@Localizer["Capacity"]:</strong> @roomCapacity @Localizer["Guests"]</p>
 					</div>
 					<div class="card-footer bg-transparent border-top-0">
 						<div class="d-flex justify-content-between gap-2">
-							<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
+							<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">@Localizer["ViewDetails"]</a>
 
 							@if (User.IsInRole("Manager"))
 							{
-								<form asp-action="Delete" asp-route-id="@room.Id" method="post" 
-									onsubmit="return confirm('Are you sure you want to delete this room?');" class="w-100">
-									<button type="submit" class="btn btn-danger w-100">Delete</button>
+								<form asp-action="Delete" asp-route-id="@room.Id" method="post"
+									  onsubmit="return confirm(@Localizer["DeleteRoomText"]);" class="w-100">
+									<button type="submit" class="btn btn-danger w-100">@Localizer["DeleteRoom"]</button>
 								</form>
 							}
 						</div>
