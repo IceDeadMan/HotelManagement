@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelManagement.Controllers
 {
     /// <summary>
-    /// HomeController handles the main page and privacy policy of the hotel management system.
+    /// HomeController handles the main page of the hotel management system.
     /// </summary>
     public class HomeController : Controller
     {
@@ -19,11 +19,6 @@ namespace HotelManagement.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
