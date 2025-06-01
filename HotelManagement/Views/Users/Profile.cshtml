@@ -7,12 +7,28 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-3">My Profile (Placeholder)</h2>
+    <h2 class="mb-3">My Profile</h2>
     <div class="card shadow-sm">
         <div class="card-body">
             <p><strong>Username:</strong> @Model.UserName</p>
             <p><strong>Email:</strong> @Model.Email</p>
-            <!-- Add more fields here later like Phone, Name, etc. -->
+            <p><strong>You are: </strong>
+                @if (User.IsInRole("Manager"))
+                {
+                    <span class="badge bg-primary">Manager</span>
+                }
+                else if (User.IsInRole("Receptionist"))
+                {
+                    <span class="badge bg-secondary">Receptionist</span>
+                }
+                else if (User.IsInRole("KitchenStaff"))
+                {
+                    <span class="badge bg-success">Kitchen Staff</span>
+                }
+                else
+                {
+                    <span class="badge bg-info">Guest</span>
+                }
         </div>
     </div>
 </div>

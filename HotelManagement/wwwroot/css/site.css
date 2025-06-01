@@ -102,6 +102,14 @@ body {
     color: #007bff; /* blue */
     font-weight: bold;
 }
+.status-planned {
+    color: #007bff; /* blue */
+    font-weight: bold;
+}
+.status-inprogress {
+    color: #28a745; /* green */
+    font-weight: bold;
+}
 .status-confirmed {
     color: #28a745; /* green */
     font-weight: bold;
@@ -123,3 +131,136 @@ body {
     padding: 2px 6px;
     display: inline-block;
 }
+
+/* Status button styling */
+.status-btn {
+    min-width: 100px; /* or a size that fits your longest label in bold */
+}
+.status-btn-pending {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+.status-btn-planned {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+.status-btn-inprogress {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: bold;
+}
+
+.status-btn-confirmed {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: bold;
+}
+
+.status-btn-completed {
+    color: #fff;
+    background-color: #006400;
+    border-color: #006400;
+    font-weight: bold;
+}
+
+.status-btn-cancelled {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+    font-weight: bold;
+}
+
+/* Outline versions (for inactive states) */
+.status-btn-outline-pending {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: transparent;
+}
+.status-btn-outline-planned {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: transparent;
+}
+.status-btn-outline-inprogress {
+    color: #28a745;
+    border-color: #28a745;
+    background-color: transparent;
+}
+
+.status-btn-outline-confirmed {
+    color: #28a745;
+    border-color: #28a745;
+    background-color: transparent;
+}
+
+.status-btn-outline-completed {
+    color: #006400;
+    border-color: #006400;
+    background-color: transparent;
+}
+
+.status-btn-outline-cancelled {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: transparent;
+}
+
+.status-btn-pending:hover,
+.status-btn-inprogress:hover,
+.status-btn-planned:hover,
+.status-btn-confirmed:hover,
+.status-btn-completed:hover,
+.status-btn-cancelled:hover {
+    color: #fff;
+    border-color: inherit;
+}
+
+/* Outline versions retain their intended text color */
+.status-btn-outline-pending:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.status-btn-outline-planned:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.status-btn-outline-inprogress:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.status-btn-outline-confirmed:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.status-btn-outline-completed:hover {
+    color: #fff;
+    background-color: #006400;
+    border-color: #006400;
+}
+
+.status-btn-outline-cancelled:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.status-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+

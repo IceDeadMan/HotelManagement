@@ -44,17 +44,17 @@
                         <div class="d-flex flex-column gap-1 order-status-group" data-id="@order.Id">
                             @foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
                             {
-                                var statusStr = status.ToString();
+                                var statusStr = status.ToString().ToLower(); // lowercase for CSS
                                 var isChecked = status == order.Status;
                                 var btnClass = isChecked
-                                    ? "btn btn-sm btn-primary rounded-pill w-100"
-                                    : "btn btn-sm btn-outline-secondary rounded-pill w-100";
+                                    ? $"btn btn-sm rounded-pill w-100 status-btn-{statusStr}"
+                                    : $"btn btn-sm rounded-pill w-100 status-btn-outline-{statusStr}";
 
                                 <button type="button"
                                         class="@btnClass status-btn"
                                         data-status="@statusStr"
                                         data-current="@(isChecked.ToString().ToLower())">
-                                    @statusStr
+                                    @status
                                 </button>
                             }
                         </div>
@@ -87,15 +87,25 @@
                 });
 
                 if (response.ok) {
-                    // Update button styling
-                    const buttons = this.closest('.order-status-group').querySelectorAll('.status-btn');
+                    const group = this.closest('.order-status-group');
+                    const buttons = group.querySelectorAll('.status-btn');
+
                     buttons.forEach(btn => {
-                        btn.classList.remove('btn-primary');
-                        btn.classList.add('btn-outline-secondary');
+                        const status = btn.dataset.status.toLowerCase();
+
+                        // Remove both filled and outline classes
+                        btn.classList.remove(`status-btn-${status}`);
+                        btn.classList.remove(`status-btn-outline-${status}`);
+
+                        // Apply outline style to all
+                        btn.classList.add(`status-btn-outline-${status}`);
                     });
 
-                    this.classList.remove('btn-outline-secondary');
-                    this.classList.add('btn-primary');
+                    const currentStatus = this.dataset.status.toLowerCase();
+
+                    // Highlight the clicked button with the filled style
+                    this.classList.remove(`status-btn-outline-${currentStatus}`);
+                    this.classList.add(`status-btn-${currentStatus}`);
                 } else {
                     console.error('Failed to update status');
                 }
