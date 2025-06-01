@@ -12,24 +12,24 @@
 	<div class="card shadow-sm">
 		<div class="card-body">
 			<div class="row">
-				<div class="col-md-4">
+				<!-- Room details column -->
+				<div class="col-md-6">
 					<h3 class="card-title">Room @Model.RoomNumber</h3>
-						<p class="card-text"><strong>@Localizer["RoomTypeDetail"]:</strong> @Model.RoomTypeName</p>
-						<p class="card-text"><strong>@Localizer["RoomCapacityDetail"]:</strong> @Model.RoomTypeCapacity</p>
-						<p class="card-text"><strong>@Localizer["RoomDescriptionDetail"]:</strong> @Model.Description</p>
-						<p class="card-text"><strong>@Localizer["RoomTypeDescription"]: </strong>@Model.RoomTypeDescription</p>
-						<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("C")</p>
-						<a asp-action="RoomsList" class="btn btn-secondary mt-4">@Localizer["BackToList"]</a>
-					
+					<p class="card-text"><strong>@Localizer["RoomTypeDetail"]:</strong> @Model.RoomTypeName</p>
+					<p class="card-text"><strong>@Localizer["RoomCapacityDetail"]:</strong> @Model.RoomTypeCapacity</p>
+					<p class="card-text"><strong>@Localizer["RoomDescriptionDetail"]:</strong> @Model.Description</p>
+					<p class="card-text"><strong>@Localizer["RoomTypeDescription"]: </strong>@Model.RoomTypeDescription</p>
+					<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("C")</p>
+					<a asp-action="RoomsList" class="btn btn-secondary mt-4">@Localizer["BackToList"]</a>
 				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card-body">
+
+				<!-- Room photo column -->
+				<div class="col-md-6 d-flex align-items-center justify-content-center">
 					@if (Model.RoomTypePhoto != null)
 					{
 						var base64 = Convert.ToBase64String(Model.RoomTypePhoto);
 						var imageSrc = $"data:image/jpeg;base64,{base64}";
-						<img src="@imageSrc" class="img-fluid rounded" alt="Room Photo" />
+						<img src="@imageSrc" class="img-fluid rounded shadow-sm" alt="Room Photo" style="max-height: 300px;" />
 					}
 					else
 					{
