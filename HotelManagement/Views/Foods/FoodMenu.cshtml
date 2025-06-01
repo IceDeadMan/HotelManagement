@@ -2,17 +2,18 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <!-- Food List View -->
 <!-- This view displays a list of food items and allows admins/kitchenstaff to create/delete new food items. -->
 <!-- Users can order food items. -->
 @{
-    ViewData["Title"] = "Food Menu";
+    ViewData["Title"] = Localizer["FoodMenuPage"];
     var isAdmin = User.IsInRole("Manager") || User.IsInRole("KitchenStaff");
-
 }
 
-<h3>Food Menu</h3>
+<h3>@Localizer["FoodMenuPage"]</h3>
 
 <div class="container">
     <!-- Order Creation Form -->
@@ -20,15 +21,15 @@
     {
         <div class="card border-primary shadow-sm mb-4">
             <div class="card-body">
-                <h5 class="card-title text-primary">Create Food Order</h5>
+                <h5 class="card-title text-primary">@Localizer["CreateFoodOrder"]</h5>
                 <form id="food-order-form" method="post" asp-action="CreateOrder" asp-controller="FoodOrders">
                     @Html.AntiForgeryToken()
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="roomSelect" class="form-label">Select Room</label>
+                            <label for="roomSelect" class="form-label">@Localizer["SelectRoom"]</label>
                             <select id="roomSelect" name="SelectedRoomId" class="form-select" required>
-                                <option value="">-- Choose Room --</option>
+                                <option value="">-- @Localizer["SelectRoom"] --</option>
                                 @foreach (var room in Model.AvailableRooms)
                                 {
                                     <option value="@room.Id">Room @room.RoomNumber</option>
@@ -36,18 +37,18 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="orderDescription" class="form-label">Description</label>
+                            <label for="orderDescription" class="form-label">@Localizer["FoodOrderDescription"]</label>
                             <textarea id="orderDescription" name="Description" class="form-control" rows="2" required></textarea>
                         </div>
                     </div>
 
-                    <h6>Selected Foods</h6>
+                    <h6>@Localizer["SelectedFoods"]</h6>
                     <ul class="list-group mb-3" id="selected-foods-list"></ul>
 
                     <!-- Hidden inputs for selected food IDs -->
                     <div id="foodInputs"></div>
 
-                    <button type="submit" class="btn btn-success">Place Order</button>
+                    <button type="submit" class="btn btn-success">@Localizer["PlaceOrder"]</button>
                 </form>
             </div>
         </div>
@@ -56,7 +57,7 @@
     {
         <!-- Info Message -->
         <div class="alert alert-info shadow-sm">
-            If you stay at our hotel, you can order food from the menu.
+            @Localizer["IfYouStay"]
         </div>
     }
 
@@ -65,19 +66,19 @@
     {
         <div class="card mb-4 border-success shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-success">Add New Food Item</h5>
+                <h5 class="card-title text-success">@Localizer["AddNewFoodItem"]</h5>
                 <form asp-action="CreateFood" method="post" class="row g-2">
                     <div class="col-md-4">
-                        <input type="text" name="Name" class="form-control" placeholder="Food Name" required />
+                        <input type="text" name="Name" class="form-control" placeholder=@Localizer["FoodName"] required />
                     </div>
                     <div class="col-md-4">
-                        <input type="text" name="Description" class="form-control" placeholder="Description" required />
+                        <input type="text" name="Description" class="form-control" placeholder=@Localizer["FoodDescription"] required />
                     </div>
                     <div class="col-md-2">
-                        <input type="number" name="Price" class="form-control" placeholder="Price" step="0.01" min="0" required />
+                        <input type="number" name="Price" class="form-control" placeholder=@Localizer["FoodPrice"] step="0.01" min="0" required />
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-success w-100">Add</button>
+                        <button type="submit" class="btn btn-success w-100">@Localizer["AddButton"]</button>
                     </div>
                 </form>
             </div>
@@ -89,10 +90,10 @@
         <table class="table table-hover align-middle shadow-sm">
             <thead class="table-light">
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th style="width: 300px;">Actions</th>
+                    <th>@Localizer["FoodName"]</th>
+                    <th>@Localizer["FoodDescription"]</th>
+                    <th>@Localizer["FoodPrice"]</th>
+                    <th style="width: 300px;">@Localizer["FoodActions"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,12 +108,12 @@
                             <a class="btn btn-sm btn-outline-primary add-to-order-btn @(food.IsAvailable ? "" : "disabled disabled-btn")"
                             data-food-id="@food.Id"
                             data-food-name="@food.Name">
-                            Add to Order
+                                    @Localizer["AddToOrder"]
                             </a>
                             <button class="btn btn-sm btn-outline-secondary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#foodReviewModal-@food.Id">
-                                Reviews
+                                    @Localizer["FoodReviews"]
                             </button>
 
                             @if (isAdmin)
@@ -120,10 +121,10 @@
                                 <form asp-action="DeleteFood"
                                     asp-route-id="@food.Id"
                                     method="post"
-                                    onsubmit="return confirm('Delete this food item?');"
+                                          onsubmit="return confirm(@Localizer["FoodDeleteConfirm"]);"
                                     class="mb-0">
                                     @Html.AntiForgeryToken()
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <button class="btn btn-sm btn-outline-danger">@Localizer["FoodDelete"]</button>
                                 </form>
 
                                 <div class="form-check form-switch mb-0">
@@ -131,7 +132,7 @@
                                         type="checkbox"
                                         data-food-id="@food.Id"
                                         @(food.IsAvailable ? "checked" : "") />
-                                    <label class="form-check-label">Available</label>
+                                        <label class="form-check-label">@Localizer["FoodAvailable"]</label>
                                 </div>
                             }
                         </div>
