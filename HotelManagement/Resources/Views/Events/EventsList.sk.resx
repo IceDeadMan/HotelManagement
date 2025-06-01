@@ -117,46 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Home" xml:space="preserve">
-    <value>Domov</value>
+  <data name="EventsListAssign" xml:space="preserve">
+    <value>Prideliť Zamestnancov</value>
   </data>
-  <data name="HotelManagement" xml:space="preserve">
-    <value>Správa Hotelu</value>
+  <data name="EventsListAssignedStaff" xml:space="preserve">
+    <value>Pridelení Zamestnanci</value>
   </data>
-  <data name="Rooms" xml:space="preserve">
-    <value>Izby</value>
+  <data name="EventsListAttend" xml:space="preserve">
+    <value>Zúčastniť sa</value>
   </data>
-  <data name="Events" xml:space="preserve">
+  <data name="EventsListCancelAttendance" xml:space="preserve">
+    <value>Zrušiť Účasť</value>
+  </data>
+  <data name="EventsListCapacity" xml:space="preserve">
+    <value>Kapacita</value>
+  </data>
+  <data name="EventsListCreate" xml:space="preserve">
+    <value>Vytvoriť Udalosť</value>
+  </data>
+  <data name="EventsListCreateNew" xml:space="preserve">
+    <value>Vytvoriť Novú Udalosť</value>
+  </data>
+  <data name="EventsListDate" xml:space="preserve">
+    <value>Dátum</value>
+  </data>
+  <data name="EventsListDelete" xml:space="preserve">
+    <value>Zmazať</value>
+  </data>
+  <data name="EventsListDeleteConfirm" xml:space="preserve">
+    <value>Ste si istí že chcete zmazať túto udalosť?</value>
+  </data>
+  <data name="EventsListDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="EventsListFreeSpots" xml:space="preserve">
+    <value>Voľné Miesta</value>
+  </data>
+  <data name="EventsListFull" xml:space="preserve">
+    <value>Plno</value>
+  </data>
+  <data name="EventsListLogin" xml:space="preserve">
+    <value>Prihláste sa pre Účasť</value>
+  </data>
+  <data name="EventsListName" xml:space="preserve">
+    <value>Meno</value>
+  </data>
+  <data name="EventsListTime" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="EventsListTitle" xml:space="preserve">
     <value>Udalosti</value>
-  </data>
-  <data name="FoodMenu" xml:space="preserve">
-    <value>Ponuka Jedál</value>
-  </data>
-  <data name="BookRoom" xml:space="preserve">
-    <value>Zarezervovať Izbu</value>
-  </data>
-  <data name="MyBookings" xml:space="preserve">
-    <value>Moje Rezervácie</value>
-  </data>
-  <data name="Reception" xml:space="preserve">
-    <value>Recepcia</value>
-  </data>
-  <data name="FoodOrders" xml:space="preserve">
-    <value>Objednávky Jedál</value>
-  </data>
-  <data name="ServiceActivities" xml:space="preserve">
-    <value>Servisné Aktivity</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profil</value>
-  </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Odhlásiť sa</value>
-  </data>
-  <data name="Login" xml:space="preserve">
-    <value>Prihlásiť sa</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Registrovať sa</value>
   </data>
 </root>

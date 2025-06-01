@@ -117,46 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Home" xml:space="preserve">
-    <value>Domov</value>
+  <data name="ActivityRecordsDate" xml:space="preserve">
+    <value>Dátum</value>
   </data>
-  <data name="HotelManagement" xml:space="preserve">
-    <value>Správa Hotelu</value>
+  <data name="ActivityRecordsDescription" xml:space="preserve">
+    <value>Popis</value>
   </data>
-  <data name="Rooms" xml:space="preserve">
-    <value>Izby</value>
+  <data name="ActivityRecordsGuest" xml:space="preserve">
+    <value>Hosť</value>
   </data>
-  <data name="Events" xml:space="preserve">
-    <value>Udalosti</value>
+  <data name="ActivityRecordsRoom" xml:space="preserve">
+    <value>Izba</value>
   </data>
-  <data name="FoodMenu" xml:space="preserve">
-    <value>Ponuka Jedál</value>
+  <data name="ActivityRecordsStatus" xml:space="preserve">
+    <value>Status</value>
   </data>
-  <data name="BookRoom" xml:space="preserve">
-    <value>Zarezervovať Izbu</value>
+  <data name="ActivityRecordsType" xml:space="preserve">
+    <value>Typ</value>
   </data>
-  <data name="MyBookings" xml:space="preserve">
-    <value>Moje Rezervácie</value>
+  <data name="ServiceActivityRecords" xml:space="preserve">
+    <value>Záznamy Servisných Aktivít</value>
   </data>
-  <data name="Reception" xml:space="preserve">
-    <value>Recepcia</value>
-  </data>
-  <data name="FoodOrders" xml:space="preserve">
-    <value>Objednávky Jedál</value>
-  </data>
-  <data name="ServiceActivities" xml:space="preserve">
-    <value>Servisné Aktivity</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profil</value>
-  </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Odhlásiť sa</value>
-  </data>
-  <data name="Login" xml:space="preserve">
-    <value>Prihlásiť sa</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Registrovať sa</value>
+  <data name="ServiceActivityRequests" xml:space="preserve">
+    <value>Požiadavky Aktivít</value>
   </data>
 </root>

@@ -1,4 +1,6 @@
-﻿@model HotelManagement.ViewModels.EventListItemViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model HotelManagement.ViewModels.EventListItemViewModel
 @{
     var staffList = Model.AllAssignableStaff ?? new List<HotelManagement.Models.ApplicationUser>();
 }
@@ -8,15 +10,15 @@
         <div class="modal-content">
             <form asp-action="AssignStaffToEvent" method="post">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assignStaffModalLabel-@Model.Event.Id">Assign Staff to @Model.Event.Name</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="assignStaffModalLabel-@Model.Event.Id">@Localizer["AssignTo"] @Model.Event.Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label=@Localizer["Close"]></button>
                 </div>
                 <div class="modal-body">
                     <form asp-action="AssignStaffToEvent" method="post">
                         <input type="hidden" name="eventId" value="@Model.Event.Id" />
 
                         <div class="mb-3">
-                            <label class="form-label">Select Staff Member:</label>
+                            <label class="form-label">@Localizer["SelectStaffMember"]:</label>
                             <select name="staffUserId" class="form-select">
                                 @foreach (var staff in staffList)
                                 {
@@ -26,15 +28,15 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Assign</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">@Localizer["Assign"]</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
                         </div>
                     </form>
 
                     @if (Model.Event.StaffMembers != null && Model.Event.StaffMembers.Any())
                     {
                         <hr />
-                        <p><strong>Already Assigned:</strong></p>
+                        <p><strong>@Localizer["AlreadyAssigned"]:</strong></p>
                         <ul class="list-group">
                             @foreach (var assigned in Model.Event.StaffMembers)
                             {
@@ -43,7 +45,7 @@
                                     <form asp-action="UnassignStaffFromEvent" method="post" class="d-inline">
                                         <input type="hidden" name="eventId" value="@Model.Event.Id" />
                                         <input type="hidden" name="staffUserId" value="@assigned.Id" />
-                                        <button class="btn btn-sm btn-danger" type="submit">Unassign</button>
+                                        <button class="btn btn-sm btn-danger" type="submit">@Localizer["Unassign"]</button>
                                     </form>
                                 </li>
                             }

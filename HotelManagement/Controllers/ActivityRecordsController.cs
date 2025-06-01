@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System;
 using AutoMapper;
+using HotelManagement.Logging;
 
 namespace HotelManagement.Controllers
 {
@@ -17,11 +18,13 @@ namespace HotelManagement.Controllers
     /// </summary
     public class ActivityRecordsController : Controller
     {
+        private readonly AuditLogger _auditLogger;
         private readonly ActivityRecordRepository _activityRecordRepository;
         private readonly IMapper _mapper;
 
-        public ActivityRecordsController(ActivityRecordRepository activityRecordRepository, IMapper mapper)
+        public ActivityRecordsController(AuditLogger auditLogger, ActivityRecordRepository activityRecordRepository, IMapper mapper)
         {
+            _auditLogger = auditLogger;
             _activityRecordRepository = activityRecordRepository;
             _mapper = mapper;
         }
@@ -52,6 +55,7 @@ namespace HotelManagement.Controllers
             };
 
             _activityRecordRepository.Create(activity);
+            _auditLogger.Log("CreateActivityRecord", $"Activity for room {roomId} successfully created.");
             TempData["SuccessMessage"] = "Service requested successfully.";
 
             return Json(new { success = true, message = "Service requested successfully." });
@@ -65,6 +69,7 @@ namespace HotelManagement.Controllers
         {
             await _activityRecordRepository.UpdateStatusAsync(id, status);
             //TempData["SuccessMessage"] = "Activity record status updated successfully.";
+            _auditLogger.Log("UpdateActivityRecordStatus", $"Activity record {id} status updated to {status}.");
             return Json(new { success = true, message = "Status updated successfully." });
         }
 

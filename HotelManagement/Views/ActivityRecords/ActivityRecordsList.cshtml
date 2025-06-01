@@ -1,24 +1,26 @@
 ﻿@model List<HotelManagement.ViewModels.ActivityRecordViewModel>
 @using HotelManagement.Enums;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <!-- Service Activity Records List View -->
 <!-- This view displays a list of service activity records made by guests. -->
 <!-- Staff can update the status of activities. -->
 @{
-    ViewData["Title"] = "Service Activity Records";
+    ViewData["Title"] = Localizer["ServiceActivityRecords"];
 }
 
 <div class="container mt-4">
-    <h2>Service Requests</h2>
+    <h2>@Localizer["ServiceActivityRequests"]</h2>
     @Html.AntiForgeryToken()
     <table class="table table-bordered table-striped mt-3">
         <thead class="table-dark">
             <tr>
-                <th>Guest</th>
-                <th>Room</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Status</th>
+                <th>@Localizer["ActivityRecordsGuest"]</th>
+                <th>@Localizer["ActivityRecordsRoom"]</th>
+                <th>@Localizer["ActivityRecordsType"]</th>
+                <th>@Localizer["ActivityRecordsDescription"]</th>
+                <th>@Localizer["ActivityRecordsDate"]</th>
+                <th>@Localizer["ActivityRecordsStatus"]</th>
             </tr>
         </thead>
         <tbody>
