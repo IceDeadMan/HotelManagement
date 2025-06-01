@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using HotelManagement.Models;
+@using HotelManagement.ViewModels;
 @inject IViewLocalizer Localizer
-@model IEnumerable<HotelManagement.Models.Room>
+@model RoomsListViewModel
 <!-- Rooms List View -->
 <!-- This view displays a list of all rooms in a hotel. -->
-<!-- Will probably be used mainly for Hotel Manager to view, add and delete rooms. -->
+<!-- Managers can create new rooms and delete existing ones. -->
 @{
 	ViewData["Title"] = "Rooms List";
 }
@@ -12,7 +14,41 @@
 
 <div class="container">
 	<div class="row row-cols-1 row-cols-md-3 g-4">
-		@foreach (var room in Model)
+
+		<!-- Inline Card for Creating New Room -->
+		@if(User.IsInRole("Manager"))
+		{
+			<div class="col">
+				<div class="card h-100 border-success shadow-sm">
+					<div class="card-body">
+						<h5 class="card-title text-success">Create New Room</h5>
+						<form asp-action="Create" method="post">
+							<div class="mb-2">
+								<label for="RoomNumber" class="form-label">Room Number</label>
+								<input type="text" name="RoomNumber" class="form-control" required />
+							</div>
+							<div class="mb-2">
+								<label for="Description" class="form-label">Description</label>
+								<textarea name="Description" class="form-control" rows="2"></textarea>
+							</div>
+							<div class="mb-3">
+								<label for="RoomTypeId" class="form-label">Room Type</label>
+								<select name="RoomTypeId" class="form-select" required>
+									<option value="">-- Select --</option>
+									@foreach (var type in Model.RoomTypes)
+									{
+										<option value="@type.Id">@type.Name (@type.Capacity guests)</option>
+									}
+								</select>
+							</div>
+							<button type="submit" class="btn btn-success w-100">Add Room</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		}
+
+		@foreach (var room in Model.Rooms)
 		{
 			var roomTypeName = room.RoomType?.Name ?? "";
 			var roomTypeDescription = room.RoomType?.Description ?? "";
@@ -30,7 +66,17 @@
 						<p><strong>Capacity:</strong> @roomCapacity guests</p>
 					</div>
 					<div class="card-footer bg-transparent border-top-0">
-						<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
+						<div class="d-flex justify-content-between gap-2">
+							<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">View Details</a>
+
+							@if (User.IsInRole("Manager"))
+							{
+								<form asp-action="Delete" asp-route-id="@room.Id" method="post" 
+									onsubmit="return confirm('Are you sure you want to delete this room?');" class="w-100">
+									<button type="submit" class="btn btn-danger w-100">Delete</button>
+								</form>
+							}
+						</div>
 					</div>
 				</div>
 			</div>

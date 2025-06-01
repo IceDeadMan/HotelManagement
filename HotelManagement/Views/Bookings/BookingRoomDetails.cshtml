@@ -18,7 +18,7 @@
 
 <h2>Room @Model.Room.RoomNumber</h2>
 <p><strong>Booking Period:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights nights)</p>
-<p><strong>Room Type:</strong> @Model.Room.RoomType?.Name</p>
+<p><strong>Room Type:</strong> @Model.Room.RoomType?.Name, @Model.Room.RoomType?.Description</p>
 <p><strong>Description:</strong> @Model.Room.Description</p>
 
 <hr />
@@ -40,6 +40,13 @@ else
 {
     <p>No food orders placed during this stay.</p>
 }
+@if (Model.Booking.Status == BookingStatus.Confirmed)
+{ 
+    <a class="btn btn-primary mb-3"  asp-controller="Foods" asp-action="FoodMenu">Food Menu</a>
+} else
+{
+    <p>You can only order food during your stay.</p>
+}
 
 <hr />
 
@@ -60,37 +67,44 @@ else
 {
     <p>No service activities recorded for this stay.</p>
 }
-<form id="add-activity-form" method="post">
-    @Html.AntiForgeryToken()
+@if (Model.Booking.Status == BookingStatus.Confirmed)
+{
+    <form id="add-activity-form" method="post">
+        @Html.AntiForgeryToken()
 
-    <label>Service Type</label>
-    <div>
-        @foreach (var type in Enum.GetValues(typeof(ActivityType)).Cast<ActivityType>())
-        {
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Type" value="@type" required />
-                <label class="form-check-label">@type.ToString()</label>
-            </div>
-        }
-    </div>
+        <label>Service Type</label>
+        <div>
+            @foreach (var type in Enum.GetValues(typeof(ActivityType)).Cast<ActivityType>())
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Type" value="@type" required />
+                    <label class="form-check-label">@type.ToString()</label>
+                </div>
+            }
+        </div>
 
-    <div class="mb-2">
-        <label for="Description">Description</label>
-        <textarea name="Description" class="form-control" required></textarea>
-    </div>
+        <div class="mb-2">
+            <label for="Description">Description</label>
+            <textarea name="Description" class="form-control" required></textarea>
+        </div>
 
-    <!-- Hidden values -->
-    <input type="hidden" name="BookingId" value="@Model.Booking.Id" />
-    <input type="hidden" name="RoomId" value="@Model.Room.Id" />
+        <!-- Hidden values -->
+        <input type="hidden" name="BookingId" value="@Model.Booking.Id" />
+        <input type="hidden" name="RoomId" value="@Model.Room.Id" />
 
-    <button type="submit" class="btn btn-primary">Request Service</button>
-</form>
+        <button type="submit" class="btn btn-primary">Request Service</button>
+    </form>
+} else
+{
+    <p> You can only request services during your stay.</p>
+}
 
 <hr />
 
-<h4>Your Review</h4>
+
 @if (Model.Review != null)
 {
+    <h4>You already reviewd this room. You can update your Review here</h4>
     <form id="edit-review-form">
         @Html.AntiForgeryToken()
         <input type="hidden" name="RoomId" value="@Model.Room.Id" />
@@ -109,6 +123,7 @@ else
 }
 else
 {
+    <h4>Add a Review for this Room</h4>
     <form id="add-review-form">
         @Html.AntiForgeryToken()
         <input type="hidden" name="RoomId" value="@Model.Room.Id" />

@@ -14,31 +14,35 @@
 			<p class="card-text"><strong>Description:</strong> @Model.Description</p>
 			<p class="card-text"><strong>Type Description: </strong>@Model.RoomTypeDescription</p>
 			<p class="card-text"><strong>Price:</strong> @Model.RoomTypePrice.ToString("C")</p>
-
-			@if (Model.Bookings?.Any() == true)
-			{
-				<h5 class="mt-4">Bookings:</h5>
-				<ul class="list-group">
-					@foreach (var booking in Model.Bookings)
-					{
-						<li class="list-group-item">
-							<strong>Guest:</strong> @booking.GuestName
-							| <strong>From:</strong> @booking.StartDate.ToShortDateString()
-							| <strong>To:</strong> @booking.EndDate.ToShortDateString()
-						</li>
-					}
-				</ul>
-			}
-			else
-			{
-				<p class="text-muted mt-4">No bookings for this room yet.</p>
-			}
-
-			<!-- Calendar -->
-			<h5 class="mt-4">Calendar</h5>
-			<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
-
 			<a asp-action="RoomsList" class="btn btn-secondary mt-4">Back to List</a>
+
+			<!-- Bookings Section only for reception/manager -->
+			@if(User.IsInRole("Manager") || User.IsInRole("Receptionist"))
+			{
+				@if (Model.Bookings?.Any() == true)
+				{
+					<h5 class="mt-4">Bookings:</h5>
+					<ul class="list-group">
+						@foreach (var booking in Model.Bookings)
+						{
+							<li class="list-group-item">
+								<strong>Guest:</strong> @booking.GuestName
+								| <strong>From:</strong> @booking.StartDate.ToShortDateString()
+								| <strong>To:</strong> @booking.EndDate.ToShortDateString()
+							</li>
+						}
+					</ul>
+				}
+				else
+				{
+					<p class="text-muted mt-4">No bookings for this room yet.</p>
+				}
+
+				<!-- Calendar -->
+				<h5 class="mt-4">Calendar</h5>
+				<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
+			}
+
 
 			<!-- Generate calendar events from bookings -->
 			<script>

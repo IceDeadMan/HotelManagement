@@ -40,6 +40,7 @@ namespace HotelManagement
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
+                // todo add region for example sk-SK and en-US
                 var supportedCultures = new[]
                 {
                     new CultureInfo("en"),
@@ -99,6 +100,13 @@ namespace HotelManagement
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+            // Seed Room Type Images if not seeded yet
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<HotelManagement.DAL.HotelManagementDbContext>();
+                RoomTypeImageSeeder.SeedImagesAsync(dbContext).GetAwaiter().GetResult();
+            }
 
             app.Run();
         }

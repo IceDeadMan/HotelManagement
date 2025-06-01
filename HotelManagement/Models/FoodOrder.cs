@@ -1,4 +1,5 @@
 ﻿using HotelManagement.Enums;
+using HotelManagement.Models.JoinEntities;
 
 namespace HotelManagement.Models
 {
@@ -19,7 +20,6 @@ namespace HotelManagement.Models
         public Guid RoomId { get; set; }
         public Room? Room { get; set; }
 
-        // todo add food quantity
-        public ICollection<Food> Foods { get; set; } = new List<Food>();
+        public ICollection<FoodOrderFood> FoodOrderFoods { get; set; } = new List<FoodOrderFood>();
     }
 }

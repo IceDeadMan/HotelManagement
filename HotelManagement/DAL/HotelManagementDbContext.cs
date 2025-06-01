@@ -1,5 +1,6 @@
 ﻿using HotelManagement.DAL.Seeds;
 using HotelManagement.Models;
+using HotelManagement.Models.JoinEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ namespace HotelManagement.DAL
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<FoodOrderFood> FoodOrderFoods { get; set; }
+        public DbSet<EventRegistration> EventRegistrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +36,22 @@ namespace HotelManagement.DAL
             modelBuilder.Entity<RoomType>()
                 .Property(rt => rt.Price)
                 .HasColumnType("decimal(10, 2)");
+
+            modelBuilder.Entity<FoodOrderFood>()
+                .HasKey(fof => new { fof.FoodId, fof.FoodOrderId });
+
+            modelBuilder.Entity<FoodOrderFood>()
+                .HasOne(fof => fof.Food)
+                .WithMany(f => f.FoodOrderFoods)
+                .HasForeignKey(fof => fof.FoodId);
+
+            modelBuilder.Entity<FoodOrderFood>()
+                .HasOne(fof => fof.FoodOrder)
+                .WithMany(fo => fo.FoodOrderFoods)
+                .HasForeignKey(fof => fof.FoodOrderId);
+
+            modelBuilder.Entity<FoodOrderFood>()
+                .ToTable("FoodOrderFoods");
 
             modelBuilder.Entity<Room>()
                 .HasMany(r => r.Bookings)
@@ -47,31 +66,31 @@ namespace HotelManagement.DAL
                         je.ToTable("RoomBookings");
                     });
 
-            modelBuilder.Entity<FoodOrder>()
-                .HasMany(f => f.Foods)
-                .WithMany(b => b.FoodOrders)
+            modelBuilder.Entity<Event>()
+                .HasMany(e => e.StaffMembers)
+                .WithMany(u => u.AssignedEvents)
                 .UsingEntity<Dictionary<string, object>>(
-                    "FoodOrderFoods",
-                    f => f.HasOne<Food>().WithMany().HasForeignKey("FoodsId"),
-                    b => b.HasOne<FoodOrder>().WithMany().HasForeignKey("FoodOrdersId"),
+                    "EventStaff",
+                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
+                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventId"),
                     je =>
                     {
-                        je.HasKey("FoodsId", "FoodOrdersId");
-                        je.ToTable("FoodOrderFoods");
+                        je.HasKey("UserId", "EventId");
+                        je.ToTable("EventStaff");
                     });
 
-            modelBuilder.Entity<Event>()
-                .HasMany(e => e.Users)
-                .WithMany(u => u.Events)
-                .UsingEntity<Dictionary<string, object>>(
-                    "EventUsers",
-                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UsersId"),
-                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventsId"),
-                    je =>
-                    {
-                        je.HasKey("UsersId", "EventsId");
-                        je.ToTable("EventUsers");
-                    });
+            modelBuilder.Entity<EventRegistration>()
+                .HasKey(er => new { er.EventId, er.UserId });
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(er => er.Event)
+                .WithMany(e => e.Registrations)
+                .HasForeignKey(er => er.EventId);
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(er => er.User)
+                .WithMany(u => u.EventRegistrations)
+                .HasForeignKey(er => er.UserId);
 
 
 

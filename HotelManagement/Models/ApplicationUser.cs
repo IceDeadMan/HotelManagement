@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HotelManagement.Models.JoinEntities;
+using Microsoft.AspNetCore.Identity;
 
 namespace HotelManagement.Models
 {
@@ -14,6 +15,10 @@ namespace HotelManagement.Models
         public ICollection<ActivityRecord> ActivityRecords { get; set; } = new List<ActivityRecord>();
         public ICollection<FoodOrder> FoodOrders { get; set; } = new List<FoodOrder>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<Event> Events { get; set; } = new List<Event>();
+        // Staff assignments
+        public ICollection<Event> AssignedEvents { get; set; } = new List<Event>();
+
+        // Guest registrations
+        public ICollection<EventRegistration> EventRegistrations { get; set; } = new List<EventRegistration>();
     }
 }

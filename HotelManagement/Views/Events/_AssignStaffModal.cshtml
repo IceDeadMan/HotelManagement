@@ -1,0 +1,58 @@
+﻿@model HotelManagement.ViewModels.EventListItemViewModel
+@{
+    var staffList = Model.AllAssignableStaff ?? new List<HotelManagement.Models.ApplicationUser>();
+}
+
+<div class="modal fade" id="assignStaffModal-@Model.Event.Id" tabindex="-1" aria-labelledby="assignStaffModalLabel-@Model.Event.Id" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AssignStaffToEvent" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignStaffModalLabel-@Model.Event.Id">Assign Staff to @Model.Event.Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="AssignStaffToEvent" method="post">
+                        <input type="hidden" name="eventId" value="@Model.Event.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Staff Member:</label>
+                            <select name="staffUserId" class="form-select">
+                                @foreach (var staff in staffList)
+                                {
+                                    <option value="@staff.Id">@staff.UserName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Assign</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+
+                    @if (Model.Event.StaffMembers != null && Model.Event.StaffMembers.Any())
+                    {
+                        <hr />
+                        <p><strong>Already Assigned:</strong></p>
+                        <ul class="list-group">
+                            @foreach (var assigned in Model.Event.StaffMembers)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @assigned.UserName
+                                    <form asp-action="UnassignStaffFromEvent" method="post" class="d-inline">
+                                        <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                                        <input type="hidden" name="staffUserId" value="@assigned.Id" />
+                                        <button class="btn btn-sm btn-danger" type="submit">Unassign</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

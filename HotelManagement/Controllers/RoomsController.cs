@@ -3,6 +3,8 @@ using HotelManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.ViewModels;
 using AutoMapper;
+using HotelManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelManagement.Controllers
 {
@@ -10,7 +12,7 @@ namespace HotelManagement.Controllers
 	/// RoomsController handles the management of hotel rooms.
 	/// It allows users to view a list of all rooms, room details, and available rooms based on selected criteria.
 	/// </summary>
-    public class RoomsController : Controller
+	public class RoomsController : Controller
 	{
 		private readonly ILogger<RoomsController> _logger;
 		private readonly RoomRepository _roomRepository;
@@ -18,25 +20,33 @@ namespace HotelManagement.Controllers
 		private readonly BookingCartService _bookingCartService;
 		private readonly IMapper _mapper;
 
-        public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository,
+		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository,
 								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
 								IMapper mapper)
-        {
-            _logger = logger;
-            _roomRepository = roomRepository;
-            _roomTypeRepository = roomTypeRepository;
-            _bookingCartService = bookingCartService;
-            _mapper = mapper;
-        }
+		{
+			_logger = logger;
+			_roomRepository = roomRepository;
+			_roomTypeRepository = roomTypeRepository;
+			_bookingCartService = bookingCartService;
+			_mapper = mapper;
+		}
 
-        /// <summary>
-        /// RoomsList displays a list of all rooms with their details.
-        /// </summary>
-        /// <returns> A view with all rooms and their details. </returns>
-        public async Task<IActionResult> RoomsList()
+		/// <summary>
+		/// RoomsList displays a list of all rooms with their details.
+		/// </summary>
+		/// <returns> A view with all rooms and their details. </returns>
+		public async Task<IActionResult> RoomsList()
 		{
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
-			return View(rooms);
+			var roomTypes = await _roomTypeRepository.GetAllAsync();
+			
+			// todo mapper
+			var viewModel = new RoomsListViewModel
+			{
+				Rooms = _mapper.Map<List<Room>>(rooms),
+				RoomTypes = _mapper.Map<List<RoomType>>(roomTypes)
+			};
+			return View(viewModel);
 		}
 		/// <summary>
 		/// RoomDetails displays the details of a specific room based on its ID.
@@ -47,11 +57,44 @@ namespace HotelManagement.Controllers
 			if (room == null)
 				return NotFound();
 
-            var viewModel = _mapper.Map<RoomDetailViewModel>(room);
-            viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
-            viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
+			var viewModel = _mapper.Map<RoomDetailViewModel>(room);
+			viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
+			viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
 
-            return View(viewModel);
+			return View(viewModel);
+		}
+
+		/// <summary>
+		/// Manager can create a new room.
+		/// </summary>:
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Manager")]
+		public IActionResult Create(Room room)
+		{
+			if (ModelState.IsValid)
+			{
+				_roomRepository.Create(room);
+				return RedirectToAction("RoomsList");
+			}
+
+			return RedirectToAction("RoomsList");
+		}
+
+		/// <summary>
+		/// Manager can delete a room.
+		/// </summary>
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Manager")]
+		public IActionResult Delete(Guid id)
+		{
+			var room = _roomRepository.GetById(id);
+			if (room != null)
+			{
+				_roomRepository.Delete(id);
+			}
+			return RedirectToAction("RoomsList");
 		}
 	}
 }

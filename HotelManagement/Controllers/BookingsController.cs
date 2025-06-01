@@ -310,7 +310,7 @@ namespace HotelManagement.Controllers
 		/// It includes today's bookings, ongoing bookings, bookings before check-in, and past or cancelled bookings.
 		/// </summary>
 		/// <returns> A view with categorized booking summaries for the reception desk. </returns>
-		[Authorize(Roles = "Manager,Staff,Receptionist")]
+		[Authorize(Roles = "Manager,Receptionist")]
 		public async Task<IActionResult> Reception()
 		{
 			var allBookings = await _bookingRepository.GetBookingSummariesAsync();
@@ -321,7 +321,7 @@ namespace HotelManagement.Controllers
 				TodaysBookings = allBookings
 					.Where(b =>
 						(b.StartDate.Date == today && b.Status == BookingStatus.Pending) ||
-						(b.EndDate.Date == today && (b.Status == BookingStatus.Confirmed || b.Status == BookingStatus.Pending)))// or Pending for now
+						(b.EndDate.Date == today && (b.Status == BookingStatus.Confirmed)))// or Pending for now
 					.ToList(),
 
 				OngoingBookings = allBookings
@@ -335,15 +335,14 @@ namespace HotelManagement.Controllers
 
 				BeforeCheckIn = allBookings
 					.Where(b =>
-						(b.Status == BookingStatus.Pending || b.Status == BookingStatus.Confirmed) &&// or confirmed for now
+						(b.Status == BookingStatus.Pending) &&
 						b.StartDate.Date > today)
 					.ToList(),
 
 				PastOrCancelledBookings = allBookings
 					.Where(b =>
 						b.Status == BookingStatus.Completed ||
-						b.Status == BookingStatus.Cancelled ||
-						(b.EndDate.Date == today && b.Status == BookingStatus.Completed)) // Checked out today
+						b.Status == BookingStatus.Cancelled )
 					.ToList()
 			};
 
@@ -353,14 +352,47 @@ namespace HotelManagement.Controllers
 
 		/// <summary>
 		/// ChangeStatus allows authorized users to change the status of a booking.
-		/// Should be used by receptionist to chek in or check out guests or to cancel bookings.
+		/// Should be used by receptionist to chek in and check out bookings or cancel bookings.
 		/// </summary>
 		[HttpPost]
-		[Authorize(Roles = "Manager,Staff,Receptionist")]//maybe remove staff
+		[Authorize(Roles = "Manager,Receptionist")]
 		public async Task<IActionResult> ChangeStatus(Guid id, BookingStatus newStatus)
 		{
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);
 			return RedirectToAction(nameof(Reception));
+		}
+		
+		/// <summary>
+		/// CancelBooking allows users to cancel their own bookings.
+		/// It checks if the booking exists, if the user is the owner, and if the booking status is pending.
+		/// /// </summary>
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> CancelBooking(Guid id)
+		{
+			var booking = _bookingRepository.GetById(id);
+			if (booking == null)
+			{
+				return NotFound();
+			}
+
+			// Ensure the logged-in user is the owner of the booking
+			var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+			if (booking.ApplicationUserId.ToString() != currentUserId)
+			{
+				return Forbid(); // User is not allowed to cancel someone else's booking
+			}
+
+			if (booking.Status != BookingStatus.Pending)
+			{
+				TempData["Error"] = "Only pending bookings can be cancelled.";
+				return RedirectToAction("MyBookings");
+			}
+
+			await _bookingRepository.ChangeStatusAsync(id, BookingStatus.Cancelled);
+
+			TempData["Success"] = "Booking cancelled successfully.";
+			return RedirectToAction("MyBookings");
 		}
 
 		/// <summary>
@@ -369,14 +401,14 @@ namespace HotelManagement.Controllers
 		/// </summary>
 		/// <param name="id"> The ID of the booking to be deleted. </param>
 		/// <returns> A redirect to the reception view after deletion. </returns>
-		[HttpPost]
-		[Authorize(Roles = "Manager,Staff,Receptionist")]
-		public IActionResult Delete(Guid id)
-		{
-			_bookingRepository.Delete(id);
-			return RedirectToAction(nameof(Reception));
-		}
-		
+		// [HttpPost]
+		// [Authorize(Roles = "Manager,Receptionist")]
+		// public IActionResult Delete(Guid id)
+		// {
+		// 	_bookingRepository.Delete(id);
+		// 	return RedirectToAction(nameof(Reception));
+		// }
+
 		/// <summary>
 		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
 		/// If filters out the rooms that are already booked during the selected dates.
@@ -397,7 +429,7 @@ namespace HotelManagement.Controllers
 				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
 							!r.Bookings.Any(b => b.StartDate < end && b.EndDate > start))
 				.ToList();
-			
+
 			var viewModel = new StartBookingViewModel
 			{
 				RoomTypes = allRoomTypes.ToList(),

@@ -43,7 +43,7 @@ namespace HotelManagement.Controllers
         /// <param name="Description">The description of the food item.</param>
         /// <returns>Redirects to the FoodsList view after creating the food item.</returns>
         [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager,KitchenStaff")]
         public IActionResult CreateFood(string Name, decimal Price, string Description)
         {
             var newFood = new Food
@@ -65,7 +65,7 @@ namespace HotelManagement.Controllers
         /// <param name="id">The ID of the food item to delete.</param>
         /// <returns>Redirects to the FoodsList view after deleting the food item.</returns>
         [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [Authorize(Roles = "Manager,KitchenStaff")]
         public IActionResult DeleteFood(Guid id)
         {
             if (_foodRepository.Exists(id))
@@ -110,6 +110,29 @@ namespace HotelManagement.Controllers
             };
 
             return View(viewModel);
+        }
+
+        /// <summary>
+        /// ToggleAvailability allows staff and managers to toggle the availability of a food item.
+        /// It takes the food ID as a parameter and updates the availability status of the food item.
+        /// /// </summary>
+        /// <param name="id">The ID of the food item to toggle availability.</param>
+        /// /// <returns>Returns a JSON response indicating success and the new availability status.</returns>
+        [HttpPut]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,KitchenStaff")]
+        public IActionResult ToggleAvailability(Guid id)
+        {
+            var food = _foodRepository.GetById(id);
+            if (food == null)
+            {
+                return NotFound();
+            }
+
+            food.IsAvailable = !food.IsAvailable;
+            _foodRepository.Update(food);
+
+            return Json(new { success = true, isAvailable = food.IsAvailable });
         }
     }
 }

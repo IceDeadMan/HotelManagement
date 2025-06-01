@@ -58,14 +58,14 @@ namespace HotelManagement.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Manager,Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(Guid id, ActivityStatus status)
         {
             await _activityRecordRepository.UpdateStatusAsync(id, status);
             //TempData["SuccessMessage"] = "Activity record status updated successfully.";
-            return RedirectToAction("ActivityRecordsList");
+            return Json(new { success = true, message = "Status updated successfully." });
         }
 
     }

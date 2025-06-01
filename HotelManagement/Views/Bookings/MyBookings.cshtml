@@ -2,6 +2,9 @@
 <!-- This view displays the user's bookings in a table format. -->
 <!-- It includes a link to view the details of each booking. -->
 @model IEnumerable<HotelManagement.Models.Booking>
+@using HotelManagement.Enums
+
+
 
 @{
     ViewData["Title"] = "My Bookings";
@@ -18,12 +21,12 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Booking ID</th>
                 <th>Check-in</th>
                 <th>Check-out</th>
                 <th>Status</th>
                 <th>Rooms</th>
                 <th>Total Nights</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -32,10 +35,17 @@ else
                 var nights = (booking.EndDate - booking.StartDate).Days;
 
                 <tr onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">
-                    <td>@booking.Id</td>
                     <td>@booking.StartDate.ToShortDateString()</td>
                     <td>@booking.EndDate.ToShortDateString()</td>
-                    <td>@booking.Status.ToString()</td>
+                    <td class="@(booking.Status switch {
+                        BookingStatus.Pending => "status-pending",
+                        BookingStatus.Confirmed => "status-confirmed",
+                        BookingStatus.Completed => "status-completed",
+                        BookingStatus.Cancelled => "status-cancelled",
+                        _ => ""
+                    })">
+                        @booking.Status
+                    </td>
                     <td>
                         <ul>
                         @foreach (var room in booking.Rooms)
@@ -45,6 +55,22 @@ else
                         </ul>
                     </td>
                     <td>@nights</td>
+
+                    @if (booking.Status == BookingStatus.Pending)
+                    {
+                        <td>
+                            <form asp-action="CancelBooking" asp-controller="Bookings" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@booking.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?');">
+                                    Cancel
+                                </button>
+                            </form>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
                 </tr>
             }
         </tbody>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.Models;
 using AutoMapper;
+using HotelManagement.Models.JoinEntities;
 
 namespace HotelManagement.Controllers
 {
@@ -34,12 +35,13 @@ namespace HotelManagement.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Manager,Staff")]
+        [HttpPut]
+        [Authorize(Roles = "Manager,KitchenStaff")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(Guid id, OrderStatus status)
         {
             await _foodOrderRepository.UpdateStatusAsync(id, status);
-            return RedirectToAction("FoodOrdersList");
+            return Json(new { success = true, message = "Status updated successfully." });
         }
 
         [HttpPost]
@@ -63,7 +65,13 @@ namespace HotelManagement.Controllers
                 Description = model.Description,
                 OrderDate = DateTime.Now,
                 Status = OrderStatus.Pending,
-                Foods = foodItems.ToList()
+                FoodOrderFoods = model.SelectedFoodIds
+                    .GroupBy(id => id)
+                    .Select(group => new FoodOrderFood
+                    {
+                        FoodId = group.Key,
+                        Quantity = group.Count() // If multiple selections represent quantity
+                    }).ToList()
             };
 
             _foodOrderRepository.Create(order);

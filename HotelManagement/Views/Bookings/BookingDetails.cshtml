@@ -1,6 +1,7 @@
 ﻿<!-- Booking Details View -->
 <!-- This view displays the details of a booking for the user.-->
 @model HotelManagement.Models.Booking
+@using HotelManagement.Enums
 
 @{
     ViewData["Title"] = "Booking Details";
@@ -9,8 +10,15 @@
 
 <h2>My Stay</h2>
 
-<p><strong>Booking ID:</strong> @Model.Id</p>
-<p><strong>Status:</strong> @Model.Status</p>
+<p class="@(Model.Status switch {
+                        BookingStatus.Pending => "status-pending",
+                        BookingStatus.Confirmed => "status-confirmed",
+                        BookingStatus.Completed => "status-completed",
+                        BookingStatus.Cancelled => "status-cancelled",
+                        _ => ""
+                    })">
+                        @Model.Status
+                    </p>
 <p><strong>Check-in:</strong> @Model.StartDate.ToShortDateString() after 14:00</p>
 <p><strong>Check-out:</strong> @Model.EndDate.ToShortDateString() until 12:00</p>
 <p><strong>Total Nights:</strong> @nights</p>
