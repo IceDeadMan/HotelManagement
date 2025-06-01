@@ -14,6 +14,7 @@ public class RoomDetailViewModel
     public string RoomTypeDescription { get; set; } = "";
     public int RoomTypeCapacity { get; set; }
     public decimal RoomTypePrice { get; set; }
+    public byte[]? RoomTypePhoto { get; set; }
 
     public List<BookingSummaryViewModel> Bookings { get; set; } = new();
     public List<ReviewViewModel> Reviews { get; set; } = new();

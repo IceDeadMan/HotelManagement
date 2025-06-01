@@ -20,7 +20,9 @@ namespace HotelManagement.MapperProfiles
                 .ForMember(dest => dest.RoomTypePrice,
                            opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Price : 0m))
                 .ForMember(dest => dest.RoomTypeCapacity,
-                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Capacity : 0));
+                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Capacity : 0))
+                .ForMember(dest => dest.RoomTypePhoto,
+                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Photo : null));
         }
     }
 }
