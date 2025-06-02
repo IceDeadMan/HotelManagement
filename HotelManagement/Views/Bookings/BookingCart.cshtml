@@ -1,4 +1,6 @@
-﻿@model BookingCartViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model BookingCartViewModel
 @using HotelManagement.Models
 @using HotelManagement.ViewModels;
 
@@ -7,13 +9,13 @@
      It allows the user to remove rooms from the cart and finalize the booking. -->
 
 @{
-    ViewData["Title"] = "Booking Cart";
+    ViewData["Title"] = Localizer["BookingCart"];
 }
 
 @if (Model.RoomDetails == null || !Model.RoomDetails.Any())
 {
-    <h2>Your booking cart is empty.</h2>
-    <a class="btn btn-primary" asp-controller="Bookings" asp-action="StartBooking">Create Booking</a>
+    <h2>@Localizer["EmptyCart"]</h2>
+    <a class="btn btn-primary" asp-controller="Bookings" asp-action="StartBooking">@Localizer["CreateBooking"]</a>
     return;
 }
 
@@ -21,23 +23,23 @@
 {
     <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
         @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=@Localizer["Close"]></button>
     </div>
 }
 
-<h2>Booking Summary</h2>
-<p>Check-in: <strong>@Model.StartDate.ToShortDateString()</strong></p>
-<p>Check-out: <strong>@Model.EndDate.ToShortDateString()</strong></p>
-<p>Total Nights: <strong>@Model.Nights</strong></p>
+<h2>@Localizer["BookingSummary"]</h2>
+<p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToShortDateString()</strong></p>
+<p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToShortDateString()</strong></p>
+<p>@Localizer["TotalNights"]: <strong>@Model.Nights</strong></p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Room</th>
-            <th>Type</th>
-            <th>Capacity</th>
-            <th>Price per Night</th>
-            <th>Subtotal</th>
+            <th>@Localizer["Room"]</th>
+            <th>@Localizer["Type"]</th>
+            <th>@Localizer["Capacity"]</th>
+            <th>@Localizer["PriceNight"]</th>
+            <th>@Localizer["Subtotal"]</th>
             <th></th>
         </tr>
     </thead>
@@ -53,7 +55,7 @@
                 <td>
                     <form class="remove-room-form" asp-controller="Bookings" asp-action="RemoveFromBookingCart" method="post">
                         <input type="hidden" name="roomId" value="@item.RoomId" />
-                        <button type="submit" class="btn btn-danger">Remove</button>
+                        <button type="submit" class="btn btn-danger">@Localizer["Remove"]</button>
                     </form>
                 </td>
             </tr>
@@ -64,7 +66,7 @@
 <h4>Total: @Model.TotalPrice.ToString("C")</h4>
 
 <form asp-controller="Bookings" asp-action="FinalizeBooking" method="post">
-    <button type="submit" class="btn btn-success">Finalize Booking</button>
+    <button type="submit" class="btn btn-success">@Localizer["FinalizeBooking"]</button>
 </form>
 
 @section Scripts {

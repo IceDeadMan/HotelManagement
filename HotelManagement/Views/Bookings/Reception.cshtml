@@ -1,23 +1,25 @@
-﻿@using HotelManagement.Models;
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using HotelManagement.Models;
 @using HotelManagement.ViewModels;
-<!-- Reception View -->
-<!-- This view displays the reception dashboard with today's check-ins, ongoing bookings, upcoming bookings, and past/cancelled bookings. -->
 @model ReceptionViewModel
 
-<h2>Today's Check-Ins and Check-Outs</h2>
+<!-- Reception View -->
+<!-- This view displays the reception dashboard with today's check-ins, ongoing bookings, upcoming bookings, and past/cancelled bookings. -->
+<h2>@Localizer["Today"]</h2>
 @{
     ViewData["ShowActions"] = true;
 }
 <partial name="_BookingListPartial" model="Model.TodaysBookings" />
 
-<h2>Ongoing Bookings</h2>
+<h2>@Localizer["Ongoing"]</h2>
 @{
     ViewData["ShowActions"] = false;
 }
 <partial name="_BookingListPartial" model="Model.OngoingBookings" />
 
-<h2>Upcoming Bookings</h2>
+<h2>@Localizer["Upcoming"]</h2>
 <partial name="_BookingListPartial" model="Model.BeforeCheckIn" />
 
-<h2>Past / Cancelled Bookings</h2>
+<h2>@Localizer["Past"]</h2>
 <partial name="_BookingListPartial" model="Model.PastOrCancelledBookings" />

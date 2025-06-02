@@ -1,9 +1,11 @@
-﻿<!-- Booking Confirmation View -->
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<!-- Booking Confirmation View -->
 <!-- This is the booking confirmation screen-->
 @{
-    ViewData["Title"] = "Booking Confirmation";
+    ViewData["Title"] = Localizer["BookingConfirmation"];
 }
-<h2>Thank you! Your booking has been placed.</h2>
-<p>Status: <strong>Pending</strong></p>
-<a class="="btn btn-primary" asp-controller="Bookings" asp-action="MyBookings">View My Bookings</a>
-<a class="btn btn-primary" asp-controller="Home" asp-action="Index">Return Home</a>
+<h2>@Localizer["ThankYou"]</h2>
+<p>@Localizer["Status"]: <strong>@Localizer["Pending"]</strong></p>
+<a class="=" btn btn-primary" asp-controller="Bookings" asp-action="MyBookings">@Localizer["ViewMyBookings"]</a>
+<a class="btn btn-primary" asp-controller="Home" asp-action="Index">@Localizer["ReturnHome"]</a>
