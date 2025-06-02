@@ -138,4 +138,16 @@
   <data name="FoodOrdersTitle" xml:space="preserve">
     <value>Objednávky Jedál</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Čakajúca</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Zrušená</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Prebieha</value>
+  </data>
 </root>

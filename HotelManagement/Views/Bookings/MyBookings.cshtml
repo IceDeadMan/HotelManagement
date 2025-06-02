@@ -44,7 +44,7 @@ else
                         BookingStatus.Cancelled => "status-cancelled",
                         _ => ""
                     })">
-                        @booking.Status
+                        @Localizer[booking.Status.ToString()]
                     </td>
                     <td>
                         <ul>

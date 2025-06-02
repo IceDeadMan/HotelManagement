@@ -20,10 +20,10 @@
                         BookingStatus.Cancelled => "status-cancelled",
                         _ => ""
                     })">
-                        @Model.Status
+                        @Localizer[Model.Status.ToString()]
                     </p>
-<p><strong>@Localizer["CheckIn"]:</strong> @Model.StartDate.ToShortDateString() after 14:00</p>
-<p><strong>@Localizer["CheckOut"]:</strong> @Model.EndDate.ToShortDateString() until 12:00</p>
+<p><strong>@Localizer["CheckIn"]:</strong> @Model.StartDate.ToShortDateString() @Localizer["After"] 14:00</p>
+<p><strong>@Localizer["CheckOut"]:</strong> @Model.EndDate.ToShortDateString() @Localizer["Until"] 12:00</p>
 <p><strong>@Localizer["TotalNights"]:</strong> @nights</p>
 
 <h4>@Localizer["Rooms"]</h4>

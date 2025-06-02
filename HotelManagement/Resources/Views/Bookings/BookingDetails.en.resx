@@ -120,6 +120,12 @@
   <data name="Back" xml:space="preserve">
     <value>Back to My Bookings</value>
   </data>
+  <data name="After" xml:space="preserve">
+    <value>after</value>
+  </data>
+  <data name="Until" xml:space="preserve">
+    <value>until</value>
+  </data>
   <data name="BookingDetails" xml:space="preserve">
     <value>Booking Details</value>
   </data>
@@ -155,5 +161,17 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Confirmed</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
   </data>
 </root>

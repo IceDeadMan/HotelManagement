@@ -141,4 +141,13 @@
   <data name="ServiceActivityRequests" xml:space="preserve">
     <value>Požiadavky Aktivít</value>
   </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Prebieha</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Plánovaná</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
 </root>

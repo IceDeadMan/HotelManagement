@@ -43,7 +43,7 @@
                 BookingStatus.Cancelled => "status-cancelled",
                 _ => ""
             })">
-                @booking.Status
+                @Localizer[booking.Status.ToString()]
             </td>
             <td>@string.Join(", ", booking.RoomNumbers)</td>
             <td>

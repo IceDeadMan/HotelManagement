@@ -141,4 +141,13 @@
   <data name="ServiceActivityRequests" xml:space="preserve">
     <value>Service Activity Requests</value>
   </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
 </root>

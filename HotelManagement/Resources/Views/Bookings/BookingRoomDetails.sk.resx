@@ -121,7 +121,7 @@
     <value>Pridať rezenciu pre túto izbu.</value>
   </data>
   <data name="AlreadyReviewed" xml:space="preserve">
-    <value>Túto izbu ste už ohodnotili. Svoju recenziu môžte aktualizovať tuto.</value>
+    <value>Túto izbu ste už ohodnotili. Svoju recenziu môžte aktualizovať tu.</value>
   </data>
   <data name="BackToBooking" xml:space="preserve">
     <value>Späť na Rezerváciu</value>
@@ -156,6 +156,9 @@
   <data name="Rating" xml:space="preserve">
     <value>Hodnotenie (z 10)</value>
   </data>
+  <data name="Nights" xml:space="preserve">
+    <value>noci</value>
+  </data>
   <data name="RequestService" xml:space="preserve">
     <value>Požiadať o Servis</value>
   </data>
@@ -171,7 +174,7 @@
   <data name="ServiceRequests" xml:space="preserve">
     <value>Požiadavky na Servis</value>
   </data>
-  <data name="ServiceTpe" xml:space="preserve">
+  <data name="ServiceType" xml:space="preserve">
     <value>Typ Servisu</value>
   </data>
   <data name="SubmitReview" xml:space="preserve">

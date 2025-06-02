@@ -123,14 +123,26 @@
   <data name="Cancel" xml:space="preserve">
     <value>Zrušiť</value>
   </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Zrušený</value>
+  </data>
   <data name="CheckIn" xml:space="preserve">
     <value>Príchod</value>
   </data>
   <data name="CheckOut" xml:space="preserve">
     <value>Odchod</value>
   </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončený</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Potvrdený</value>
+  </data>
   <data name="EndDate" xml:space="preserve">
     <value>Koniec Pobytu</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Čakajúci</value>
   </data>
   <data name="Rooms" xml:space="preserve">
     <value>Izby</value>

@@ -13,7 +13,7 @@
 }
 
 <h2>@Localizer["Room"] @Model.Room.RoomNumber</h2>
-<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights nights)</p>
+<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights @Localizer["Nights"])</p>
 <p><strong>@Localizer["RoomType"]:</strong> @Model.Room.RoomType?.Name, @Model.Room.RoomType?.Description</p>
 <p><strong>@Localizer["Description"]:</strong> @Model.Room.Description</p>
 
@@ -130,7 +130,7 @@ else
             <label for="Comment">@Localizer["Comment"]</label>
             <textarea name="Comment" class="form-control">@Model.Review.Comment</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">@Localizer["Update Review"]</button>
+        <button type="submit" class="btn btn-primary">@Localizer["UpdateReview"]</button>
     </form>
 }
 else

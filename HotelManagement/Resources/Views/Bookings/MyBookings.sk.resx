@@ -126,17 +126,29 @@
   <data name="CancelConfirm" xml:space="preserve">
     <value>Ste si istí že chcete zrušiť túto rezerváciu?</value>
   </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Zrušená</value>
+  </data>
   <data name="CheckIn" xml:space="preserve">
     <value>Príchod</value>
   </data>
   <data name="CheckOut" xml:space="preserve">
     <value>Odchod</value>
   </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Potvrdená</value>
+  </data>
   <data name="MyBookings" xml:space="preserve">
     <value>Moje Rezervácie</value>
   </data>
   <data name="NoBookings" xml:space="preserve">
     <value>Momentálne nemáte žiadne rezervácie.</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Čakajúca</value>
   </data>
   <data name="Rooms" xml:space="preserve">
     <value>Izby</value>
