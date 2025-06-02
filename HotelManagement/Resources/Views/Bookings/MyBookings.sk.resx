@@ -142,7 +142,7 @@
     <value>Izby</value>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Status</value>
+    <value>Stav</value>
   </data>
   <data name="TotalNights" xml:space="preserve">
     <value>Počet Nocí</value>

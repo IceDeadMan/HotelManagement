@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using HotelManagement.Models;
-using HotelManagement.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using HotelManagement.ViewModels.DTOs;
 
 namespace HotelManagement.Services
 {

@@ -1,7 +1,7 @@
 ﻿using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using HotelManagement.Enums;
-using HotelManagement.Models.DTOs;
+using HotelManagement.ViewModels.DTOs;
 
 namespace HotelManagement.DAL.Repositories
 {

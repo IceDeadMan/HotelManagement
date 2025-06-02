@@ -133,7 +133,7 @@
     <value>Izba</value>
   </data>
   <data name="FoodOrdersStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>Stav</value>
   </data>
   <data name="FoodOrdersTitle" xml:space="preserve">
     <value>Objednávky Jedál</value>

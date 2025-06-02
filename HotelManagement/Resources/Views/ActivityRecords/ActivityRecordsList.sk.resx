@@ -130,7 +130,7 @@
     <value>Izba</value>
   </data>
   <data name="ActivityRecordsStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>Stav</value>
   </data>
   <data name="ActivityRecordsType" xml:space="preserve">
     <value>Typ</value>

@@ -1,6 +1,6 @@
 using HotelManagement.Enums;
 
-namespace HotelManagement.Models.DTOs;
+namespace HotelManagement.ViewModels.DTOs;
 
 /// <summary>
 /// Represents a summary of a booking for the reception desk.

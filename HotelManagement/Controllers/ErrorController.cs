@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
 using HotelManagement.Models;
+using HotelManagement.ViewModels;
 using System.Diagnostics;
 
 namespace HotelManagement.Controllers

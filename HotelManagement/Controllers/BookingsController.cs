@@ -2,12 +2,12 @@
 using HotelManagement.Enums;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Services;
-using HotelManagement.Models.DTOs;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.ViewModels;
 using HotelManagement.Logging;
+using HotelManagement.ViewModels.DTOs;
 
 
 namespace HotelManagement.Controllers

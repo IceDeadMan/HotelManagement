@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Identity;
-using HotelManagement.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagement.Logging;
+using HotelManagement.ViewModels.Users;
 
 
 namespace HotelManagement.Controllers

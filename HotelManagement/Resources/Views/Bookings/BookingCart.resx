@@ -120,6 +120,15 @@
   <data name="BookingCart" xml:space="preserve">
     <value>Booking Cart</value>
   </data>
+  <data name="BookingSummary" xml:space="preserve">
+    <value>Your Booking</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Check-out</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -128,5 +137,29 @@
   </data>
   <data name="EmptyCart" xml:space="preserve">
     <value>Your bookig cart is empty.</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Room Type</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="FinalizeBooking" xml:space="preserve">
+    <value>Finalize Booking</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="TotalNights" xml:space="preserve">
+    <value>Number of Nights</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Capacity</value>
+  </data>
+  <data name="PriceNight" xml:space="preserve">
+    <value>Price per Night</value>
   </data>
 </root>

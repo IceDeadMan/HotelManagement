@@ -1,5 +1,5 @@
 using System;
-using HotelManagement.Models.DTOs;
+using HotelManagement.ViewModels.DTOs;
 
 namespace HotelManagement.ViewModels;
 

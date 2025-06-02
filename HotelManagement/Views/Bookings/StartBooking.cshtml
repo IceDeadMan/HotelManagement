@@ -141,8 +141,8 @@
 
 			const nights = getNights(start, end);
 			staySummary.innerHTML = `
-				Check-in: <strong>${formatDateDisplay(start)}</strong><br>
-				Check-out: <strong>${formatDateDisplay(end)}</strong><br>
+				@Localizer["CheckIn"]: <strong>${formatDateDisplay(start)}</strong><br>
+				@Localizer["CheckOut"]: <strong>${formatDateDisplay(end)}</strong><br>
 				@Localizer["Nights"]: <strong>${nights}</strong>
 			`;
 			staySummary.style.display = "block";

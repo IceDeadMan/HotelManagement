@@ -156,6 +156,12 @@
   <data name="RoomType" xml:space="preserve">
     <value>Typ Izby</value>
   </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Príchod</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Odchod</value>
+  </data>
   <data name="SelectDuration" xml:space="preserve">
     <value>Prosím vyberte dĺžku pobytu</value>
   </data>
