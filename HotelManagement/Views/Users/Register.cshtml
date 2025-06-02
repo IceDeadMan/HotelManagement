@@ -1,9 +1,12 @@
-﻿@model HotelManagement.Models.Users.RegisterViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model HotelManagement.Models.Users.RegisterViewModel
+
 <!-- Register View -->
 <!-- This view displays the registration form for new users. -->
 <form asp-action="Register" method="post">
-    <input asp-for="Username" placeholder="Username" />
+    <input asp-for="Username" placeholder="@Localizer["Username2"]" />
     <input asp-for="Email" placeholder="Email" />
-    <input asp-for="Password" placeholder="Password" type="password" />
-    <button type="submit">Register</button>
+    <input asp-for="Password" placeholder="@Localizer["Password2"]" type="password" />
+    <button type="submit">@Localizer["Register3"]</button>
 </form>

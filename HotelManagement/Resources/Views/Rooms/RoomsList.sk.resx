@@ -120,4 +120,46 @@
   <data name="RoomsList" xml:space="preserve">
     <value>Zoznam Izieb</value>
   </data>
+  <data name="CreateNewRoom" xml:space="preserve">
+    <value>Vytvoriť Novú Izbu</value>
+  </data>
+  <data name="RoomNumber" xml:space="preserve">
+    <value>Číslo Izby</value>
+  </data>
+  <data name="RoomDesc" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="RoomType" xml:space="preserve">
+    <value>Typ Izby</value>
+  </data>
+  <data name="AddRoom" xml:space="preserve">
+    <value>Pridať Izbu</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Izba</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapacita</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>Zobraziť Detail</value>
+  </data>
+  <data name="DeleteRoom" xml:space="preserve">
+    <value>Zmazať</value>
+  </data>
+  <data name="DeleteRoomText" xml:space="preserve">
+    <value>Ste si istý že chcete zmazať túto izbu?</value>
+  </data>
+  <data name="SelectType" xml:space="preserve">
+    <value>Vyberte</value>
+  </data>
+  <data name="Guests" xml:space="preserve">
+    <value>hostia</value>
+  </data>
 </root>

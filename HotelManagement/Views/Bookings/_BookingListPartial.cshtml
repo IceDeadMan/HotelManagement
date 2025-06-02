@@ -2,6 +2,8 @@
 @using HotelManagement.Models.DTOs;
 @using HotelManagement.Enums;
 @using HotelManagement.ViewModels;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model IEnumerable<ReceptionBookingSummary>
 <!-- Reception Booking List Partial View -->
 <!-- This partial view displays a list of bookings with options to change their status.
@@ -10,12 +12,12 @@
 <table class="table table-bordered reception-bookings-table">
     <thead>
         <tr>
-            <th>User</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Status</th>
-            <th>Rooms</th>
-            <th>Actions</th>
+            <th>@Localizer["User"]</th>
+            <th>@Localizer["StartDate"]</th>
+            <th>@Localizer["EndDate"]</th>
+            <th>@Localizer["Status"]</th>
+            <th>@Localizer["Rooms"]</th>
+            <th>@Localizer["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -50,19 +52,19 @@
                     @* Check-In: Only if today is StartDate and status is Pending *@
                     @if (booking.Status == BookingStatus.Pending && booking.StartDate.Date == DateTime.Today)
                     {
-                        <button type="submit" name="newStatus" value="Confirmed" class="btn btn-success btn-sm">Check In</button>
+                        <button type="submit" name="newStatus" value="Confirmed" class="btn btn-success btn-sm">@Localizer["CheckIn"]</button>
                     }
 
                     @* Check-Out: Only if today is EndDate and status is Confirmed *@
                     @if ((booking.Status == BookingStatus.Confirmed) && booking.EndDate.Date == DateTime.Today)
                     {
-                        <button type="submit" name="newStatus" value="Completed" class="btn btn-primary btn-sm">Check Out</button>
+                        <button type="submit" name="newStatus" value="Completed" class="btn btn-primary btn-sm">@Localizer["CheckOut"]</button>
                     }
 
                     @* Cancel: Allow cancel if booking is in pending state*@
                     @if (booking.Status == BookingStatus.Pending)
                     {
-                        <button type="submit" name="newStatus" value="Cancelled" class="btn btn-danger btn-sm">Cancel</button>
+                        <button type="submit" name="newStatus" value="Cancelled" class="btn btn-danger btn-sm">@Localizer["Cancel"]</button>
                     }
                 </form>
 

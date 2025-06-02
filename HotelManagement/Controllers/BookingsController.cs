@@ -1,13 +1,13 @@
 ﻿using HotelManagement.DAL.Repositories;
 using HotelManagement.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using HotelManagement.Services;
 using HotelManagement.Models.DTOs;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.ViewModels;
+using HotelManagement.Logging;
 
 
 namespace HotelManagement.Controllers
@@ -20,7 +20,7 @@ namespace HotelManagement.Controllers
 	/// </summary>
 	public class BookingsController : Controller
 	{
-		private readonly ILogger<BookingsController> _logger;
+		private readonly AuditLogger _auditLogger;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
 		private readonly RoomRepository _roomRepository;
@@ -28,14 +28,14 @@ namespace HotelManagement.Controllers
 		private readonly ReviewRepository _reviewRepository;
 
 		public BookingsController(
-			ILogger<BookingsController> logger,
+			AuditLogger auditLogger,
 			RoomTypeRepository roomTypeRepository,
 			BookingCartService bookingCartService,
 			RoomRepository roomRepository,
 			BookingRepository bookingRepository,
 			ReviewRepository reviewRepository)
 		{
-			_logger = logger;
+			_auditLogger = auditLogger;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
 			_roomRepository = roomRepository;
@@ -92,6 +92,7 @@ namespace HotelManagement.Controllers
 			if (!cart.RoomIds.Contains(dto.RoomId))
 			{
 				cart.RoomIds.Add(dto.RoomId);
+				_auditLogger.Log("AddToCart", $"Room {dto.RoomId} successfully added to the booking cart.");
 			}
 
 			_bookingCartService.SaveCart(cart);
@@ -111,7 +112,8 @@ namespace HotelManagement.Controllers
 			if (cart.RoomIds.Contains(dto.RoomId))
 			{
 				cart.RoomIds.Remove(dto.RoomId);
-				_bookingCartService.SaveCart(cart);
+                _auditLogger.Log("AddToCart", $"Room {dto.RoomId} successfully removed from the booking cart.");
+                _bookingCartService.SaveCart(cart);
 			}
 			return Json(new { success = true });
 		}
@@ -212,6 +214,7 @@ namespace HotelManagement.Controllers
 
 			_bookingRepository.Create(booking);
 			_bookingCartService.ClearCart();
+			_auditLogger.Log("FinalizeBooking", "Booking successfully finalized.");
 
 			TempData["Success"] = "Booking finalized successfully!";
 			return View("BookingConfirmation", booking);
@@ -359,6 +362,7 @@ namespace HotelManagement.Controllers
 		public async Task<IActionResult> ChangeStatus(Guid id, BookingStatus newStatus)
 		{
 			await _bookingRepository.ChangeStatusAsync(id, newStatus);
+			_auditLogger.Log("ChangeBookingStatus", $"Booking {id} has changed status to {newStatus}");
 			return RedirectToAction(nameof(Reception));
 		}
 		
@@ -390,6 +394,7 @@ namespace HotelManagement.Controllers
 			}
 
 			await _bookingRepository.ChangeStatusAsync(id, BookingStatus.Cancelled);
+			_auditLogger.Log("CancelBooking", $"Booking {id} successfully cancelled.");
 
 			TempData["Success"] = "Booking cancelled successfully.";
 			return RedirectToAction("MyBookings");

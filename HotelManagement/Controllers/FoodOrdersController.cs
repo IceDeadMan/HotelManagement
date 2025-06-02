@@ -7,6 +7,7 @@ using System.Security.Claims;
 using HotelManagement.Models;
 using AutoMapper;
 using HotelManagement.Models.JoinEntities;
+using HotelManagement.Logging;
 
 namespace HotelManagement.Controllers
 {
@@ -18,12 +19,14 @@ namespace HotelManagement.Controllers
         private readonly FoodOrderRepository _foodOrderRepository;
         private readonly FoodRepository _foodRepository;
         private readonly IMapper _mapper;
+        private readonly AuditLogger _auditLogger;
 
-        public FoodOrdersController(FoodOrderRepository foodOrderRepository, FoodRepository foodRepository, IMapper mapper)
+        public FoodOrdersController(FoodOrderRepository foodOrderRepository, FoodRepository foodRepository, IMapper mapper, AuditLogger auditLogger)
         {
             _foodOrderRepository = foodOrderRepository;
             _foodRepository = foodRepository;
             _mapper = mapper;
+            _auditLogger = auditLogger;
         }
 
         public async Task<IActionResult> FoodOrdersList()
@@ -41,6 +44,7 @@ namespace HotelManagement.Controllers
         public async Task<IActionResult> UpdateStatus(Guid id, OrderStatus status)
         {
             await _foodOrderRepository.UpdateStatusAsync(id, status);
+            _auditLogger.Log("UpdateStatus", $"Order {id} status updated to {status}.");
             return Json(new { success = true, message = "Status updated successfully." });
         }
 
@@ -75,6 +79,7 @@ namespace HotelManagement.Controllers
             };
 
             _foodOrderRepository.Create(order);
+            _auditLogger.Log("CreateOrder", $"Order created for room {model.SelectedRoomId} with foods: {string.Join(", ", model.SelectedFoodIds)}.");
             TempData["Success"] = "Your food order has been placed!";
             return RedirectToAction(controllerName: "Foods", actionName: "FoodMenu");
         }

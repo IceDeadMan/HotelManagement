@@ -5,6 +5,7 @@ using HotelManagement.ViewModels;
 using AutoMapper;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
+using HotelManagement.Logging;
 
 namespace HotelManagement.Controllers
 {
@@ -14,18 +15,18 @@ namespace HotelManagement.Controllers
 	/// </summary>
 	public class RoomsController : Controller
 	{
-		private readonly ILogger<RoomsController> _logger;
-		private readonly RoomRepository _roomRepository;
+        private readonly AuditLogger _auditLogger;
+        private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
 		private readonly IMapper _mapper;
 
-		public RoomsController(ILogger<RoomsController> logger, RoomRepository roomRepository,
+		public RoomsController(AuditLogger auditLogger, RoomRepository roomRepository,
 								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
 								IMapper mapper)
 		{
-			_logger = logger;
-			_roomRepository = roomRepository;
+            _auditLogger = auditLogger;
+            _roomRepository = roomRepository;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
 			_mapper = mapper;
@@ -46,7 +47,9 @@ namespace HotelManagement.Controllers
 				Rooms = _mapper.Map<List<Room>>(rooms),
 				RoomTypes = _mapper.Map<List<RoomType>>(roomTypes)
 			};
-			return View(viewModel);
+
+            _auditLogger.Log("RoomsList", "Rooms list viewed.");
+            return View(viewModel);
 		}
 		/// <summary>
 		/// RoomDetails displays the details of a specific room based on its ID.
@@ -61,7 +64,8 @@ namespace HotelManagement.Controllers
 			viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
 			viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
 
-			return View(viewModel);
+			_auditLogger.Log("RoomDetails", $"Room {id} details viewed.");
+            return View(viewModel);
 		}
 
 		/// <summary>
@@ -75,10 +79,12 @@ namespace HotelManagement.Controllers
 			if (ModelState.IsValid)
 			{
 				_roomRepository.Create(room);
-				return RedirectToAction("RoomsList");
+                _auditLogger.Log("CreateRoom", $"Room {room.Id} created successfully.");
+                return RedirectToAction("RoomsList");
 			}
 
-			return RedirectToAction("RoomsList");
+			_auditLogger.Log("CreateRoom", "Room creation failed due to invalid model state.");
+            return RedirectToAction("RoomsList");
 		}
 
 		/// <summary>
@@ -93,7 +99,8 @@ namespace HotelManagement.Controllers
 			if (room != null)
 			{
 				_roomRepository.Delete(id);
-			}
+                _auditLogger.Log("DeleteRoom", $"Room {id} deleted successfully.");
+            }
 			return RedirectToAction("RoomsList");
 		}
 	}

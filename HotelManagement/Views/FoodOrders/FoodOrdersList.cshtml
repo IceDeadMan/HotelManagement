@@ -1,25 +1,27 @@
-﻿@model List<HotelManagement.ViewModels.FoodOrderViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model List<HotelManagement.ViewModels.FoodOrderViewModel>
 @using HotelManagement.Enums
+
 <!-- Food Orders List View -->
 <!-- This view displays a list of food orders made by guests. -->
 <!-- Staff can update the status of orders and delete them. -->
-
 @{
-    ViewData["Title"] = "Food Orders";
+    ViewData["Title"] = Localizer["FoodOrdersTitle"];
 }
 
 <div class="container mt-4">
-    <h2>Food Orders</h2>
+    <h2>@Localizer["FoodOrdersTitle"]</h2>
     @Html.AntiForgeryToken()
     <table class="table table-bordered table-striped mt-3">
         <thead class="table-dark">
             <tr>
-                <th>Guest</th>
-                <th>Room</th>
-                <th>Description</th>
-                <th>Order Date</th>
-                <th>Foods</th>
-                <th>Status</th>
+                <th>@Localizer["FoodOrdersGuest"]</th>
+                <th>@Localizer["FoodOrdersRoom"]</th>
+                <th>@Localizer["FoodOrdersDescription"]</th>
+                <th>@Localizer["FoodOrdersDate"]</th>
+                <th>@Localizer["FoodOrdersFoods"]</th>
+                <th>@Localizer["FoodOrdersStatus"]</th>
             </tr>
         </thead>
         <tbody>

@@ -4,6 +4,7 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagement.ViewModels;
 using System.Security.Claims;
+using HotelManagement.Logging;
 
 namespace HotelManagement.Controllers
 {
@@ -13,13 +14,13 @@ namespace HotelManagement.Controllers
     /// </summary>
     public class FoodsController : Controller
     {
-        private readonly ILogger<FoodsController> _logger;
+        private readonly AuditLogger _auditLogger;
         private readonly FoodRepository _foodRepository;
         private readonly RoomRepository _roomRepository;
 
-        public FoodsController(ILogger<FoodsController> logger, FoodRepository foodRepository, RoomRepository roomRepository)
+        public FoodsController(AuditLogger auditLogger, FoodRepository foodRepository, RoomRepository roomRepository)
         {
-            _logger = logger;
+            _auditLogger = auditLogger;
             _foodRepository = foodRepository;
             _roomRepository = roomRepository;
         }
@@ -54,6 +55,7 @@ namespace HotelManagement.Controllers
             };
 
             _foodRepository.Create(newFood);
+            _auditLogger.Log("CreateFood", $"New food {Name} created successfully.");
 
             return RedirectToAction("FoodMenu");
         }
@@ -71,6 +73,7 @@ namespace HotelManagement.Controllers
             if (_foodRepository.Exists(id))
             {
                 _foodRepository.Delete(id);
+                _auditLogger.Log("DeleteFood", $"Food with ID {id} deleted successfully.");
             }
             return RedirectToAction("FoodMenu");
         }
@@ -131,6 +134,7 @@ namespace HotelManagement.Controllers
 
             food.IsAvailable = !food.IsAvailable;
             _foodRepository.Update(food);
+            _auditLogger.Log("ToggleAvailability", $"Food {food.Name} availability toggled to {food.IsAvailable}.");
 
             return Json(new { success = true, isAvailable = food.IsAvailable });
         }

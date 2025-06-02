@@ -1,14 +1,16 @@
-﻿<!-- Booking Details View -->
-<!-- This view displays the details of a booking for the user.-->
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model HotelManagement.Models.Booking
 @using HotelManagement.Enums
 
+<!-- Booking Details View -->
+<!-- This view displays the details of a booking for the user.-->
 @{
-    ViewData["Title"] = "Booking Details";
+    ViewData["Title"] = Localizer["BookingDetails"];
     var nights = (Model.EndDate - Model.StartDate).Days;
 }
 
-<h2>My Stay</h2>
+<h2>@Localizer["MyStay"]</h2>
 
 <p class="@(Model.Status switch {
                         BookingStatus.Pending => "status-pending",
@@ -19,19 +21,19 @@
                     })">
                         @Model.Status
                     </p>
-<p><strong>Check-in:</strong> @Model.StartDate.ToShortDateString() after 14:00</p>
-<p><strong>Check-out:</strong> @Model.EndDate.ToShortDateString() until 12:00</p>
-<p><strong>Total Nights:</strong> @nights</p>
+<p><strong>@Localizer["CheckIn"]:</strong> @Model.StartDate.ToShortDateString() after 14:00</p>
+<p><strong>@Localizer["CheckOut"]:</strong> @Model.EndDate.ToShortDateString() until 12:00</p>
+<p><strong>@Localizer["TotalNights"]:</strong> @nights</p>
 
-<h4>Rooms</h4>
+<h4>@Localizer["Rooms"]</h4>
 <table class="table">
     <thead>
         <tr>
-            <th>Room Number</th>
-            <th>Type</th>
-            <th>Capacity</th>
-            <th>Price/Night</th>
-            <th>Subtotal</th>
+            <th>@Localizer["RoomNumber"]</th>
+            <th>@Localizer["Type"]</th>
+            <th>@Localizer["Capacity"]</th>
+            <th>@Localizer["PriceNight"]</th>
+            <th>@Localizer["Subtotal"]</th>
         </tr>
     </thead>
     <tbody>
@@ -59,10 +61,10 @@
 </form>
 
 <p class="fw-bold">
-    Total Price: @Model.Rooms.Sum(r => (r.RoomType?.Price ?? 0) * nights).ToString("C")
+    @Localizer["TotalPrice"]: @Model.Rooms.Sum(r => (r.RoomType?.Price ?? 0) * nights).ToString("C")
 </p>
 
-<a class="btn btn-secondary" asp-action="MyBookings">Back to My Bookings</a>
+<a class="btn btn-secondary" asp-action="MyBookings">@Localizer["Back"]</a>
 
 @section Scripts {
     <script>

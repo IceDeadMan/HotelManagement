@@ -1,14 +1,16 @@
-﻿@model StartBookingViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model StartBookingViewModel
 @using HotelManagement.Models
 @using HotelManagement.ViewModels;
 
 <!-- Start Booking View -->
-<!-- This view allows the user to select a room type and stay duration for booking. -->
+<!-- This view allows the user to select a room type and stay durati on for booking. -->
 <!-- It displays available rooms based on the selected criteria. -->
 <!-- It allows adding/removing rooms to/from the booking cart. -->
 
 @{
-	ViewData["Title"] = "Create Booking";
+	ViewData["Title"] = Localizer["CreateBooking"];
 }
 
 <!-- Form for selecting room type and stay duration -->
@@ -16,12 +18,12 @@
 <form method="get" asp-controller="Bookings" asp-action="AvailableRooms">
 	<div class="row mb-4">
 		<div class="col-md-6">
-			<label class="form-label">Room Type</label>
+			<label class="form-label">@Localizer["RoomType"]</label>
 			<div class="d-flex flex-column gap-2">
 				<div class="form-check border rounded p-3 @(Model.SelectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
 					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(Model.SelectedRoomTypeId == Guid.Empty ? "checked" : "") />
 					<label class="form-check-label w-100" for="roomTypeAny">
-						-- Any --
+						-- @Localizer["LabelAny"] --
 					</label>
 				</div>
 
@@ -40,15 +42,15 @@
 		</div>
 
 		<div class="col-md-6">
-			<label for="stayDuration" class="form-label">Stay Duration</label>
-			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder="Select stay duration" readonly />
-			<div id="stayDurationError" class="text-danger mt-1" style="display:none;">Please select a valid stay duration.</div>
+			<label for="stayDuration" class="form-label">@Localizer["StayDuration"]</label>
+			<input type="text" id="stayDuration" name="stayDuration" class="form-control" placeholder=@Localizer["StayDuration"] readonly />
+			<div id="stayDurationError" class="text-danger mt-1" style="display:none;">@Localizer["ValidDuration"]</div>
 			<div id="staySummary" class="mt-2 text-muted"></div>
 			<input type="hidden" name="start" value="@Model.StartDate" />
 			<input type="hidden" name="end" value="@Model.EndDate" />
 		</div>
 	</div>
-	<button type="submit" class="btn btn-primary mb-4">Show Available Rooms</button>
+	<button type="submit" class="btn btn-primary mb-4">@Localizer["ShowRooms"]</button>
 </form>
 
 <!-- Current cart for dev/debug only -->
@@ -58,13 +60,13 @@
 	<p>Start: @Model.Cart.StartDate</p>
 	<p>End: @Model.Cart.EndDate</p>
 
-	<p> Number of rooms in cart: @Model.Cart.RoomIds.Count()</p>
+	<p> @Localizer["NumberOfRooms"]: @Model.Cart.RoomIds.Count()</p>
 </div>  
 
 <!-- Display available rooms based on the selected criteria -->
 @if (Model.AvailableRooms.Any())
 {
-	<h4 class="mt-4">Available Rooms</h4>
+	<h4 class="mt-4">@Localizer["AvailableRooms"]</h4>
 
 	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
 		@foreach (var room in Model.AvailableRooms)
@@ -73,12 +75,12 @@
 			<div class="col">
 				<div class="card h-100">
 					<div class="card-body">
-						<h5 class="card-title">Room @room.RoomNumber</h5>
+						<h5 class="card-title">@Localizer["Room"] @room.RoomNumber</h5>
 						<p class="card-text">@room.RoomType.Description</p>
-						<p>Type: <strong>@room.RoomType?.Name</strong></p>
+						<p>@Localizer["RoomType"]: <strong>@room.RoomType?.Name</strong></p>
 						<p>(dev)ID: <strong>@room.Id</strong></p>
-						<p>Capacity: <strong>@room.RoomType?.Capacity</strong></p>
-						<p>Price: <strong>@room.RoomType?.Price.ToString("C")</strong></p>
+						<p>@Localizer["RoomCapacity"]: <strong>@room.RoomType?.Capacity</strong></p>
+						<p>@Localizer["RoomPrice"]: <strong>@room.RoomType?.Price.ToString("C")</strong></p>
 
 						<form class="booking-cart-form" asp-controller="Bookings" asp-action="@(isInCart ? "RemoveFromBookingCart" : "AddToBookingCart")" method="post">
 							<input type="hidden" name="roomId" value="@room.Id" />
@@ -86,7 +88,7 @@
 							<input type="hidden" name="endDate" value="@Model.EndDate" />
 
 							<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success") w-100">
-								@(isInCart ? "Remove Room" : "Book Room")
+								@(isInCart ? Localizer["RemoveRoom"] : Localizer["BookRoom"])
 							</button>
 
 							@Html.AntiForgeryToken()

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using HotelManagement.ViewModels;
+using HotelManagement.Logging;
 
 
 
@@ -16,13 +17,13 @@ namespace HotelManagement.Controllers
     /// </summary>
     public class EventsController : Controller
     {
-        private readonly ILogger<EventsController> _logger;
+        private readonly AuditLogger _auditLogger;
         private readonly EventRepository _eventRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public EventsController(ILogger<EventsController> logger, EventRepository eventRepository, UserManager<ApplicationUser> userManager)
+        public EventsController(AuditLogger auditLogger, EventRepository eventRepository, UserManager<ApplicationUser> userManager)
         {
-            _logger = logger;
+            _auditLogger = auditLogger;
             _eventRepository = eventRepository;
             _userManager = userManager;
         }
@@ -78,6 +79,7 @@ namespace HotelManagement.Controllers
             };
 
             _eventRepository.Create(newEvent);
+            _auditLogger.Log("CreateEvent", $"Event '{Name}' created by successfully.");
 
             return RedirectToAction("EventsList");
         }
@@ -95,6 +97,7 @@ namespace HotelManagement.Controllers
             if (_eventRepository.Exists(id))
             {
                 _eventRepository.Delete(id);
+                _auditLogger.Log("DeleteEvent", $"Event with ID '{id}' deleted successfully.");
             }
             else
             {
@@ -135,6 +138,7 @@ namespace HotelManagement.Controllers
             }
 
             _eventRepository.RegisterUserToEvent(eventId, userId, numberOfParticipants);
+            _auditLogger.Log("RegisterToEvent", $"User registered for event {eventId} with {numberOfParticipants} participants.");
             TempData["Success"] = "You have successfully registered for the event.";
             return RedirectToAction("EventsList");
         }
@@ -163,6 +167,7 @@ namespace HotelManagement.Controllers
             }
 
             _eventRepository.UnregisterUserFromEvent(eventId, userId);
+            _auditLogger.Log("UnregisterFromEvent", $"User unregistered from event {eventId}.");
             return RedirectToAction("EventsList");
         }
 
@@ -184,6 +189,7 @@ namespace HotelManagement.Controllers
             }
 
             _eventRepository.AssignStaffToEvent(eventId, staffUserId);
+            _auditLogger.Log("AssignStaffToEvent", $"Staff member {staffUserId} assigned to event {eventId}.");
             return RedirectToAction("EventsList");
         }
 
@@ -204,6 +210,7 @@ namespace HotelManagement.Controllers
             }
 
             _eventRepository.UnassignStaffFromEvent(eventId, staffUserId);
+            _auditLogger.Log("UnassignStaffFromEvent", $"Staff member {staffUserId} unassigned from event {eventId}.");
             return RedirectToAction("EventsList");
         }
 
