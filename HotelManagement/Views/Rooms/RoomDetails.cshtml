@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model HotelManagement.ViewModels.RoomDetailViewModel
+@using System.Globalization;
 
 <!-- Room Details View -->
 <!-- This view displays the details of a room, including its bookings in a calendar and guest reviews. -->
@@ -19,7 +20,7 @@
 					<p class="card-text"><strong>@Localizer["RoomCapacityDetail"]:</strong> @Model.RoomTypeCapacity</p>
 					<p class="card-text"><strong>@Localizer["RoomDescriptionDetail"]:</strong> @Model.Description</p>
 					<p class="card-text"><strong>@Localizer["RoomTypeDescription"]: </strong>@Model.RoomTypeDescription</p>
-					<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("C")</p>
+					<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("N2", CultureInfo.InvariantCulture) €</p>
 					<a asp-action="RoomsList" class="btn btn-secondary mt-4">@Localizer["BackToList"]</a>
 				</div>
 

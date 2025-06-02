@@ -2,6 +2,7 @@
 @inject IViewLocalizer Localizer
 @model HotelManagement.ViewModels.BookingRoomDetailViewModel
 @using HotelManagement.Enums
+@using System.Globalization;
 
 <!-- Booking Room Details View -->
 <!-- This view displays the details of a specific room in a booking, including food orders, service requests, and reviews. -->
@@ -35,7 +36,7 @@
                 <ul class="list-unstyled mb-0">
                     @foreach (var food in order.FoodOrderFoods)
                     {
-                        <li>@food.Food.Name - @food.Quantity x @food.Food.Price.ToString("C")</li>
+                        <li>@food.Food.Name - @food.Quantity x @food.Food.Price.ToString("N2", CultureInfo.InvariantCulture) €</li>
                     }
                 </ul>
             </li>

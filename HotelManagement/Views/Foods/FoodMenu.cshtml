@@ -4,6 +4,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@using System.Globalization;
 
 <!-- Food List View -->
 <!-- This view displays a list of food items and allows admins/kitchenstaff to create/delete new food items. -->
@@ -102,7 +103,7 @@
                     <tr>
                         <td>@food.Name</td>
                         <td>@food.Description</td>
-                        <td>@food.Price.ToString("C")</td>
+                        <td>@food.Price.ToString("N2", CultureInfo.InvariantCulture) €</td>
                         <td style="white-space: nowrap;">
                         <div class="d-inline-flex flex-nowrap gap-2">
                             <a class="btn btn-sm btn-outline-primary add-to-order-btn @(food.IsAvailable ? "" : "disabled disabled-btn")"

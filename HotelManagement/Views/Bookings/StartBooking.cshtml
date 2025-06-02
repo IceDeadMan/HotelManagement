@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
 @inject IViewLocalizer Localizer
 @model StartBookingViewModel
 @using HotelManagement.Models
@@ -29,7 +30,7 @@
 
 				@foreach (var type in Model.RoomTypes)
 				{
-					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("C")} per night";
+					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("N2", CultureInfo.InvariantCulture) + " €"} per night";
 					var isSelected = (type.Id == Model.SelectedRoomTypeId);
 					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
 						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
@@ -66,13 +67,13 @@
 				<div class="card h-100 shadow-sm p-3">
 					<div class="card-body d-flex flex-column align-items-center text-center">
 
-						<h4 class="card-title mb-2">Room @room.RoomNumber</h4>
+						<h4 class="card-title mb-2">@Localizer["Room"] @room.RoomNumber</h4>
 						<p class="text-muted mb-2">@room.RoomType.Description</p>
 						<p class="text-muted mb-3">@room.Description</p>
 
 						<p>@Localizer["RoomType"]: <strong>@room.RoomType?.Name</strong></p>
 						<p>@Localizer["RoomCapacity"]: <strong>@room.RoomType?.Capacity</strong></p>
-						<p>@Localizer["RoomPrice"]: <strong>@room.RoomType?.Price.ToString("C")</strong></p>
+						<p>@Localizer["RoomPrice"]: <strong>@room.RoomType?.Price.ToString("N2", CultureInfo.InvariantCulture) €</strong></p>
 
 						<!-- Room Image Centered -->
 						<div class="my-3 d-flex justify-content-center">
@@ -97,12 +98,12 @@
 								@Html.AntiForgeryToken()
 
 								<button type="submit" class="btn @(isInCart ? "btn-danger" : "btn-success") w-100">
-									@(isInCart ? "Remove Room" : "Book Room")
+									@(isInCart ? @Localizer["RemoveRoom"] : @Localizer["BookRoom"])
 								</button>
 							</form>
 
 							<a asp-controller="Rooms" asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-outline-primary w-50">
-								View Details
+								@Localizer["Details"]
 							</a>
 						</div>
 
@@ -142,7 +143,7 @@
 			staySummary.innerHTML = `
 				Check-in: <strong>${formatDateDisplay(start)}</strong><br>
 				Check-out: <strong>${formatDateDisplay(end)}</strong><br>
-				Nights: <strong>${nights}</strong>
+				@Localizer["Nights"]: <strong>${nights}</strong>
 			`;
 			staySummary.style.display = "block";
 		}
