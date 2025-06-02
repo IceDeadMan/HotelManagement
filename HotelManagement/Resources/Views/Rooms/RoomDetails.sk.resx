@@ -132,6 +132,9 @@
   <data name="BookingTo" xml:space="preserve">
     <value>Do</value>
   </data>
+  <data name="Booked" xml:space="preserve">
+    <value>Obsadené</value>
+  </data>
   <data name="PriceDetail" xml:space="preserve">
     <value>Cena</value>
   </data>

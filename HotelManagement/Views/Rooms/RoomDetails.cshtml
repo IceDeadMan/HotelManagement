@@ -2,6 +2,7 @@
 @inject IViewLocalizer Localizer
 @model HotelManagement.ViewModels.RoomDetailViewModel
 @using System.Globalization;
+@using HotelManagement.Enums;
 
 <!-- Room Details View -->
 <!-- This view displays the details of a room, including its bookings in a calendar and guest reviews. -->
@@ -65,13 +66,17 @@
 				<h5 class="mt-4">@Localizer["RoomCalendar"]</h5>
 				<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
 			}
-
+			@{
+				var localizedBooked = Localizer["Booked"].Value;
+			}
 
 			<!-- Generate calendar events from bookings -->
 			<script>
 				const bookings = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-					Model.Bookings.Select(b => new {
-						title = "Booked",
+					Model.Bookings
+					.Where(b => b.Status != BookingStatus.Cancelled)
+						.Select(b => new {
+						title = localizedBooked,
 						start = b.StartDate.ToString("yyyy-MM-dd"),
 						end = b.EndDate.AddDays(1).ToString("yyyy-MM-dd")
 					})
@@ -80,6 +85,7 @@
 
 			<!-- Initialize FullCalendar -->
 			<script>
+				const culture = '@CultureInfo.CurrentUICulture.Name'; // e.g., "sk-SK"
 				document.addEventListener('DOMContentLoaded', function () {
 					var calendarEl = document.getElementById('calendar');
 
@@ -88,7 +94,8 @@
 						height: 'auto',
 						events: bookings,
 						eventColor: '#dc3545',
-						selectable: true
+						selectable: true,
+						locale: culture
 					});
 
 					calendar.render();
@@ -129,7 +136,7 @@
 									<br />
 									@review.Comment
 								</div>
-								<small class="text-muted">@review.ReviewDate.ToShortDateString(), By: @review.ReviewerUsername</small>
+								<small class="text-muted">@review.ReviewDate.ToShortDateString(),  @review.ReviewerUsername</small>
 							</div>
 						</li>
 					}

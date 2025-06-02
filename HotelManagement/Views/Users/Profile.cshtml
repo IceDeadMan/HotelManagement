@@ -1,4 +1,6 @@
 ﻿@model HotelManagement.Models.ApplicationUser
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <!-- Profile View -->
 <!-- This view displays the user's profile information. -->
 <!-- It includes fields for username, email, and other user details. -->
@@ -7,27 +9,35 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-3">My Profile</h2>
+    <h2 class="mb-3">@Localizer["MyProfile"]</h2>
     <div class="card shadow-sm">
         <div class="card-body">
-            <p><strong>Username:</strong> @Model.UserName</p>
-            <p><strong>Email:</strong> @Model.Email</p>
-            <p><strong>You are: </strong>
+            <p><strong>@Localizer["Username"]:</strong> @Model.UserName</p>
+            <p><strong>@Localizer["Email"]:</strong> @Model.Email</p>
+            <p><strong>@Localizer["YouAre"]: </strong>
                 @if (User.IsInRole("Manager"))
                 {
-                    <span class="badge bg-primary">Manager</span>
+                    <span class="badge bg-primary">@Localizer["Manager"]</span>
                 }
                 else if (User.IsInRole("Receptionist"))
                 {
-                    <span class="badge bg-secondary">Receptionist</span>
+                    <span class="badge bg-secondary">@Localizer["Receptionist"]</span>
                 }
                 else if (User.IsInRole("KitchenStaff"))
                 {
-                    <span class="badge bg-success">Kitchen Staff</span>
+                    <span class="badge bg-success">@Localizer["KitchenStaff"]</span>
+                }
+                else if (User.IsInRole("Staff"))
+                {
+                    <span class="badge bg-warning">@Localizer["Staff"]</span>
+                }
+                else if (User.IsInRole("Customer"))
+                {
+                    <span class="badge bg-info">@Localizer["Customer"]</span>
                 }
                 else
                 {
-                    <span class="badge bg-info">Guest</span>
+                    <span class="badge bg-info">@Localizer["Guest"]</span>
                 }
         </div>
     </div>

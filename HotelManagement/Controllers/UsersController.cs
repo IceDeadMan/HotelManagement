@@ -80,6 +80,7 @@ namespace HotelManagement.Controllers
 
             _auditLogger.Log("Login", "Unsuccessful login attempt.");
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ViewBag.LoginFailed = true;
             return View(model);
         }
 

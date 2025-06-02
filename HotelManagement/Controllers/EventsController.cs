@@ -33,7 +33,11 @@ namespace HotelManagement.Controllers
         /// </summary>
         public async Task<IActionResult> EventsList()
         {
-            var currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var currentUserId = Guid.Empty;
+            if (User.Identity.IsAuthenticated)
+            {
+                currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
 
             var events = await _eventRepository.GetAllWithDetailsAsync();
             var isManager = User.IsInRole("Manager");

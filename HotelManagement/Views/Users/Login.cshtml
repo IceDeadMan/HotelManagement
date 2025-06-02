@@ -12,6 +12,12 @@
     <input asp-for="RememberMe" type="checkbox" /> @Localizer["RememberMe"]
     <button type="submit">@Localizer["Login2"]</button>
 </form>
+@if (ViewBag.LoginFailed == true)
+{
+    <div class="text-danger">
+        @Localizer["LoginFailedMessage"]
+    </div>
+}
 
 <div>
     <p>@Localizer["NoAccount"]</p>

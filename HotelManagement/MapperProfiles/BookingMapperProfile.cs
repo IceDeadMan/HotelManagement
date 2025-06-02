@@ -14,7 +14,9 @@ namespace HotelManagement.MapperProfiles
                 .ForMember(dest => dest.StartDate,
                            opt => opt.MapFrom(src => src.StartDate))
                 .ForMember(dest => dest.EndDate,
-                           opt => opt.MapFrom(src => src.EndDate));
+                           opt => opt.MapFrom(src => src.EndDate))
+                .ForMember(dest => dest.Status,
+                           opt => opt.MapFrom(src => src.Status));
         }
     }
 }

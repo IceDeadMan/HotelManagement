@@ -1,4 +1,5 @@
 using System;
+using HotelManagement.Enums;
 
 namespace HotelManagement.ViewModels;
 
@@ -9,4 +10,5 @@ public class BookingSummaryViewModel
     public string GuestName { get; set; } = "";
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public BookingStatus Status { get; set; }
 }
