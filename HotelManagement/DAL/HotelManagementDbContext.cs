@@ -29,6 +29,24 @@ namespace HotelManagement.DAL
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Room>()
+                .HasMany(r => r.Reviews)
+                .WithOne(rev => rev.Room)
+                .HasForeignKey(rev => rev.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(r => r.ActivityRecords)
+                .WithOne(ar => ar.Room)
+                .HasForeignKey(ar => ar.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Food>()
+                .HasMany(f => f.Reviews)
+                .WithOne(rev => rev.Food)
+                .HasForeignKey(rev => rev.FoodId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Food>()
                 .Property(b => b.Price)
                 .HasColumnType("decimal(10, 2)");
