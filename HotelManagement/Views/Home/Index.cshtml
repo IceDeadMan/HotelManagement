@@ -11,10 +11,16 @@
 <div class="text-center">
     <h1 class="display-4">@Localizer["Welcome"]</h1>
     <p>@Localizer["Offer"]</p>
-	<a class="btn btn-primary" asp-area="" asp-controller="Rooms" asp-action="RoomsList">@Localizer["OurRooms"]</a>
-    <p>@Localizer["ToBook"] <a href="/Users/Login">@Localizer["Login_index"]</a> @Localizer["Or"] <a href="/Users/Register">@Localizer["Register_index"]</a>.</p>
-    <div class="mt-2">
-        <a class="btn btn-primary me-2" asp-area="" asp-controller="Events" asp-action="EventsList">@Localizer["Events"]</a>
-        <a class="btn btn-primary" asp-area="" asp-controller="Foods" asp-action="FoodMenu">@Localizer["FoodMenu"]</a>
+    @if (!User.Identity.IsAuthenticated)
+    {  
+        <p>@Localizer["ToBook"] <a href="/Users/Login">@Localizer["Login_index"]</a> @Localizer["Or"] <a href="/Users/Register">@Localizer["Register_index"]</a>.</p>
+    } else
+    {
+        <a class="btn btn-primary" asp-area="" asp-controller="Bookings" asp-action="StartBooking">@Localizer["BookRoom"]</a>
+    }
+    <div class="mt-4">
+        <a class="btn btn-secondary me-2" asp-area="" asp-controller="Rooms" asp-action="RoomsList">@Localizer["OurRooms"]</a>
+        <a class="btn btn-secondary me-2" asp-area="" asp-controller="Events" asp-action="EventsList">@Localizer["Events"]</a>
+        <a class="btn btn-secondary" asp-area="" asp-controller="Foods" asp-action="FoodMenu">@Localizer["FoodMenu"]</a>
     </div>
 </div>

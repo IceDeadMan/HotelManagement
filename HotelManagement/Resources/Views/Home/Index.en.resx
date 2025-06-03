@@ -141,6 +141,9 @@
   <data name="ToBook" xml:space="preserve">
     <value>To book a stay in our hotel, please</value>
   </data>
+  <data name="BookRoom" xml:space="preserve">
+    <value>Create a Booking</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Welcome to our Hotel Management App</value>
   </data>
