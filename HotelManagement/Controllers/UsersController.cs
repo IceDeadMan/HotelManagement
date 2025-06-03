@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagement.Logging;
 using HotelManagement.ViewModels.Users;
+using AutoMapper;
 
 
 namespace HotelManagement.Controllers
@@ -17,13 +18,15 @@ namespace HotelManagement.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly AuditLogger _auditLogger;
+        private readonly IMapper _mapper;
 
         public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-                               AuditLogger auditLogger)
+                               AuditLogger auditLogger, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _auditLogger = auditLogger;
+            _mapper = mapper;
         }
 
         public IActionResult Register()
@@ -48,7 +51,7 @@ namespace HotelManagement.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+            var user = _mapper.Map<ApplicationUser>(model);
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)

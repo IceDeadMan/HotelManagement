@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FirstName" xml:space="preserve">
+    <value>Meno</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Priezvisko</value>
+  </data>
   <data name="Password2" xml:space="preserve">
     <value>Heslo</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Tel. Číslo</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrácia</value>
   </data>
   <data name="Register3" xml:space="preserve">
     <value>Registrovať sa</value>
