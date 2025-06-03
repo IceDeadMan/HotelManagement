@@ -136,7 +136,7 @@
     <value>Obsadené</value>
   </data>
   <data name="PriceDetail" xml:space="preserve">
-    <value>Cena</value>
+    <value>Cena za noc</value>
   </data>
   <data name="RoomCalendar" xml:space="preserve">
     <value>Kalendár</value>

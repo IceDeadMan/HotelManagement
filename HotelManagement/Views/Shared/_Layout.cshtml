@@ -106,8 +106,8 @@
                                         class="form-select form-select-sm btn"
                                         style="width: auto; min-width: 120px;"
                                         onchange="this.form.submit()">
-                                    <option value="en" selected="@(currentUICulture == "en" ? "selected" : null)">English</option>
-                                    <option value="sk" selected="@(currentUICulture == "sk" ? "selected" : null)">Slovak</option>
+                                    <option value="en" selected="@(currentUICulture == "en" ? "selected" : null)">@Localizer["English"]</option>
+                                    <option value="sk" selected="@(currentUICulture == "sk" ? "selected" : null)">@Localizer["Slovak"]</option>
                                 </select>
 
                                 <input type="hidden" name="returnUrl" value="@Context.Request.Path" />

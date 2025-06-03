@@ -126,6 +126,12 @@
   <data name="Or" xml:space="preserve">
     <value>alebo</value>
   </data>
+  <data name="Events" xml:space="preserve">
+    <value>Udalosti</value>
+  </data>
+  <data name="FoodMenu" xml:space="preserve">
+    <value>Ponuka jedál</value>
+  </data>
   <data name="OurRooms" xml:space="preserve">
     <value>Naše Izby</value>
   </data>

@@ -263,4 +263,9 @@ body {
     box-shadow: none;
 }
 
+.review-comment {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
 

@@ -106,11 +106,13 @@
                         <td>@food.Price.ToString("N2", CultureInfo.InvariantCulture) €</td>
                         <td style="white-space: nowrap;">
                         <div class="d-inline-flex flex-nowrap gap-2">
-                            <a class="btn btn-sm btn-outline-primary add-to-order-btn @(food.IsAvailable ? "" : "disabled disabled-btn")"
-                            data-food-id="@food.Id"
-                            data-food-name="@food.Name">
-                                    @Localizer["AddToOrder"]
-                            </a>
+                            @if (Model.AvailableRooms.Any()){
+                                <a class="btn btn-sm btn-outline-primary add-to-order-btn @(food.IsAvailable ? "" : "disabled disabled-btn")"
+                                data-food-id="@food.Id"
+                                data-food-name="@food.Name">
+                                        @Localizer["AddToOrder"]
+                                </a>
+                            }
                             <button class="btn btn-sm btn-outline-secondary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#foodReviewModal-@food.Id">

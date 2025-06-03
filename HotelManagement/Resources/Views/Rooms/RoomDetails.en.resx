@@ -136,7 +136,7 @@
     <value>Booked</value>
   </data>
   <data name="PriceDetail" xml:space="preserve">
-    <value>Price</value>
+    <value>Price per Night</value>
   </data>
   <data name="RoomCalendar" xml:space="preserve">
     <value>Calendar</value>

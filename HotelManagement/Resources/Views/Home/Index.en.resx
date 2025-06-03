@@ -126,6 +126,12 @@
   <data name="Or" xml:space="preserve">
     <value>or</value>
   </data>
+  <data name="Events" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="FoodMenu" xml:space="preserve">
+    <value>Food Menu</value>
+  </data>
   <data name="OurRooms" xml:space="preserve">
     <value>Our Rooms</value>
   </data>

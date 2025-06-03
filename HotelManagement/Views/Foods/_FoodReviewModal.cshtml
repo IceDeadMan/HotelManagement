@@ -16,7 +16,7 @@
                 {
                     <li class="list-group-item">
                         <div class="d-flex justify-content-between">
-                            <div>
+                            <div class="d-flex flex-column">
                                 <div class="text-warning">
                                     @{
                                         double starValue = review.Rating / 2.0;
@@ -39,7 +39,9 @@
                                     <small class="text-muted">@(review.Rating)</small>
                                 </div>
                                 <br />
-                                @review.Comment
+                                <div>
+                                    <p class="review-comment">@review.Comment</p>
+                                </div>
                             </div>
                             <small class="text-muted text-end">
                                 @review.ReviewDate.ToShortDateString()<br />
@@ -56,6 +58,9 @@
         }
 
         <!-- Add/Edit Review Form -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            
         <form method="post" asp-action="SubmitFoodReview" asp-controller="Reviews">
             <input type="hidden" name="FoodId" value="@Model.Id" />
             <div class="mb-2">
@@ -68,6 +73,7 @@
             </div>
             <button type="submit" class="btn btn-primary">@Localizer["SubmitUpdateReview"]</button>
         </form>
+        } 
       </div>
     </div>
   </div>
