@@ -53,6 +53,16 @@ namespace HotelManagement.Controllers
 
             if (result.Succeeded)
             {
+                var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+                if (!roleResult.Succeeded)
+                {
+                    _auditLogger.Log("Register", $"Failed to assign Customer role to user {model.Username}.");
+                    foreach (var error in roleResult.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+
+                    return View(model);
+                }
+
                 _auditLogger.Log("Register", $"User {model.Username} registered successfully.");
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("RoomsList", "Rooms");
