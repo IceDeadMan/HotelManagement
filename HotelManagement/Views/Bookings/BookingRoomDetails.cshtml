@@ -197,7 +197,7 @@ else
         }
 
         if (editReviewForm) {
-            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Reviews")'), 'PUT');
+            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Reviews")'), 'POST');
         }
 
         if (addActivityForm) {

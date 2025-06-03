@@ -120,8 +120,17 @@
   <data name="MyProfile" xml:space="preserve">
     <value>Môj Profil</value>
   </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Tel. Číslo</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Používateľské meno</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Meno</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Priezvisko</value>
   </data>
   <data name="YouAre" xml:space="preserve">
     <value>Ste</value>

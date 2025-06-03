@@ -13,6 +13,9 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <p><strong>@Localizer["Username"]:</strong> @Model.UserName</p>
+            <p><strong>@Localizer["FirstName"]:</strong> @Model.FirstName</p>
+            <p><strong>@Localizer["LastName"]:</strong> @Model.LastName</p>
+            <p><strong>@Localizer["PhoneNumber"]:</strong> @Model.PhoneNumber</p>
             <p><strong>@Localizer["Email"]:</strong> @Model.Email</p>
             <p><strong>@Localizer["YouAre"]: </strong>
                 @if (User.IsInRole("Manager"))
