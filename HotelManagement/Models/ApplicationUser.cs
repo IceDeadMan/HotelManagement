@@ -11,6 +11,8 @@ namespace HotelManagement.Models
     /// </summary>
     public class ApplicationUser : IdentityUser<Guid>
     {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<ActivityRecord> ActivityRecords { get; set; } = new List<ActivityRecord>();
         public ICollection<FoodOrder> FoodOrders { get; set; } = new List<FoodOrder>();
