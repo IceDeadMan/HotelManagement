@@ -15,8 +15,8 @@ namespace HotelManagement.Controllers
 	/// </summary>
 	public class RoomsController : Controller
 	{
-        private readonly AuditLogger _auditLogger;
-        private readonly RoomRepository _roomRepository;
+		private readonly AuditLogger _auditLogger;
+		private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
 		private readonly IMapper _mapper;
@@ -25,8 +25,8 @@ namespace HotelManagement.Controllers
 								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
 								IMapper mapper)
 		{
-            _auditLogger = auditLogger;
-            _roomRepository = roomRepository;
+			_auditLogger = auditLogger;
+			_roomRepository = roomRepository;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
 			_mapper = mapper;
@@ -40,7 +40,7 @@ namespace HotelManagement.Controllers
 		{
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
 			var roomTypes = await _roomTypeRepository.GetAllAsync();
-			
+
 			// todo mapper
 			var viewModel = new RoomsListViewModel
 			{
@@ -48,8 +48,8 @@ namespace HotelManagement.Controllers
 				RoomTypes = _mapper.Map<List<RoomType>>(roomTypes)
 			};
 
-            _auditLogger.Log("RoomsList", "Rooms list viewed.");
-            return View(viewModel);
+			_auditLogger.Log("RoomsList", "Rooms list viewed.");
+			return View(viewModel);
 		}
 		/// <summary>
 		/// RoomDetails displays the details of a specific room based on its ID.
@@ -65,7 +65,7 @@ namespace HotelManagement.Controllers
 			viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
 
 			_auditLogger.Log("RoomDetails", $"Room {id} details viewed.");
-            return View(viewModel);
+			return View(viewModel);
 		}
 
 		/// <summary>
@@ -79,13 +79,13 @@ namespace HotelManagement.Controllers
 			if (ModelState.IsValid)
 			{
 				_roomRepository.Create(room);
-                _auditLogger.Log("CreateRoom", $"Room {room.Id} created successfully.");
+				_auditLogger.Log("CreateRoom", $"Room {room.Id} created successfully.");
 				TempData["Success"] = "Room created successfully.";
 				return RedirectToAction("RoomsList");
 			}
 			TempData["Error"] = "Failed to create room.";
 			_auditLogger.Log("CreateRoom", "Room creation failed due to invalid model state.");
-            return RedirectToAction("RoomsList");
+			return RedirectToAction("RoomsList");
 		}
 
 		/// <summary>
@@ -100,13 +100,32 @@ namespace HotelManagement.Controllers
 			if (room != null)
 			{
 				_roomRepository.Delete(id);
-                _auditLogger.Log("DeleteRoom", $"Room {id} deleted successfully.");
+				_auditLogger.Log("DeleteRoom", $"Room {id} deleted successfully.");
 				TempData["Success"] = "Room deleted successfully.";
 			}
 			else
 			{
 				TempData["Error"] = "Room not found.";
 			}
+			return RedirectToAction("RoomsList");
+		}
+		
+		[HttpPost]
+		[Authorize(Roles = "Manager")]
+		[ValidateAntiForgeryToken]
+		public IActionResult Edit(Room room)
+		{
+			if (ModelState.IsValid)
+			{
+				var updatedId = _roomRepository.Update(room);
+				if (updatedId != null)
+				{
+					TempData["Success"] = "Room updated successfully.";
+					return RedirectToAction("RoomsList"); // or your room list action
+				}
+			}
+
+			TempData["Error"] = "Failed to update room.";
 			return RedirectToAction("RoomsList");
 		}
 	}

@@ -138,6 +138,9 @@
   <data name="Room" xml:space="preserve">
     <value>Izba</value>
   </data>
+  <data name="EditRoom" xml:space="preserve">
+    <value>Upravť</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>

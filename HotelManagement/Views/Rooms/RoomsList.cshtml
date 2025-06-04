@@ -67,13 +67,22 @@
 					</div>
 					<div class="card-footer bg-transparent border-top-0">
 						<div class="d-flex justify-content-between gap-2">
-							<a asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">@Localizer["ViewDetails"]</a>
+							<a style="white-space: nowrap;" asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-primary w-100">@Localizer["ViewDetails"]</a>
 
 							@if (User.IsInRole("Manager"))
 							{
+								<button type="button"
+									class="btn btn-warning w-100 edit-room-button"
+									style="white-space: nowrap;"
+									data-room-id="@room.Id"
+									data-room-number="@room.RoomNumber"
+									data-description="@room.Description"
+									data-roomtype-id="@room.RoomTypeId">
+								@Localizer["EditRoom"]
+								</button>
 								<form asp-action="Delete" asp-route-id="@room.Id" method="post"
 									  onsubmit="return confirm(@Localizer["DeleteRoomText"]);" class="w-100">
-									<button type="submit" class="btn btn-danger w-100">@Localizer["DeleteRoom"]</button>
+									<button style="white-space: nowrap;" type="submit" class="btn btn-danger w-100">@Localizer["DeleteRoom"]</button>
 								</form>
 							}
 						</div>
@@ -84,3 +93,70 @@
 	</div>
 
 </div>
+
+<!-- Room Edit Modal -->
+<div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRoomModalLabel">@Localizer["EditRoom"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editRoomId" />
+
+                    <div class="mb-3">
+                        <label for="editRoomNumber" class="form-label">@Localizer["RoomNumber"]</label>
+                        <input type="text" name="RoomNumber" id="editRoomNumber" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editRoomDescription" class="form-label">@Localizer["RoomDesc"]</label>
+                        <textarea name="Description" id="editRoomDescription" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editRoomTypeId" class="form-label">@Localizer["RoomType"]</label>
+                        <select name="RoomTypeId" id="editRoomTypeId" class="form-select">
+                            @foreach (var type in Model.RoomTypes)
+                            {
+                                <option value="@type.Id">@type.Name (@type.Capacity @Localizer["Guests"])</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@Localizer["SaveChanges"]</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+	<!-- Modal for Editing Room -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editRoomModal = new bootstrap.Modal(document.getElementById("editRoomModal"));
+
+            document.querySelectorAll(".edit-room-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    const roomId = this.dataset.roomId;
+                    const roomNumber = this.dataset.roomNumber;
+                    const description = this.dataset.description;
+                    const roomTypeId = this.dataset.roomtypeId;
+
+                    document.getElementById("editRoomId").value = roomId;
+                    document.getElementById("editRoomNumber").value = roomNumber;
+                    document.getElementById("editRoomDescription").value = description;
+                    document.getElementById("editRoomTypeId").value = roomTypeId;
+
+                    editRoomModal.show();
+                });
+            });
+        });
+    </script>
+}
