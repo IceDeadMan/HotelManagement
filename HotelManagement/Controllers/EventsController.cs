@@ -220,5 +220,27 @@ namespace HotelManagement.Controllers
             return RedirectToAction("EventsList");
         }
 
+        /// <summary>
+        /// EditEvent allows managers to edit the details of an existing event.
+        /// It takes the event ID and the new details as parameters.
+        /// </summary>
+        [HttpPost]
+        public IActionResult EditEvent(Guid Id, string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
+        {
+            var fullDate = DatePart.Date + TimePart;
+            var eventToUpdate = _eventRepository.GetById(Id);
+            if (eventToUpdate == null) return NotFound();
+
+            eventToUpdate.Name = Name;
+            eventToUpdate.Description = Description;
+            eventToUpdate.Date = fullDate;
+            eventToUpdate.Capacity = Capacity;
+
+            _eventRepository.Update(eventToUpdate);
+
+            return RedirectToAction("EventsList");
+        }
+            
+
     }
 }

@@ -110,6 +110,9 @@ namespace HotelManagement.Controllers
 			return RedirectToAction("RoomsList");
 		}
 		
+		/// <summary>
+		/// Manager can edit a room.
+		/// </summary>
 		[HttpPost]
 		[Authorize(Roles = "Manager")]
 		[ValidateAntiForgeryToken]

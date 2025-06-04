@@ -180,4 +180,10 @@
   <data name="Login" xml:space="preserve">
     <value>prihláste</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
 </root>
