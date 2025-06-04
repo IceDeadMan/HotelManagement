@@ -60,6 +60,16 @@ namespace HotelManagement.Controllers
 				Cart = cart
 			};
 
+			if (cart.RoomIds.Count > 0)
+			{
+				var firstRoom = _roomRepository.GetById(cart.RoomIds.FirstOrDefault());
+				if (firstRoom != null)
+				{
+					viewModel.StartDate = cart.StartDate.ToString("yyyy-MM-dd");
+					viewModel.EndDate = cart.EndDate.ToString("yyyy-MM-dd");
+				}
+			}
+
 			return View(viewModel);
 		}
 

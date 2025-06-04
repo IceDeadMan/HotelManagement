@@ -51,7 +51,7 @@
 			<input type="hidden" name="end" value="@Model.EndDate" />
 		</div>
 	</div>
-	<button type="submit" class="btn btn-primary mb-4">@Localizer["ShowRooms"]</button>
+	<button id="filterRoomsBtn" disabled type="submit" class="btn btn-primary mb-4">@Localizer["ShowRooms"]</button>
 </form>
 
 <!-- Display available rooms based on the selected criteria -->
@@ -124,6 +124,21 @@
 		const startInput = document.querySelector("input[name='start']");
 		const endInput = document.querySelector("input[name='end']");
 		const errorDiv = document.getElementById("stayDurationError");
+		const submitBtn = document.getElementById("filterRoomsBtn");
+
+		const enableSubmitIfValid = () => {
+			const start = startInput.value;
+			const end = endInput.value;
+
+			// Default invalid date (e.g., from DateTime.MinValue)
+			const defaultDate = "0001-01-01";
+
+			if (start && end && start !== defaultDate && end !== defaultDate) {
+				submitBtn.disabled = false;
+			} else {
+				submitBtn.disabled = true;
+			}
+		};
 
 		function updateStaySummary(startStr, endStr) {
 			if (!startStr || !endStr) {
@@ -148,12 +163,13 @@
 			staySummary.style.display = "block";
 		}
 
+		enableSubmitIfValid();
 		flatpickr("#stayDuration", {
 			mode: "range",
 			dateFormat: "Y-m-d",
 			altInput: true,
 			altFormat: "d.m.Y",
-			//minDate: "today", // allow past dates for testing
+			minDate: "today", // allow past dates for testing
 			defaultDate: [
 				"@Model.StartDate",
 				"@Model.EndDate"
@@ -169,6 +185,7 @@
 					endInput.value = "";
 					staySummary.style.display = "none";
 				}
+				enableSubmitIfValid();
 			}
 		});
 
