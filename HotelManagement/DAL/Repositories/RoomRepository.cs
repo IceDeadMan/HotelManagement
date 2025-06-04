@@ -60,10 +60,10 @@ namespace HotelManagement.DAL.Repositories
         public async Task<Room?> GetRoomWithDetailsAsync(Guid id)
         {
             return await _context.Rooms
-                .Include(r => r.Bookings)
+                .Include(r => r.Bookings).ThenInclude(b => b.ApplicationUser) // for usernames
                 .Include(r => r.ActivityRecords)
                 .Include(r => r.FoodOrders).ThenInclude(f => f.FoodOrderFoods).ThenInclude(fof => fof.Food) // for food orders
-                .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser)// for usernames 
+                .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser) // for usernames 
                 .Include(r => r.RoomType)
                 .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .FirstOrDefaultAsync(r => r.Id == id);
