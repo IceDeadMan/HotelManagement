@@ -22,8 +22,8 @@
                     })">
                         @Localizer[Model.Status.ToString()]
                     </p>
-<p><strong>@Localizer["CheckIn"]:</strong> @Model.StartDate.ToShortDateString() @Localizer["After"] 14:00</p>
-<p><strong>@Localizer["CheckOut"]:</strong> @Model.EndDate.ToShortDateString() @Localizer["Until"] 12:00</p>
+<p><strong>@Localizer["CheckIn"]:</strong> @Model.StartDate.ToString("dd.MM.yyyy") @Localizer["After"] 14:00</p>
+<p><strong>@Localizer["CheckOut"]:</strong> @Model.EndDate.ToString("dd.MM.yyyy") @Localizer["Until"] 12:00</p>
 <p><strong>@Localizer["TotalNights"]:</strong> @nights</p>
 
 <h4>@Localizer["Rooms"]</h4>

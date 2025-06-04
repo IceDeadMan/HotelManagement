@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <small class="text-muted text-end">
-                                @review.ReviewDate.ToShortDateString()<br />
+                                @review.ReviewDate.ToString("dd.MM.yyyy")<br />
                                 @(review.ApplicationUser?.FirstName + " " + review.ApplicationUser?.LastName)
                             </small>
                         </div>

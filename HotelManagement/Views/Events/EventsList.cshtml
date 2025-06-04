@@ -62,7 +62,7 @@
                         <h5 class="card-title">@eventItem.Event.Name</h5>
                         <p class="card-text">@eventItem.Event.Description</p>
                         <hr />
-                        <p><strong>@Localizer["EventsListDate"]:</strong> @eventItem.Event.Date.ToString("dd/MM/yyyy")</p>
+                        <p><strong>@Localizer["EventsListDate"]:</strong> @eventItem.Event.Date.ToString("dd.MM.yyyy")</p>
                         <p><strong>@Localizer["EventsListTime"]:</strong> @eventItem.Event.Date.ToString("HH:mm")</p>
                         <p><strong>@Localizer["EventsListFreeSpots"]:</strong> @(@eventItem.Event.Capacity - eventItem.TotalRegisteredParticipants) / @eventItem.Event.Capacity</p>
                         @if ((isAdmin || isStaff) && eventItem.Event.StaffMembers != null && eventItem.Event.StaffMembers.Any())

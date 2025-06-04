@@ -28,12 +28,12 @@
             <td>@booking.UserName</td>
             <td>
                 <span class="@(booking.StartDate.Date == DateTime.Today ? "date-today" : "")">
-                    @booking.StartDate.ToShortDateString()
+                    @booking.StartDate.ToString("dd.MM.yyyy")
                 </span>
             </td>
             <td>
                 <span class="@(booking.EndDate.Date == DateTime.Today ? "date-today" : "")">
-                    @booking.EndDate.ToShortDateString()
+                    @booking.EndDate.ToString("dd.MM.yyyy")
                 </span>
             </td>
             <td class="@(booking.Status switch {
