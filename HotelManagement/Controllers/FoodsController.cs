@@ -144,5 +144,27 @@ namespace HotelManagement.Controllers
 
             return Json(new { success = true, isAvailable = food.IsAvailable });
         }
+
+        /// <summary>
+        /// EditFood allows staff and managers to edit the details of a food item.
+        /// It takes the food details as parameters and updates the food item in the database.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,KitchenStaff")]
+        public  IActionResult EditFood(Food food)
+        {
+            if (!ModelState.IsValid) return RedirectToAction("FoodMenu");
+
+            var updateId = _foodRepository.Update(food);
+            if (updateId == null)
+            {
+                TempData["Error"] = "Failed to update food item.";
+                _auditLogger.Log("EditFood", $"Failed to update food {food.Name}.");
+                return RedirectToAction("FoodMenu");
+            }
+            TempData["Success"] = "Food item updated successfully.";
+            return RedirectToAction("FoodMenu");
+        }
     }
 }

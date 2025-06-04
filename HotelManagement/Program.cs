@@ -40,16 +40,20 @@ namespace HotelManagement
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
-                // todo add region for example sk-SK and en-US
-                var supportedCultures = new[]
+                var supportedUICultures = new[]
                 {
                     new CultureInfo("en"),
                     new CultureInfo("sk")
                 };
 
-                options.DefaultRequestCulture = new RequestCulture("en");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
+                var defaultCulture = new RequestCulture(
+                    culture: "en-US",       // parsing (decimal separator for price)
+                    uiCulture: "en"         // UI translations
+                );
+
+                options.DefaultRequestCulture = defaultCulture;
+                options.SupportedCultures = new[] { new CultureInfo("en-US") }; //parsing
+                options.SupportedUICultures = supportedUICultures;
 
                 options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
             });

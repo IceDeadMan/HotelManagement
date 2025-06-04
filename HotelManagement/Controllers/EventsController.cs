@@ -225,6 +225,7 @@ namespace HotelManagement.Controllers
         /// It takes the event ID and the new details as parameters.
         /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public IActionResult EditEvent(Guid Id, string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
         {
             var fullDate = DatePart.Date + TimePart;

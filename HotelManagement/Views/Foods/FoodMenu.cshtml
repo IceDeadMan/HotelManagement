@@ -121,10 +121,22 @@
 
                             @if (isAdmin)
                             {
+                                var safeFood = new {
+                                    id = food.Id,
+                                    name = food.Name,
+                                    description = food.Description,
+                                    price = food.Price.ToString("0.00", CultureInfo.InvariantCulture)
+                                };
+                                <button class="btn btn-sm btn-outline-warning"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editFoodModal"
+                                        onclick='populateEditFoodModal(@Html.Raw(Json.Serialize(safeFood)))'>
+                                    @Localizer["EditFood"]
+                                </button>
                                 <form asp-action="DeleteFood"
                                     asp-route-id="@food.Id"
                                     method="post"
-                                          onsubmit="return confirm(@Localizer["FoodDeleteConfirm"]);"
+                                          onsubmit="return confirm('  @Localizer["FoodDeleteConfirm"]');"
                                     class="mb-0">
                                     @Html.AntiForgeryToken()
                                         <button class="btn btn-sm btn-outline-danger">@Localizer["FoodDelete"]</button>
@@ -150,7 +162,52 @@
     </div>
 </div>
 
+<!-- Food Edit Modal -->
+<div class="modal fade" id="editFoodModal" tabindex="-1" aria-labelledby="editFoodModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="EditFood" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFoodModalLabel">@Localizer["EditFood"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["Close"]"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editFoodId" name="Id" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["FoodName"]</label>
+                        <input type="text" class="form-control" id="editFoodName" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["FoodDescription"]</label>
+                        <textarea class="form-control" id="editFoodDescription" name="Description" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["FoodPrice"]</label>
+                        <input type="number" step="0.01" class="form-control" id="editFoodPrice" name="Price" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary">@Localizer["SaveChanges"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+@*This script is for populating the food edit modal*@
+<script>
+    function populateEditFoodModal(food) {
+        console.log(food); // Inspect what values are passed
+        document.getElementById('editFoodId').value = food.id;
+        document.getElementById('editFoodName').value = food.name;
+        document.getElementById('editFoodDescription').value = food.description;
+        document.getElementById('editFoodPrice').value = food.price;
+    }
+</script>
 @*This script is for dynamic adding and removing foods from the Food Order form.*@    
 <script>
     const selectedFoods = [];
@@ -243,6 +300,7 @@
         });
     });
 </script>
+
 
 
 }
