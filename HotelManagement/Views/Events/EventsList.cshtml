@@ -71,7 +71,7 @@
                             <ul>
                                 @foreach (var staff in eventItem.Event.StaffMembers)
                                 {
-                                    <li>@staff.UserName</li>
+                                    <li>@(staff.FirstName + " " + staff.LastName)</li>
                                 }
                             </ul>
                         }

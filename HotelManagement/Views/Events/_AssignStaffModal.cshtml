@@ -22,7 +22,7 @@
                             <select name="staffUserId" class="form-select">
                                 @foreach (var staff in staffList)
                                 {
-                                    <option value="@staff.Id">@staff.UserName</option>
+                                    <option value="@staff.Id">@(staff.FirstName + " " + staff.LastName)</option>
                                 }
                             </select>
                         </div>
@@ -41,7 +41,7 @@
                             @foreach (var assigned in Model.Event.StaffMembers)
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @assigned.UserName
+                                    @(assigned.FirstName + " " + @assigned.LastName)
                                     <form asp-action="UnassignStaffFromEvent" method="post" class="d-inline">
                                         <input type="hidden" name="eventId" value="@Model.Event.Id" />
                                         <input type="hidden" name="staffUserId" value="@assigned.Id" />

@@ -10,7 +10,7 @@ namespace HotelManagement.MapperProfiles
         {
             CreateMap<Review, ReviewViewModel>()
                 .ForMember(dest => dest.ReviewerUsername,
-                            opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : "Anonymous"))
+                            opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName + " " + src.ApplicationUser.LastName : "Anonymous"))
                 .ForMember(dest => dest.Rating,
                             opt => opt.MapFrom(src => src.Rating))
                 .ForMember(dest => dest.Comment,

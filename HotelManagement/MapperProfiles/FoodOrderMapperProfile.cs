@@ -10,7 +10,7 @@ namespace HotelManagement.MapperProfiles
         {
             CreateMap<FoodOrder, FoodOrderViewModel>()
                 .ForMember(dest => dest.GuestName,
-                           opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : null))
+                           opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName + " " + src.ApplicationUser.LastName : null))
                 .ForMember(dest => dest.RoomNumber,
                            opt => opt.MapFrom(src => src.Room != null ? src.Room.RoomNumber : null))
                 .ForMember(dest => dest.Foods,

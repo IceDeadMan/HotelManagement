@@ -65,7 +65,7 @@ namespace HotelManagement.DAL.Repositories
                     StartDate = b.StartDate,
                     EndDate = b.EndDate,
                     Status = b.Status,
-                    UserName = b.ApplicationUser.UserName,
+                    UserName = b.ApplicationUser.FirstName + " " + b.ApplicationUser.LastName,
                     RoomNumbers = b.Rooms.Select(r => r.RoomNumber).ToList()
                 })
                 .ToListAsync();

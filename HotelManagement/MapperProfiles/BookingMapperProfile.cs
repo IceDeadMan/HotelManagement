@@ -10,7 +10,7 @@ namespace HotelManagement.MapperProfiles
         {
             CreateMap<Booking, BookingSummaryViewModel>()
                 .ForMember(dest => dest.GuestName,
-                           opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : "Unknown"))
+                           opt => opt.MapFrom(src => src.ApplicationUser != null ? (src.ApplicationUser.FirstName + " " + src.ApplicationUser.LastName) : "Unknown"))
                 .ForMember(dest => dest.StartDate,
                            opt => opt.MapFrom(src => src.StartDate))
                 .ForMember(dest => dest.EndDate,
