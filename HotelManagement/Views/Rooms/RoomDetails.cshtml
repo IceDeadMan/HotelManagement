@@ -51,8 +51,8 @@
 						{
 							<li class="list-group-item">
 								<strong>@Localizer["BookingGuest"]:</strong> @booking.GuestName
-								| <strong>@Localizer["BookingFrom"]:</strong> @booking.StartDate.ToShortDateString()
-								| <strong>@Localizer["BookingTo"]:</strong> @booking.EndDate.ToShortDateString()
+								| <strong>@Localizer["BookingFrom"]:</strong> @booking.StartDate.ToString("dd.MM.yyyy")
+								| <strong>@Localizer["BookingTo"]:</strong> @booking.EndDate.ToString("dd.MM.yyyy")
 							</li>
 						}
 					</ul>

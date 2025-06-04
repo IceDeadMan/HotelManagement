@@ -35,8 +35,8 @@ else
                 var nights = (booking.EndDate - booking.StartDate).Days;
 
                 <tr onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">
-                    <td>@booking.StartDate.ToShortDateString()</td>
-                    <td>@booking.EndDate.ToShortDateString()</td>
+                    <td>@booking.StartDate.ToString("dd.MM.yyyy")</td>
+                    <td>@booking.EndDate.ToString("dd.MM.yyyy")</td>
                     <td class="@(booking.Status switch {
                         BookingStatus.Pending => "status-pending",
                         BookingStatus.Confirmed => "status-confirmed",

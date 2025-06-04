@@ -13,7 +13,7 @@
 }
 
 <h2>@Localizer["Room"] @Model.Room.RoomNumber</h2>
-<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights @Localizer["Nights"])</p>
+<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToString("dd.MM.yyyy") - @Model.Booking.EndDate.ToString("dd.MM.yyyy") (@nights @Localizer["Nights"])</p>
 <p><strong>@Localizer["RoomType"]:</strong> @Model.Room.RoomType?.Name, @Model.Room.RoomType?.Description</p>
 <p><strong>@Localizer["Description"]:</strong> @Model.Room.Description</p>
 
@@ -26,7 +26,7 @@
         @foreach (var order in Model.FoodOrders)
         {
             <li>
-                <strong>@order.OrderDate.ToShortDateString():</strong> @order.Description <span class="@(order.Status switch {
+                <strong>@order.OrderDate.ToString("dd.MM.yyyy"):</strong> @order.Description <span class="@(order.Status switch {
                 OrderStatus.Pending => "status-pending",
                 OrderStatus.InProgress => "status-in-progress",
                 OrderStatus.Completed => "status-completed",
@@ -64,7 +64,7 @@ else
         @foreach (var activity in Model.ActivityRecords)
         {
             <li>
-                <strong>@activity.Date.ToShortDateString():</strong> @activity.Type - @activity.Description
+                <strong>@activity.Date.ToString("dd.MM.yyyy"):</strong> @activity.Type - @activity.Description
                 <span class="@(activity.Status switch {
                 ActivityStatus.Planned => "status-planned",
                 ActivityStatus.InProgress => "status-in-progress",

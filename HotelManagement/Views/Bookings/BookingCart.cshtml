@@ -21,8 +21,8 @@
 }
 
 <h2>@Localizer["BookingSummary"]</h2>
-<p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToShortDateString()</strong></p>
-<p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToShortDateString()</strong></p>
+<p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToString("dd.MM.yyyy")</strong></p>
+<p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToString("dd.MM.yyyy")</strong></p>
 <p>@Localizer["TotalNights"]: <strong>@Model.Nights</strong></p>
 
 <table class="table">

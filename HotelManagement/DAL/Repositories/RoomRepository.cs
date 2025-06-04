@@ -26,7 +26,7 @@ namespace HotelManagement.DAL.Repositories
         {
             return !await _context.Bookings
                 .Include(b => b.Rooms)
-                //.Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
+                .Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
                 .AnyAsync(b =>
                     b.Rooms.Any(r => r.Id == roomId) &&
                     b.StartDate < endDate &&
