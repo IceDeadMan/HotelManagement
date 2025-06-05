@@ -120,6 +120,9 @@
   <data name="ActivityRecordsDate" xml:space="preserve">
     <value>Dátum</value>
   </data>
+  <data name="ActivityRecordsDelete" xml:space="preserve">
+    <value>Zmazať</value>
+  </data>
   <data name="ActivityRecordsDescription" xml:space="preserve">
     <value>Popis</value>
   </data>

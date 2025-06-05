@@ -88,5 +88,21 @@ namespace HotelManagement.Controllers
             return Json(new { success = true, message = "Status updated successfully." });
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Manager,Staff")]
+        public IActionResult DeleteActivityRecord(Guid id)
+        {
+            var activity = _activityRecordRepository.GetById(id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            _activityRecordRepository.Delete(id);
+            _auditLogger.Log("DeleteActivityRecord", $"Activity record {id} deleted.");
+            TempData["Success"] = "Activity record deleted successfully.";
+            return RedirectToAction("ActivityRecordsList");
+        }
+
     }
 }

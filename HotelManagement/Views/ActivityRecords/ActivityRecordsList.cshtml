@@ -27,6 +27,7 @@
                 <th>@Localizer["ActivityRecordsDescription"]</th> <!-- optional to sort -->
                 <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Date" asp-route-sortDir="@GetSortDir("Date")">@Localizer["ActivityRecordsDate"]</a></th>
                 <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Status" asp-route-sortDir="@GetSortDir("Status")">@Localizer["ActivityRecordsStatus"]</a></th>
+                <th>@Localizer["ActivityRecordsDelete"]</th>   
             </tr>
         </thead>
         <tbody>
@@ -58,6 +59,13 @@
                                 </button>
                             }
                         </div>
+                    </td>
+                    <td class="align-middle">
+                        <form method="post" asp-action="DeleteActivityRecord" asp-route-id="@activity.Id" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                @Localizer["Delete"]
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }
