@@ -125,6 +125,7 @@ namespace HotelManagement
             services.AddScoped<ReviewRepository, ReviewRepository>();
             services.AddScoped<EventRepository, EventRepository>();
             services.AddScoped<RoomTypeRepository, RoomTypeRepository>();
+            services.AddScoped<ApplicationUserRepository, ApplicationUserRepository>();
         }
     }
 }
