@@ -39,7 +39,50 @@
 					}
 				</div>
 			</div>
+			<!-- Activities section only for receptionist/manager/staff-->
+			@if (User.IsInRole("Manager") || User.IsInRole("Receptionist") || User.IsInRole("Staff"))
+			{
+				@if (Model.Activities?.Any() == true)
+				{
+					<h5 class="mt-4">@Localizer["ActivitiesForRoom"]:</h5>
+					<ul class="list-group">
+						@foreach (var activity in Model.Activities)
+						{
+							<li class="list-group-item">
+								<strong>@Localizer["ActivityGuest"]:</strong> @activity.GuestName
+								| <strong>@Localizer["ActivityType"]:</strong> @activity.Type
+								| <strong>@Localizer["ActivityDescription"]:</strong> @activity.Description
+								| <strong>@Localizer["ActivityDate"]:</strong> @activity.Date.ToString("dd.MM.yyyy")
+								| <strong>@Localizer["ActivityStatus"]:</strong> @activity.Status.ToString()
+							</li>
+						}
+					</ul>
+				}
+				<form method="post" asp-action="AddAction" class="mt-4">
+					@Html.AntiForgeryToken()
 
+					<label>@Localizer["ServiceType"]</label>
+					<div>
+						@foreach (var type in Enum.GetValues(typeof(ActivityType)).Cast<ActivityType>())
+						{
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="Type" value="@type" required />
+								<label class="form-check-label">@type.ToString()</label>
+							</div>
+						}
+					</div>
+
+					<div class="mb-2">
+						<label for="Description">@Localizer["Description"]</label>
+						<textarea name="Description" class="form-control" required></textarea>
+					</div>
+
+					<!-- Hidden values -->
+					<input type="hidden" name="RoomId" value="@Model.Id" />
+
+					<button type="submit" class="btn btn-primary">@Localizer["RequestService"]</button>
+				</form>
+			}
 			<!-- Bookings Section only for reception/manager -->
 			@if(User.IsInRole("Manager") || User.IsInRole("Receptionist"))
 			{

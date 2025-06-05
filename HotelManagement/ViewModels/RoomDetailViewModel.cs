@@ -7,6 +7,7 @@ namespace HotelManagement.ViewModels;
 /// </summary>
 public class RoomDetailViewModel
 {
+    public Guid Id { get; set; }
     public string RoomNumber { get; set; } = "";
     public string Description { get; set; } = "";
 
@@ -17,5 +18,6 @@ public class RoomDetailViewModel
     public byte[]? RoomTypePhoto { get; set; }
 
     public List<BookingSummaryViewModel> Bookings { get; set; } = new();
+    public List<ActivityRecordViewModel> Activities { get; set; } = new();
     public List<ReviewViewModel> Reviews { get; set; } = new();
 }

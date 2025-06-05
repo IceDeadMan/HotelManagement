@@ -6,6 +6,8 @@ using AutoMapper;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagement.Logging;
+using HotelManagement.Enums;
+using System.Security.Claims;
 
 namespace HotelManagement.Controllers
 {
@@ -19,16 +21,18 @@ namespace HotelManagement.Controllers
 		private readonly RoomRepository _roomRepository;
 		private readonly RoomTypeRepository _roomTypeRepository;
 		private readonly BookingCartService _bookingCartService;
+		private readonly ActivityRecordRepository _activityRecordRepository;
 		private readonly IMapper _mapper;
 
 		public RoomsController(AuditLogger auditLogger, RoomRepository roomRepository,
 								RoomTypeRepository roomTypeRepository, BookingCartService bookingCartService,
-								IMapper mapper)
+								IMapper mapper, ActivityRecordRepository activityRecordRepository)
 		{
 			_auditLogger = auditLogger;
 			_roomRepository = roomRepository;
 			_roomTypeRepository = roomTypeRepository;
 			_bookingCartService = bookingCartService;
+			_activityRecordRepository = activityRecordRepository;
 			_mapper = mapper;
 		}
 
@@ -63,6 +67,7 @@ namespace HotelManagement.Controllers
 			var viewModel = _mapper.Map<RoomDetailViewModel>(room);
 			viewModel.Bookings = _mapper.Map<List<BookingSummaryViewModel>>(room.Bookings);
 			viewModel.Reviews = _mapper.Map<List<ReviewViewModel>>(room.Reviews);
+			viewModel.Activities = _mapper.Map<List<ActivityRecordViewModel>>(room.ActivityRecords);
 
 			_auditLogger.Log("RoomDetails", $"Room {id} details viewed.");
 			return View(viewModel);
@@ -109,7 +114,7 @@ namespace HotelManagement.Controllers
 			}
 			return RedirectToAction("RoomsList");
 		}
-		
+
 		/// <summary>
 		/// Manager can edit a room.
 		/// </summary>
@@ -130,6 +135,28 @@ namespace HotelManagement.Controllers
 
 			TempData["Error"] = "Failed to update room.";
 			return RedirectToAction("RoomsList");
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Manager,Receptionist,Staff")]
+		[ValidateAntiForgeryToken]
+		public IActionResult AddAction(Guid roomId, ActivityType type, string description)
+		{
+			var activity = new ActivityRecord
+			{
+				RoomId = roomId,
+				Type = type,
+				ApplicationUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), // Get the current user's ID
+				Description = description,
+				Date = DateTime.Now,
+				Status = ActivityStatus.Planned
+			};
+
+			_activityRecordRepository.Create(activity);
+			TempData["Success"] = "Service requested successfully.";
+			_auditLogger.Log("CreateActivityRecord", $"Activity for room {roomId} successfully created.");
+
+			return RedirectToAction("RoomDetails", new { id = roomId });
 		}
 	}
 }

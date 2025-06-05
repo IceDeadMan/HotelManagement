@@ -61,7 +61,7 @@ namespace HotelManagement.DAL.Repositories
         {
             return await _context.Rooms
                 .Include(r => r.Bookings).ThenInclude(b => b.ApplicationUser) // for usernames
-                .Include(r => r.ActivityRecords)
+                .Include(r => r.ActivityRecords).ThenInclude(ar => ar.ApplicationUser) // for usernames
                 .Include(r => r.FoodOrders).ThenInclude(f => f.FoodOrderFoods).ThenInclude(fof => fof.Food) // for food orders
                 .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser) // for usernames 
                 .Include(r => r.RoomType)

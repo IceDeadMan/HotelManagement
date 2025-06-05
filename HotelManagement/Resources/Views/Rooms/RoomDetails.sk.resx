@@ -165,4 +165,31 @@
   <data name="RoomTypeDetail" xml:space="preserve">
     <value>Typ Izby</value>
   </data>
+  <data name="ActivitiesForRoom" xml:space="preserve">
+    <value>Servisné aktivity pre túto izbu</value>
+  </data>
+  <data name="ActivityGuest" xml:space="preserve">
+    <value>Požiadavka od</value>
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ActivityStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="ServiceType" xml:space="preserve">
+    <value>Typ servisu</value>
+  </data>
+  <data name="RequestService" xml:space="preserve">
+    <value>Požiadať o servis</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="ActivityDate" xml:space="preserve">
+    <value>Dátum</value>
+  </data>
+  <data name="ActivityDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
 </root>

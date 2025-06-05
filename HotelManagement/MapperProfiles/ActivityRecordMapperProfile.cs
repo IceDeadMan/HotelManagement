@@ -10,7 +10,7 @@ namespace HotelManagement.MapperProfiles
         {
             CreateMap<ActivityRecord, ActivityRecordViewModel>()
                 .ForMember(dest => dest.GuestName,
-                           opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName + " " + src.ApplicationUser.LastName : null))
+                           opt => opt.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName + " " + src.ApplicationUser.LastName : "Unknown"))
                 .ForMember(dest => dest.RoomNumber,
                            opt => opt.MapFrom(src => src.Room != null ? src.Room.RoomNumber : null));
         }

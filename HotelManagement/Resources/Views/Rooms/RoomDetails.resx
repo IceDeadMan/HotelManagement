@@ -165,4 +165,31 @@
   <data name="RoomTypeDetail" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="ActivitiesForRoom" xml:space="preserve">
+    <value>Service activities for this room</value>
+  </data>
+  <data name="ActivityGuest" xml:space="preserve">
+    <value>Requested by</value>
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ActivityStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ServiceType" xml:space="preserve">
+    <value>Type of service</value>
+  </data>
+  <data name="RequestService" xml:space="preserve">
+    <value>Request Service</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ActivityDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ActivityDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
 </root>
