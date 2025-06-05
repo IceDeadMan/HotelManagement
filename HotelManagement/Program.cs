@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Serilog;
 using HotelManagement.Logging;
+using Microsoft.AspNetCore.Identity;
 
 namespace HotelManagement
 {
@@ -62,7 +63,8 @@ namespace HotelManagement
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>();
+                .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>()
+                .AddDefaultTokenProviders();
 			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			builder.Services.AddScoped<BookingCartService>();
 			builder.Services.AddSession();

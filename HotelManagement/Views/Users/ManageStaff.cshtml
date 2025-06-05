@@ -1,0 +1,77 @@
+﻿@using HotelManagement.ViewModels
+@using HotelManagement.Enums
+@using Microsoft.AspNetCore.Antiforgery
+@model ManageStaffViewModel
+
+@{
+    ViewData["Title"] = "Manage Staff Accounts";
+}
+
+<h2>Manage Staff Accounts</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Current Role</th>
+                <th>Change Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                var currentRole = Model.UserRoles[user.Id];
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@currentRole</td>
+                    <td>
+                        <form class="role-change-form" method="post">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <select name="newRole" class="role-dropdown">
+                                @foreach (var role in Model.AvailableRoles)
+                                {
+                                    <option value="@role" selected="@(role == currentRole)">
+                                    @role
+                                </option>
+                                }
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+<script>
+    document.querySelectorAll(".role-dropdown").forEach(dropdown => {
+        dropdown.addEventListener("change", function () {
+            const form = this.closest("form");
+            const formData = new FormData(form);
+
+            fetch("/Users/ChangeUserRole", {
+                method: "POST",
+                headers: {
+                    "RequestVerificationToken": formData.get("__RequestVerificationToken")
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Role changed successfully.");
+                    location.reload();
+                } else {
+                    alert("Failed to change role.");
+                }
+            });
+        });
+    });
+</script>
+
+}

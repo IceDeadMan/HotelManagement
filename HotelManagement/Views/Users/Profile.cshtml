@@ -1,26 +1,82 @@
 ﻿@model HotelManagement.Models.ApplicationUser
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-<!-- Profile View -->
-<!-- This view displays the user's profile information. -->
-<!-- It includes fields for username, email, and other user details. -->
+
 @{
     ViewData["Title"] = "My Profile";
 }
 
 <div class="container mt-4">
     <h2 class="mb-3">@Localizer["MyProfile"]</h2>
+
+    <!-- Update Basic Info -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["UpdateInfo"]</h5>
+            <form id="infoForm">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label">@Localizer["FirstName"]</label>
+                        <input class="form-control" name="FirstName" value="@Model.FirstName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">@Localizer["LastName"]</label>
+                        <input class="form-control" name="LastName" value="@Model.LastName" />
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <label class="form-label">@Localizer["Username"]</label>
+                        <input class="form-control" name="UserName" value="@Model.UserName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">@Localizer["PhoneNumber"]</label>
+                        <input class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">@Localizer["SaveChanges"]</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Email -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["UpdateEmail"]</h5>
+            <form id="emailForm">
+                <label class="form-label">@Localizer["Email"]</label>
+                <input class="form-control mb-2" name="newEmail" value="@Model.Email" />
+                <button type="submit" class="btn btn-secondary">@Localizer["UpdateEmail"]</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["ChangePassword"]</h5>
+            <form id="passwordForm">
+                <div class="mb-2">
+                    <label class="form-label">@Localizer["CurrentPassword"]</label>
+                    <input type="password" class="form-control" name="currentPassword" required />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">@Localizer["NewPassword"]</label>
+                    <input type="password" class="form-control" name="newPassword" required />
+                </div>
+                <button type="submit" class="btn btn-danger">@Localizer["UpdatePassword"]</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Role Display -->
     <div class="card shadow-sm">
         <div class="card-body">
-            <p><strong>@Localizer["Username"]:</strong> @Model.UserName</p>
-            <p><strong>@Localizer["FirstName"]:</strong> @Model.FirstName</p>
-            <p><strong>@Localizer["LastName"]:</strong> @Model.LastName</p>
-            <p><strong>@Localizer["PhoneNumber"]:</strong> @Model.PhoneNumber</p>
-            <p><strong>@Localizer["Email"]:</strong> @Model.Email</p>
             <p><strong>@Localizer["YouAre"]: </strong>
                 @if (User.IsInRole("Manager"))
                 {
                     <span class="badge bg-primary">@Localizer["Manager"]</span>
+                    <a asp-action="NonCustomerOrAdminUsers" class="btn btn-secondary btn-sm ms-2">@Localizer["ManageStaff"]</a>
                 }
                 else if (User.IsInRole("Receptionist"))
                 {
@@ -42,6 +98,76 @@
                 {
                     <span class="badge bg-info">@Localizer["Guest"]</span>
                 }
+            </p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    document.getElementById("infoForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        const response = await fetch("/Users/UpdateUserInfo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert("Info updated successfully");
+            location.reload();
+        } else {
+            alert("Failed to update info");
+        }
+    });
+
+    document.getElementById("emailForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const newEmail = e.target.newEmail.value;
+        const response = await fetch("/Users/UpdateEmail", {
+            method: "POST",
+            headers: {
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            },
+            body: new URLSearchParams({
+                newEmail: newEmail
+            })
+        });
+
+        if (response.ok) {
+            alert("Email updated successfully");
+            location.reload();
+        } else {
+            alert("Failed to update email");
+        }
+    });
+
+    document.getElementById("passwordForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = {
+            currentPassword: formData.get("currentPassword"),
+            newPassword: formData.get("newPassword")
+        };
+        const response = await fetch("/Users/UpdatePassword", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // for simple POST form
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            body: new URLSearchParams({
+                currentPassword: formData.get("currentPassword"),
+                newPassword: formData.get("newPassword")
+            })
+        })
+        .then(res => {
+            if (res.ok) alert("Password changed successfully.");
+            else res.text().then(err => alert("Failed: " + err));
+        });
+    });
+</script>
+}

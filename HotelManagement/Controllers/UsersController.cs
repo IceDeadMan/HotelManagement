@@ -7,6 +7,7 @@ using HotelManagement.ViewModels.Users;
 using AutoMapper;
 using HotelManagement.DAL.Repositories;
 using HotelManagement.ViewModels.DTOs;
+using HotelManagement.ViewModels;
 
 
 namespace HotelManagement.Controllers
@@ -22,15 +23,18 @@ namespace HotelManagement.Controllers
         private readonly ApplicationUserRepository _userRepository;
         private readonly AuditLogger _auditLogger;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
         public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-                               AuditLogger auditLogger, IMapper mapper, ApplicationUserRepository userRepository)
+                               AuditLogger auditLogger, IMapper mapper, ApplicationUserRepository userRepository,
+                                RoleManager<IdentityRole<Guid>> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userRepository = userRepository;
             _auditLogger = auditLogger;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         public IActionResult Register()
@@ -118,14 +122,30 @@ namespace HotelManagement.Controllers
             return View(user);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> NonCustomerOrAdminUsers()
         {
             var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            return View(users);
-        }
+            var roles =  _roleManager.Roles.Select(r => r.Name).ToList();
 
+            var userRoles = new Dictionary<Guid, string>();
+            foreach (var user in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(user);
+                var role = userRoleList.FirstOrDefault() ?? "None";
+                userRoles[user.Id] = role;
+            }
+
+            var model = new ManageStaffViewModel
+            {
+                Users = users.ToList(),
+                AvailableRoles = roles,
+                UserRoles = userRoles
+            };
+
+            return View("ManageStaff", model);
+        }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(string currentPassword, string newPassword)
@@ -136,10 +156,11 @@ namespace HotelManagement.Controllers
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
             if (result.Succeeded)
             {
+                TempData["Success"] = "Password updated successfully.";
                 _auditLogger.Log("UpdatePassword", $"Password updated for user {user.UserName}");
                 return Ok();
             }
-
+            TempData["Error"] = "Failed to update password.";
             return BadRequest(result.Errors);
         }
 
@@ -158,10 +179,11 @@ namespace HotelManagement.Controllers
             var result = await _userRepository.UpdateUserInfoAsync(user);
             if (result.Succeeded)
             {
+                TempData["Success"] = "User information updated successfully.";
                 _auditLogger.Log("UpdateUserInfo", $"Updated info for user {user.UserName}");
                 return Ok();
             }
-
+            TempData["Error"] = "Failed to update user information.";
             return BadRequest(result.Errors);
         }
 
@@ -172,28 +194,33 @@ namespace HotelManagement.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
+            //newEmail = "testmail@mail.com"; // For testing purposes, replace with actual email validation logic
+
             var result = await _userRepository.UpdateEmailAsync(user.Id, newEmail);
 
             if (result.Succeeded)
             {
                 _auditLogger.Log("UpdateEmail", $"Updated email for user {user.UserName} to {newEmail}");
+                TempData["Success"] = "Email updated successfully.";
                 return Ok();
             }
 
+            TempData["Error"] = "Failed to update email.";
             return BadRequest(result.Errors);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> ChangeUserRole(Guid userId, string newRole)
         {
             var result = await _userRepository.ChangeUserRoleAsync(userId, newRole);
             if (result.Succeeded)
             {
+                TempData["Success"] = $"User role changed to {newRole} successfully.";
                 _auditLogger.Log("ChangeUserRole", $"Changed role of user {userId} to {newRole}");
                 return Ok();
             }
-
+            TempData["Error"] = "Failed to change user role.";
             return BadRequest(result.Errors);
         }
 
