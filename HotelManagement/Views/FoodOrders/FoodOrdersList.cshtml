@@ -31,7 +31,7 @@
                     <td>@order.GuestName</td>
                     <td>@order.RoomNumber</td>
                     <td>@order.Description</td>
-                    <td>@order.OrderDate.ToString("g")</td>
+                    <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
                         <ul class="list-unstyled mb-0">
                             @foreach (var food in order.Foods)
