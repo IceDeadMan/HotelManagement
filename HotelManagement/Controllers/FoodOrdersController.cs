@@ -29,12 +29,28 @@ namespace HotelManagement.Controllers
             _auditLogger = auditLogger;
         }
 
-        public async Task<IActionResult> FoodOrdersList()
+        public async Task<IActionResult> FoodOrdersList(string sortBy , string sortDir = "asc")
         {
-            var orders = await _foodOrderRepository.GetAllWithDetailsAsync();
+             var orders = await _foodOrderRepository.GetAllWithDetailsAsync();
 
-            var viewModel = _mapper.Map<List<FoodOrderViewModel>>(orders);
+            // Normalize case for safety
+            sortBy = sortBy?.ToLower();
+            sortDir = sortDir?.ToLower();
 
+            var ordersSorted = (sortBy, sortDir) switch
+            {
+                ("guest", "asc") => orders.OrderBy(o => o.ApplicationUser.FirstName + " " + o.ApplicationUser.LastName),
+                ("guest", "desc") => orders.OrderByDescending(o => o.ApplicationUser.FirstName + " " + o.ApplicationUser.LastName),
+                ("room", "asc") => orders.OrderBy(o => o.Room.RoomNumber),
+                ("room", "desc") => orders.OrderByDescending(o => o.Room.RoomNumber),
+                ("date", "asc") => orders.OrderBy(o => o.OrderDate),
+                ("date", "desc") => orders.OrderByDescending(o => o.OrderDate),
+                ("status", "asc") => orders.OrderBy(o => o.Status),
+                ("status", "desc") => orders.OrderByDescending(o => o.Status),
+                _ => orders.OrderBy(o => o.Status).ThenBy(o => o.OrderDate)
+            };
+
+            var viewModel = _mapper.Map<List<FoodOrderViewModel>>(ordersSorted);
             return View(viewModel);
         }
 

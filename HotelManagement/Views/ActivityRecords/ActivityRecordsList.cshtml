@@ -13,25 +13,31 @@
     <h2>@Localizer["ServiceActivityRequests"]</h2>
     @Html.AntiForgeryToken()
     <table class="table table-bordered table-striped mt-3">
+        @{
+            var currentSort = Context.Request.Query["sortBy"];
+            var currentDir = Context.Request.Query["sortDir"];
+            string GetSortDir(string field) => (currentSort == field && currentDir == "asc") ? "desc" : "asc";
+        }
+
         <thead class="table-dark">
             <tr>
-                <th>@Localizer["ActivityRecordsGuest"]</th>
-                <th>@Localizer["ActivityRecordsRoom"]</th>
-                <th>@Localizer["ActivityRecordsType"]</th>
-                <th>@Localizer["ActivityRecordsDescription"]</th>
-                <th>@Localizer["ActivityRecordsDate"]</th>
-                <th>@Localizer["ActivityRecordsStatus"]</th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="GuestName" asp-route-sortDir="@GetSortDir("GuestName")">@Localizer["ActivityRecordsGuest"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="RoomNumber" asp-route-sortDir="@GetSortDir("RoomNumber")">@Localizer["ActivityRecordsRoom"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Type" asp-route-sortDir="@GetSortDir("Type")">@Localizer["ActivityRecordsType"]</a></th>
+                <th>@Localizer["ActivityRecordsDescription"]</th> <!-- optional to sort -->
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Date" asp-route-sortDir="@GetSortDir("Date")">@Localizer["ActivityRecordsDate"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Status" asp-route-sortDir="@GetSortDir("Status")">@Localizer["ActivityRecordsStatus"]</a></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var activity in Model)
             {
                 <tr data-activity-id="@activity.Id">
-                    <td>@activity.GuestName</td>
-                    <td>@activity.RoomNumber</td>
-                    <td>@activity.Type</td>
-                    <td>@activity.Description</td>
-                    <td>@activity.Date.ToString("dd.MM.yyyy")</td>
+                    <td class="align-middle">@activity.GuestName</td>
+                    <td class="align-middle">@activity.RoomNumber</td>
+                    <td class="align-middle">@activity.Type</td>
+                    <td class="align-middle">@activity.Description</td>
+                    <td class="align-middle">@activity.Date.ToString("dd.MM.yyyy")</td>
 
                     <!-- AJAX Status Buttons -->
                     <td>

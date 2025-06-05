@@ -29,11 +29,26 @@ namespace HotelManagement.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> ActivityRecordsList()
+        public async Task<IActionResult> ActivityRecordsList(string sortBy, string sortDir = "asc")
         {
             var activities = await _activityRecordRepository.GetAllWithDetailsAsync();
 
-            var viewModel = _mapper.Map<List<ActivityRecordViewModel>>(activities);
+            var orderedActivities = (sortBy, sortDir.ToLower()) switch
+            {
+                ("GuestName", "desc") => activities.OrderByDescending(a => a.ApplicationUser.FirstName + " " + a.ApplicationUser.LastName),
+                ("GuestName", _) => activities.OrderBy(a => a.ApplicationUser.FirstName + " " + a.ApplicationUser.LastName),
+                ("RoomNumber", "desc") => activities.OrderByDescending(a => a.Room.RoomNumber),
+                ("RoomNumber", _) => activities.OrderBy(a => a.Room.RoomNumber),
+                ("Type", "desc") => activities.OrderByDescending(a => a.Type),
+                ("Type", _) => activities.OrderBy(a => a.Type),
+                ("Date", "desc") => activities.OrderByDescending(a => a.Date),
+                ("Date", _) => activities.OrderBy(a => a.Date),
+                ("Status", "desc") => activities.OrderByDescending(a => a.Status),
+                ("Status", _) => activities.OrderBy(a => a.Status),
+                _ => activities.OrderBy(a => a.Status).ThenBy(a => a.Date)
+            };
+
+            var viewModel = _mapper.Map<List<ActivityRecordViewModel>>(orderedActivities);
 
             return View(viewModel);
         }

@@ -14,25 +14,48 @@
     <h2>@Localizer["FoodOrdersTitle"]</h2>
     @Html.AntiForgeryToken()
     <table class="table table-bordered table-striped mt-3">
+        @{
+            string currentSortBy = Context.Request.Query["sortBy"];
+            string currentSortDir = Context.Request.Query["sortDir"];
+            Func<string, string> nextDir = column =>
+                currentSortBy == column && currentSortDir == "asc" ? "desc" : "asc";
+        }
+
         <thead class="table-dark">
             <tr>
-                <th>@Localizer["FoodOrdersGuest"]</th>
-                <th>@Localizer["FoodOrdersRoom"]</th>
+                <th>
+                    <a asp-action="FoodOrdersList" asp-route-sortBy="guest" asp-route-sortDir="@nextDir("guest")" class="text-white">
+                        @Localizer["FoodOrdersGuest"]
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="FoodOrdersList" asp-route-sortBy="room" asp-route-sortDir="@nextDir("room")" class="text-white">
+                        @Localizer["FoodOrdersRoom"]
+                    </a>
+                </th>
                 <th>@Localizer["FoodOrdersDescription"]</th>
-                <th>@Localizer["FoodOrdersDate"]</th>
+                <th>
+                    <a asp-action="FoodOrdersList" asp-route-sortBy="date" asp-route-sortDir="@nextDir("date")" class="text-white">
+                        @Localizer["FoodOrdersDate"]
+                    </a>
+                </th>
                 <th>@Localizer["FoodOrdersFoods"]</th>
-                <th>@Localizer["FoodOrdersStatus"]</th>
+                <th>
+                    <a asp-action="FoodOrdersList" asp-route-sortBy="status" asp-route-sortDir="@nextDir("status")" class="text-white">
+                        @Localizer["FoodOrdersStatus"]
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var order in Model)
             {
                 <tr data-order-id="@order.Id">
-                    <td>@order.GuestName</td>
-                    <td>@order.RoomNumber</td>
-                    <td>@order.Description</td>
-                    <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
-                    <td>
+                    <td class="align-middle">@order.GuestName</td>
+                    <td class="align-middle">@order.RoomNumber</td>
+                    <td class="align-middle">@order.Description</td>
+                    <td class="align-middle">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td class="align-middle">
                         <ul class="list-unstyled mb-0">
                             @foreach (var food in order.Foods)
                             {
