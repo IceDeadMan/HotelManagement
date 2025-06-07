@@ -57,9 +57,19 @@ namespace HotelManagement.DAL.Seeds
             RoomId = RoomSeeds.Room5.Id
         };
 
+        public static readonly FoodOrder FoodOrder6 = new FoodOrder
+        {
+            Id = Guid.Parse("41d65c90-de3e-49be-8802-8cbc5b4e2966"),
+            Description = "Dinner",
+            OrderDate = DateTime.Now.AddDays(-3),
+            Status = OrderStatus.Completed,
+            ApplicationUserId = UserSeeds.User7.Id,
+            RoomId = RoomSeeds.Room13.Id
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FoodOrder>().HasData(FoodOrder1, FoodOrder2, FoodOrder3, FoodOrder4, FoodOrder5);
+            modelBuilder.Entity<FoodOrder>().HasData(FoodOrder1, FoodOrder2, FoodOrder3, FoodOrder4, FoodOrder5, FoodOrder6);
 
             // Seed the join table between food orders and foods
             modelBuilder.Entity<FoodOrderFood>().HasData(
@@ -93,14 +103,12 @@ namespace HotelManagement.DAL.Seeds
                     FoodId = FoodSeeds.Food5.Id,
                     Quantity = 2
                 },
-
                 new FoodOrderFood
                 {
                     FoodOrderId = FoodOrder4.Id,
                     FoodId = FoodSeeds.Food6.Id,
                     Quantity = 1
                 },
-
                 new FoodOrderFood
                 {
                     FoodOrderId = FoodOrder5.Id,
@@ -112,6 +120,12 @@ namespace HotelManagement.DAL.Seeds
                     FoodOrderId = FoodOrder5.Id,
                     FoodId = FoodSeeds.Food9.Id,
                     Quantity = 2
+                },
+                new FoodOrderFood
+                {
+                    FoodOrderId = FoodOrder6.Id,
+                    FoodId = FoodSeeds.Food13.Id,
+                    Quantity = 1
                 }
             );
         }

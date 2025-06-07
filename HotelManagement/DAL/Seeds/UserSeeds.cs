@@ -128,10 +128,40 @@ namespace HotelManagement.DAL.Seeds
             PasswordHash = hasher.HashPassword(null, "User8@Password")
         };
 
+        public static readonly ApplicationUser User9 = new ApplicationUser
+        {
+            Id = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd299"),
+            FirstName = "Jozef",
+            LastName = "Mrkva",
+            PhoneNumber = "+421 905 888 197",
+            UserName = "user9",
+            NormalizedUserName = "USER9",
+            Email = "user9@example.com",
+            NormalizedEmail = "USER9@EXAMPLE.COM",
+            EmailConfirmed = true,
+            SecurityStamp = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd299").ToString(),
+            PasswordHash = hasher.HashPassword(null, "User9@Password")
+        };
+
+        public static readonly ApplicationUser User10 = new ApplicationUser
+        {
+            Id = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd29a"),
+            FirstName = "Milan",
+            LastName = "Bobor",
+            PhoneNumber = "+421 905 888 712",
+            UserName = "user10",
+            NormalizedUserName = "USER10",
+            Email = "user10@example.com",
+            NormalizedEmail = "USER10@EXAMPLE.COM",
+            EmailConfirmed = true,
+            SecurityStamp = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd29a").ToString(),
+            PasswordHash = hasher.HashPassword(null, "User10@Password")
+        };
+
 
         public static void Seed(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ApplicationUser>().HasData(User1, User2, User3, User4, User5, User6, User7, User8);
+            modelBuilder.Entity<ApplicationUser>().HasData(User1, User2, User3, User4, User5, User6, User7, User8, User9, User10);
         }
     }
 }

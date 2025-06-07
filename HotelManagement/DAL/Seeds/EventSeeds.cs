@@ -27,7 +27,7 @@ namespace HotelManagement.DAL.Seeds
             Id = Guid.Parse("7c8da81a-74a0-4d50-8cac-fea2f7897733"),
             Name = "Wine Tasting Evening",
             Description = "Sample exquisite wines from around the world.",
-            Date = new DateTime(2025, 7, 5),
+            Date = new DateTime(2025, 6, 13),
         };
 
         public static readonly Event Event4 = new Event

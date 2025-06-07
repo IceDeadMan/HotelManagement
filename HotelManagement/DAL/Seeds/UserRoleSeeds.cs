@@ -47,6 +47,16 @@ namespace HotelManagement.DAL.Seeds
                 {
                     UserId = UserSeeds.User8.Id,
                     RoleId = RoleSeeds.Staff.Id
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = UserSeeds.User9.Id,
+                    RoleId = RoleSeeds.Staff.Id
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = UserSeeds.User10.Id,
+                    RoleId = RoleSeeds.KitchenStaff.Id
                 }
             );
         }
