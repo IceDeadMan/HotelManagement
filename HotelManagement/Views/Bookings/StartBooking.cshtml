@@ -14,6 +14,11 @@
 	ViewData["Title"] = Localizer["CreateBooking"];
 }
 
+<!-- language code to localine flatpickr -->
+@{
+    var langCode = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+}
+
 <!-- Form for selecting room type and stay duration -->
 <!-- This form submits the selected criteria to the AvailableRooms action -->
 <form method="get" asp-controller="Bookings" asp-action="AvailableRooms">
@@ -118,6 +123,7 @@
 
 @section Scripts {
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/@(langCode).js"></script>
 	<script src="~/js/utils.js"></script>
 	<script>
 		const staySummary = document.getElementById("staySummary");
@@ -168,8 +174,9 @@
 			mode: "range",
 			dateFormat: "Y-m-d",
 			altInput: true,
+			locale: "@langCode",
 			altFormat: "d.m.Y",
-			minDate: "today", // allow past dates for testing
+			minDate: "today",
 			defaultDate: [
 				"@Model.StartDate",
 				"@Model.EndDate"
