@@ -17,6 +17,10 @@
             <form asp-action="Register" method="post">
                 @Html.AntiForgeryToken()
 
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+                }
                 <div class="mb-3">
                     <label asp-for="FirstName" class="form-label">@Localizer["FirstName"]</label>
                     <input asp-for="FirstName" class="form-control" placeholder="@Localizer["FirstName"]" />
@@ -31,7 +35,7 @@
 
                 <div class="mb-3">
                     <label asp-for="PhoneNumber" class="form-label">@Localizer["PhoneNumber"]</label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="@Localizer["PhoneNumber"]" />
+                    <input type="numeric" asp-for="PhoneNumber" class="form-control" placeholder="@Localizer["PhoneNumber"]" />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
@@ -43,7 +47,7 @@
 
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <input type="email" asp-for="Email" class="form-control" placeholder="Email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
