@@ -2,12 +2,14 @@
 @using HotelManagement.Enums
 @using Microsoft.AspNetCore.Antiforgery
 @model ManageStaffViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Manage Staff Accounts";
 }
 
-<h2>Manage Staff Accounts</h2>
+<h2>@Localizer["ManageStaff"]</h2>
 
 <form method="post">
     @Html.AntiForgeryToken()
@@ -15,10 +17,11 @@
     <table class="table">
         <thead>
             <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>Current Role</th>
-                <th>Change Role</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Username"]</th>
+                <th>@Localizer["Email"]</th>
+                <th>@Localizer["CurrentRole"]</th>
+                <th>@Localizer["ChangeRole"]</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +29,7 @@
             {
                 var currentRole = Model.UserRoles[user.Id];
                 <tr>
+                    <td>@user.FirstName @user.LastName</td>
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
                     <td>@currentRole</td>

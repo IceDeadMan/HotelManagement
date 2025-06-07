@@ -117,67 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MyProfile" xml:space="preserve">
-    <value>Môj Profil</value>
+  <data name="ManageStaff" xml:space="preserve">
+    <value>Správa zamestnancov</value>
   </data>
-  <data name="UpdateInfo" xml:space="preserve">
-    <value>Upraviť profil</value>
-  </data>
-  <data name="PhoneNumber" xml:space="preserve">
-    <value>Tel. Číslo</value>
+  <data name="Name" xml:space="preserve">
+    <value>Meno</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Používateľské meno</value>
   </data>
-  <data name="FirstName" xml:space="preserve">
-    <value>Meno</value>
+  <data name="CurrentRole" xml:space="preserve">
+    <value>Aktuálna pozícia</value>
   </data>
-  <data name="LastName" xml:space="preserve">
-    <value>Priezvisko</value>
-  </data>
-  <data name="YouAre" xml:space="preserve">
-    <value>Ste</value>
-  </data>
-  <data name="YouAre1" xml:space="preserve">
-    <value>Ste</value>
-  </data>
-  <data name="ManageStaff" xml:space="preserve">
-    <value>Správa zamestnancov</value>
-  </data>
-  <data name="ChangePassword" xml:space="preserve">
-    <value>Zmeniť heslo</value>
-  </data>
-  <data name="CurrentPassword" xml:space="preserve">
-    <value>Aktuálne heslo</value>
-  </data>
-  <data name="NewPassword" xml:space="preserve">
-    <value>Nové heslo</value>
-  </data>
-  <data name="UpdateEmail" xml:space="preserve">
-    <value>Upraviť E-mail</value>
-  </data>
-  <data name="Guest" xml:space="preserve">
-    <value>Neprihlásený</value>
-  </data>
-  <data name="Customer" xml:space="preserve">
-    <value>Zákazník</value>
-  </data>
-  <data name="Staff" xml:space="preserve">
-    <value>Zamestnanec</value>
-  </data>
-  <data name="SaveChanges" xml:space="preserve">
-    <value>Uložiť zmeny</value>
-  </data>
-  <data name="KitchenStaff" xml:space="preserve">
-    <value>Zamestnanec kuchyne</value>
-  </data>
-  <data name="Receptionist" xml:space="preserve">
-    <value>Recepčný</value>
-  </data>
-  <data name="Manager" xml:space="preserve">
-    <value>Manažér</value>
+  <data name="ChangeRole" xml:space="preserve">
+    <value>Zmeniť pozíciu</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>E-Mail</value>
+    <value>E-mail</value>
   </data>
 </root>
