@@ -192,4 +192,13 @@
   <data name="ActivityDescription" xml:space="preserve">
     <value>Popis</value>
   </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Prebieha</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Plánovaná</value>
+  </data>
 </root>

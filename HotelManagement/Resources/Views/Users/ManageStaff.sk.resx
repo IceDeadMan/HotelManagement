@@ -123,8 +123,23 @@
   <data name="Name" xml:space="preserve">
     <value>Meno</value>
   </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Tel. číslo</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Používateľské meno</value>
+  </data>
+  <data name="RegisterStaff" xml:space="preserve">
+    <value>Zaregistrovať zamestnanca</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Meno</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Priezvisko</value>
   </data>
   <data name="CurrentRole" xml:space="preserve">
     <value>Aktuálna pozícia</value>
@@ -134,5 +149,8 @@
   </data>
   <data name="Email" xml:space="preserve">
     <value>E-mail</value>
+  </data>
+  <data name="RegisterNewStaff" xml:space="preserve">
+    <value>Pridať nového zamestnanca</value>
   </data>
 </root>

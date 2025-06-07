@@ -92,7 +92,17 @@ namespace HotelManagement.Controllers
         {
             // Get required data to return to ManageStaff view later
             var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            // Exclude the current user from the list
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
+
+            var roles = _roleManager.Roles
+                .Where(r => r.Name != "Customer")
+                .Select(r => r.Name)
+                .ToList();
 
             var userRoles = new Dictionary<Guid, string>();
             foreach (var u in users)
@@ -137,6 +147,12 @@ namespace HotelManagement.Controllers
 
             // Refresh everything after successful registration
             users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            // Exclude the current user from the list
+            currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
             userRoles = new Dictionary<Guid, string>();
             foreach (var u in users)
             {
@@ -147,7 +163,7 @@ namespace HotelManagement.Controllers
             manageStaffModel.Users = users.ToList();
             manageStaffModel.UserRoles = userRoles;
             ModelState.Clear();
-
+            TempData["Success"] = "Staff user registered successfully.";
             return View("ManageStaff", manageStaffModel);
         }
 
@@ -193,7 +209,16 @@ namespace HotelManagement.Controllers
         public async Task<IActionResult> NonCustomerOrAdminUsers()
         {
             var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            var roles =  _roleManager.Roles.Select(r => r.Name).ToList();
+            // Exclude the current user from the list
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
+            var roles = _roleManager.Roles
+                .Where(r => r.Name != "Customer")
+                .Select(r => r.Name)
+                .ToList();
 
             var userRoles = new Dictionary<Guid, string>();
             foreach (var user in users)
