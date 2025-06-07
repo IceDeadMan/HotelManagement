@@ -42,6 +42,9 @@ namespace HotelManagement.Controllers
             var events = await _eventRepository.GetAllWithDetailsAsync();
             var isManager = User.IsInRole("Manager");
 
+            // Only fetch staff if the user is a manager
+            var allStaff = isManager ? await _userManager.GetUsersInRoleAsync("Staff") : new List<ApplicationUser>();
+
             var viewModel = new EventListViewModel
             {
                 CurrentUserId = currentUserId.ToString(),
@@ -49,9 +52,14 @@ namespace HotelManagement.Controllers
                 Events = events.Select(e => new EventListItemViewModel
                 {
                     Event = e,
-                    TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 99,
+                    TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 0,
                     IsUserRegistered = e.Registrations.Any(r => r.UserId == currentUserId),
-                    AllAssignableStaff = isManager ? _userManager.GetUsersInRoleAsync("Staff").Result.ToList() : new List<ApplicationUser>(),
+                    IsUserInvolved = e.Registrations.Any(r => r.UserId == currentUserId) || e.StaffMembers.Any(s => s.Id == currentUserId),
+                    AllAssignableStaff = isManager
+                        ? allStaff
+                            .Where(staff => !e.StaffMembers.Any(assigned => assigned.Id == staff.Id))
+                            .ToList()
+                        : new List<ApplicationUser>(),
                 }).ToList()
             };
 

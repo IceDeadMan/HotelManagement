@@ -17,6 +17,7 @@ public class EventListItemViewModel
     // Display properties
     public int TotalRegisteredParticipants { get; set; }
     public bool IsUserRegistered { get; set; }
+    public bool IsUserInvolved { get; set; } = false;
 
     // For modals
     public List<ApplicationUser> AllAssignableStaff { get; set; } = new();
