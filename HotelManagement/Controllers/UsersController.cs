@@ -86,6 +86,72 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public async Task<IActionResult> RegisterStaff(RegisterViewModel model)
+        {
+            // Get required data to return to ManageStaff view later
+            var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+
+            var userRoles = new Dictionary<Guid, string>();
+            foreach (var u in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(u);
+                userRoles[u.Id] = userRoleList.FirstOrDefault() ?? "None";
+            }
+
+            var manageStaffModel = new ManageStaffViewModel
+            {
+                Users = users.ToList(),
+                AvailableRoles = roles,
+                UserRoles = userRoles
+            };
+
+            if (!ModelState.IsValid)
+                return View("ManageStaff", manageStaffModel);
+
+            var user = _mapper.Map<ApplicationUser>(model);
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                _auditLogger.Log("RegisterStaff", $"Staff user registration failed for {model.Username}.");
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View("ManageStaff", manageStaffModel);
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Staff");
+            if (!roleResult.Succeeded)
+            {
+                _auditLogger.Log("RegisterStaff", $"Failed to assign Staff role to user {model.Username}.");
+                foreach (var error in roleResult.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View("ManageStaff", manageStaffModel);
+            }
+
+            _auditLogger.Log("RegisterStaff", $"Staff user {model.Username} registered successfully.");
+
+            // Refresh everything after successful registration
+            users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            userRoles = new Dictionary<Guid, string>();
+            foreach (var u in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(u);
+                userRoles[u.Id] = userRoleList.FirstOrDefault() ?? "None";
+            }
+
+            manageStaffModel.Users = users.ToList();
+            manageStaffModel.UserRoles = userRoles;
+            ModelState.Clear();
+
+            return View("ManageStaff", manageStaffModel);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -146,6 +212,7 @@ namespace HotelManagement.Controllers
 
             return View("ManageStaff", model);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(string currentPassword, string newPassword)

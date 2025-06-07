@@ -32,5 +32,39 @@ namespace HotelManagement.DAL.Repositories
             food.IsAvailable = isAvailable;
             await _context.SaveChangesAsync();
         }
+
+        public new void Delete(Guid id)
+        {
+            var food = _context.Foods
+                .Include(f => f.FoodOrderFoods)
+                .ThenInclude(fof => fof.FoodOrder)
+                .SingleOrDefault(f => f.Id == id);
+
+            if (food == null) return;
+
+            var affectedOrders = new List<FoodOrder>();
+
+            foreach (var fof in food.FoodOrderFoods)
+            {
+                var foodOrder = fof.FoodOrder;
+
+                var remainingItems = _context.FoodOrderFoods
+                    .Count(x => x.FoodOrderId == foodOrder.Id && x.FoodId != id);
+
+                if (remainingItems == 0)
+                {
+                    affectedOrders.Add(foodOrder);
+                }
+            }
+
+            _context.Foods.Remove(food);
+
+            foreach (var order in affectedOrders)
+            {
+                _context.FoodOrders.Remove(order);
+            }
+
+            _context.SaveChanges();
+        }
     }
 }
