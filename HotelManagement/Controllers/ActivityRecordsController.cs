@@ -104,5 +104,21 @@ namespace HotelManagement.Controllers
             return RedirectToAction("ActivityRecordsList");
         }
 
+        [HttpPost]
+        [Authorize]
+        public IActionResult DeleteActivityRecordByCustomer([FromBody] Guid id)
+        {
+            var activity = _activityRecordRepository.GetById(id);
+            if (activity == null || activity.Status != ActivityStatus.Planned)
+            {
+                return BadRequest("Cannot delete this activity.");
+            }
+
+            _activityRecordRepository.Delete(id);
+            _auditLogger.Log("DeleteActivityRecordByCustomer", $"Customer deleted activity record {id}.");
+            TempData["Success"] = "Activity record deleted successfully.";
+            return Ok();
+        }
+
     }
 }
