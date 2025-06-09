@@ -102,5 +102,25 @@ namespace HotelManagement.DAL.Repositories
                     b.Status == BookingStatus.Confirmed)) // Only include confirmed bookings
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// Deletes a room by its ID, along with any orphaned bookings that are no longer associated with any rooms.
+        /// </summary>
+        public new void Delete(Guid id)
+        {
+            var room = _context.Rooms.SingleOrDefault(r => r.Id == id);
+            if (room == null) return;
+
+            _context.Rooms.Remove(room);
+            _context.SaveChanges();
+
+            var orphanedBookings = _context.Bookings
+                .Where(b => !_context.Set<Dictionary<string, object>>("RoomBookings")
+                    .Any(rb => EF.Property<Guid>(rb, "BookingsId") == b.Id))
+                .ToList();
+
+            _context.Bookings.RemoveRange(orphanedBookings);
+            _context.SaveChanges();
+        }
     }
 }

@@ -82,8 +82,14 @@ namespace HotelManagement.DAL
                 .WithMany(b => b.Rooms)
                 .UsingEntity<Dictionary<string, object>>(
                     "RoomBookings",
-                    r => r.HasOne<Booking>().WithMany().HasForeignKey("BookingsId"),
-                    b => b.HasOne<Room>().WithMany().HasForeignKey("RoomsId"),
+                    r => r.HasOne<Booking>()
+                          .WithMany()
+                          .HasForeignKey("BookingsId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    b => b.HasOne<Room>()
+                          .WithMany()
+                          .HasForeignKey("RoomsId")
+                          .OnDelete(DeleteBehavior.Cascade),
                     je =>
                     {
                         je.HasKey("BookingsId", "RoomsId");
@@ -95,8 +101,14 @@ namespace HotelManagement.DAL
                 .WithMany(u => u.AssignedEvents)
                 .UsingEntity<Dictionary<string, object>>(
                     "EventStaff",
-                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
-                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventId"),
+                    e => e.HasOne<ApplicationUser>()
+                          .WithMany()
+                          .HasForeignKey("UserId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    u => u.HasOne<Event>()
+                          .WithMany()
+                          .HasForeignKey("EventId")
+                          .OnDelete(DeleteBehavior.Cascade),
                     je =>
                     {
                         je.HasKey("UserId", "EventId");
