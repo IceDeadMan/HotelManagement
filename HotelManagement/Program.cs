@@ -122,8 +122,9 @@ namespace HotelManagement
         // Configure routes, authorization, error handling, https and others
         private static void ConfigureMiddleware(WebApplication app)
         {
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
+                // app will be showcased in this mode
                 app.UseExceptionHandler("/Error/500");
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
