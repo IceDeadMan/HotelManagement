@@ -19,6 +19,7 @@ namespace Tests.RepositoryTests
         public void GetAll_ReturnsSeededRoomTypes()
         {
             var allRoomTypes = _roomTypeRepository.GetAll();
+
             Assert.NotEmpty(allRoomTypes);
             Assert.Contains(allRoomTypes, rt => rt.Name == "Single");
         }
@@ -38,6 +39,7 @@ namespace Tests.RepositoryTests
         {
             var roomTypeId = Guid.Parse("fbf96b7e-04d2-4290-82e7-40a6f1c76b54");
             var roomType = _roomTypeRepository.GetById(roomTypeId);
+
             Assert.NotNull(roomType);
 
             _roomTypeRepository.Delete(roomTypeId);

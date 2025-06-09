@@ -55,6 +55,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingFood()
         {
             var foodToUpdate = _foodRepository.GetById(Guid.Parse("a9063d88-88c6-40db-a7e9-868afeb45812"));
+
             Assert.NotNull(foodToUpdate);
 
             foodToUpdate.Description = "Updated Description";
@@ -69,6 +70,7 @@ namespace Tests.RepositoryTests
         public void Delete_ExistingFood()
         {
             var foodToDelete = _foodRepository.GetById(Guid.Parse("a9063d88-88c6-40db-a7e9-868afeb45813"));
+
             Assert.NotNull(foodToDelete);
 
             _foodRepository.Delete(foodToDelete.Id);
@@ -83,6 +85,7 @@ namespace Tests.RepositoryTests
             var foodId = Guid.Parse("a9063d88-88c6-40db-a7e9-868afeb45811");
             _foodRepository.UpdateStatus(foodId, false);
             var updatedFood = _foodRepository.GetById(foodId);
+
             Assert.NotNull(updatedFood);
             Assert.False(updatedFood.IsAvailable);
         }

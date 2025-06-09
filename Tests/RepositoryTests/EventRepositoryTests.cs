@@ -55,6 +55,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingEvent()
         {
             var eventToUpdate = _eventRepository.GetById(Guid.Parse("5a6da81a-74a0-4d50-8cac-fea2f7897731"));
+
             Assert.NotNull(eventToUpdate);
 
             eventToUpdate.Description = "Updated Description";
@@ -69,14 +70,14 @@ namespace Tests.RepositoryTests
         public void Assign_Staff_To_Event()
         {
             var eventItem = _eventRepository.GetById(Guid.Parse("6b7da81a-74a0-4d50-8cac-fea2f7897732"));
-            Assert.NotNull(eventItem);
-
             var staff = _context.Users.Find(UserSeeds.User3.Id);
+
+            Assert.NotNull(eventItem);
             Assert.NotNull(staff);
 
             var updatedEventId = _eventRepository.AssignStaffToEvent(eventItem.Id, staff.Id);
-
             var updatedEvent = _eventRepository.GetById(updatedEventId);
+
             Assert.NotNull(updatedEvent);
             Assert.Contains(updatedEvent.StaffMembers, u => u.Id == staff.Id);
         }
@@ -85,13 +86,12 @@ namespace Tests.RepositoryTests
         public void Register_User_To_Event_With_Participants()
         {
             var eventItem = _eventRepository.GetById(Guid.Parse("6b7da81a-74a0-4d50-8cac-fea2f7897732"));
-            Assert.NotNull(eventItem);
-
             var user = _context.Users.Find(UserSeeds.User1.Id);
+
+            Assert.NotNull(eventItem);
             Assert.NotNull(user);
 
             var updatedEventId = _eventRepository.RegisterUserToEvent(eventItem.Id, user.Id, 2);
-
             var registrations = _context.EventRegistrations
                 .Where(r => r.EventId == updatedEventId && r.UserId == user.Id)
                 .ToList();

@@ -51,7 +51,6 @@ namespace Tests.RepositoryTests
 
             var newBookingId = _bookingRepository.Create(newBooking);
             var createdBooking = _bookingRepository.GetById(newBookingId);
-
             var user = _context.Users.Find(UserSeeds.User1.Id);
 
             Assert.NotNull(createdBooking);
@@ -65,6 +64,7 @@ namespace Tests.RepositoryTests
         {
             var room1 = _roomRepository.GetById(Guid.Parse("a242ae42-b5f3-417e-9277-b89ac16fca21"));
             var room2 = _roomRepository.GetById(Guid.Parse("a242ae42-b5f3-417e-9277-b89ac16fca22"));
+
             Assert.NotNull(room1);
             Assert.NotNull(room2);
 
@@ -91,7 +91,6 @@ namespace Tests.RepositoryTests
             Assert.Equal(2, createdBooking.Rooms.Count);
             Assert.Contains(createdBooking.Rooms, r => r.Id == room1.Id);
             Assert.Contains(createdBooking.Rooms, r => r.Id == room2.Id);
-
             Assert.NotNull(updatedRoom1);
             Assert.Contains(updatedRoom1.Bookings, b => b.Id == newBookingId);
             Assert.NotNull(updatedRoom2);
@@ -102,6 +101,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingBooking()
         {
             var bookingToUpdate = _bookingRepository.GetById(Guid.Parse("371c096d-5c0b-4929-aab5-1c0289611901"));
+
             Assert.NotNull(bookingToUpdate);
 
             bookingToUpdate.Status = BookingStatus.Cancelled;
@@ -116,11 +116,11 @@ namespace Tests.RepositoryTests
         public void Delete_ExistingBooking()
         {
             var bookingToDelete = _bookingRepository.GetById(Guid.Parse("371c096d-5c0b-4929-aab5-1c0289611902"));
+
             Assert.NotNull(bookingToDelete);
 
             _bookingRepository.Delete(bookingToDelete.Id);
             var deletedBooking = _bookingRepository.GetById(bookingToDelete.Id);
-
             var user = _context.Users.Find(UserSeeds.User1.Id);
 
             Assert.Null(deletedBooking);
