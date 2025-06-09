@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
-using HotelManagement.Models;
 using HotelManagement.ViewModels;
 using System.Diagnostics;
 
@@ -8,7 +7,7 @@ namespace HotelManagement.Controllers
 {
     /// <summary>
     /// Handles error pages.
-    /// /// </summary>
+    /// </summary>
     public class ErrorController : Controller
     {
         [Route("Error/404")]

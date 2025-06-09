@@ -95,13 +95,9 @@ namespace HotelManagement.Controllers
         {
             var currentDate = DateTime.Now;
 
-            // Fetch all foods for display
             var foods = await _foodRepository.GetAllWithReviewsAsync();
-
-            // Default values
             var availableRooms = new List<Room>();
 
-            // Only attempt room check if user is logged in
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -130,7 +126,7 @@ namespace HotelManagement.Controllers
         [HttpPut]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager,KitchenStaff")]
-        public IActionResult ToggleAvailability(Guid id)
+        public async Task<IActionResult> ToggleAvailability(Guid id)
         {
             var food = _foodRepository.GetById(id);
             if (food == null)
@@ -138,8 +134,7 @@ namespace HotelManagement.Controllers
                 return NotFound();
             }
 
-            food.IsAvailable = !food.IsAvailable;
-            _foodRepository.Update(food);
+            await _foodRepository.UpdateStatus(id, !food.IsAvailable);
             _auditLogger.Log("ToggleAvailability", $"Food {food.Name} availability toggled to {food.IsAvailable}.");
 
             return Json(new { success = true, isAvailable = food.IsAvailable });
@@ -152,7 +147,7 @@ namespace HotelManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager,KitchenStaff")]
-        public  IActionResult EditFood(Food food)
+        public IActionResult EditFood(Food food)
         {
             if (!ModelState.IsValid) return RedirectToAction("FoodMenu");
 

@@ -238,7 +238,9 @@ namespace HotelManagement.Controllers
         {
             var fullDate = DatePart.Date + TimePart;
             var eventToUpdate = _eventRepository.GetById(Id);
-            if (eventToUpdate == null) return NotFound();
+
+            if (eventToUpdate == null) 
+                return NotFound();
 
             eventToUpdate.Name = Name;
             eventToUpdate.Description = Description;

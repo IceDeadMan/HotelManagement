@@ -55,6 +55,7 @@ namespace HotelManagement.Controllers
 			_auditLogger.Log("RoomsList", "Rooms list viewed.");
 			return View(viewModel);
 		}
+
 		/// <summary>
 		/// RoomDetails displays the details of a specific room based on its ID.
 		/// </summary>
@@ -137,7 +138,10 @@ namespace HotelManagement.Controllers
 			return RedirectToAction("RoomsList");
 		}
 
-		[HttpPost]
+        /// <summary>
+        /// Allows staff to add an activity record for a room.
+        /// </summary>
+        [HttpPost]
 		[Authorize(Roles = "Manager,Receptionist,Staff")]
 		[ValidateAntiForgeryToken]
 		public IActionResult AddAction(Guid roomId, ActivityType type, string description)
@@ -146,7 +150,7 @@ namespace HotelManagement.Controllers
 			{
 				RoomId = roomId,
 				Type = type,
-				ApplicationUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), // Get the current user's ID
+				ApplicationUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
 				Description = description,
 				Date = DateTime.Now,
 				Status = ActivityStatus.Planned

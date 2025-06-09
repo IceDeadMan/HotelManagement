@@ -9,7 +9,6 @@ namespace HotelManagement.Controllers
 {
     /// <summary>
     /// ReviewsController handles the management of room and food reviews.
-    /// TODO Consider making the review more generic and reusable for both rooms and food.
     /// </summary>
     public class ReviewsController : Controller
     {
@@ -32,8 +31,6 @@ namespace HotelManagement.Controllers
         [Authorize]
         public IActionResult AddRoomReview(Guid RoomId, int Rating, string Comment)
         {
-            // Review actions are here for now, maybe create a separate ReviewsController later
-            // if we want to manage reviews separately and delete them, etc.
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var review = new Review
@@ -93,8 +90,6 @@ namespace HotelManagement.Controllers
         [Authorize]
         public IActionResult AddFoodReview(Guid FoodId, int Rating, string Comment)
         {
-            // Review actions are here for now, maybe create a separate ReviewsController later
-            // if we want to manage reviews separately and delete them, etc.
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var review = new Review
@@ -142,7 +137,6 @@ namespace HotelManagement.Controllers
             return Json(new { success = true, message = "Review updated successfully." });
         }
 
-        // I think this one is currently used, maybe remove the other AddFoodReview and EditFoodReview methods
         /// <summary>
         /// SubmitFoodReview allows a user to submit a review for food.
         /// If the user has already submitted a review for the same food, it updates the existing review.
@@ -164,7 +158,6 @@ namespace HotelManagement.Controllers
             Review? existingReview = _reviewRepository.GetByFoodIdAndUserId(foodId, review.ApplicationUserId);
             if (existingReview != null)
             {
-                // Update existing review
                 existingReview.Rating = review.Rating;
                 existingReview.Comment = review.Comment;
                 existingReview.ReviewDate = DateTime.Now;
@@ -172,7 +165,6 @@ namespace HotelManagement.Controllers
             }
             else
             {
-                // Create new review
                 _reviewRepository.Create(review);
             }
             TempData["Success"] = "Review submitted successfully.";

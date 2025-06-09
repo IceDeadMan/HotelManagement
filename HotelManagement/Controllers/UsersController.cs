@@ -9,7 +9,6 @@ using HotelManagement.DAL.Repositories;
 using HotelManagement.ViewModels.DTOs;
 using HotelManagement.ViewModels;
 
-
 namespace HotelManagement.Controllers
 {
     /// <summary>
@@ -37,6 +36,9 @@ namespace HotelManagement.Controllers
             _roleManager = roleManager;
         }
 
+        /// <summary>
+        /// Displays the registration view.
+        /// </summary>
         public IActionResult Register()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -45,6 +47,10 @@ namespace HotelManagement.Controllers
             }
             return View();
         }
+
+        /// <summary>
+        /// Displays the login view.
+        /// </summary>
         public IActionResult Login()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -54,6 +60,9 @@ namespace HotelManagement.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Handles customer user registration.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -86,13 +95,16 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Handles staff user registration by a manager.
+        /// Tries to create a new user as a staff member and assign the "Staff" role.
+        /// Then refreshes the list of users and their roles for display.
+        /// </summary>
         [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> RegisterStaff(RegisterViewModel model)
         {
-            // Get required data to return to ManageStaff view later
             var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            // Exclude the current user from the list
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(currentUserId))
             {
@@ -145,9 +157,7 @@ namespace HotelManagement.Controllers
 
             _auditLogger.Log("RegisterStaff", $"Staff user {model.Username} registered successfully.");
 
-            // Refresh everything after successful registration
             users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            // Exclude the current user from the list
             currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(currentUserId))
             {
@@ -167,7 +177,10 @@ namespace HotelManagement.Controllers
             return View("ManageStaff", manageStaffModel);
         }
 
-
+        /// <summary>
+        /// Login method for user authentication
+        /// Validates the user credentials and signs in the user if successful.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -187,6 +200,9 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Logs out the current user and redirects to the login page.
+        /// </summary>
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -194,6 +210,9 @@ namespace HotelManagement.Controllers
             return RedirectToAction("Login");
         }
 
+        /// <summary>
+        /// Displays the user's profile information.
+        /// </summary>
         [Authorize]
         public async Task<IActionResult> Profile()
         {
@@ -204,12 +223,14 @@ namespace HotelManagement.Controllers
             return View(user);
         }
 
+        /// <summary>
+        /// Displays the management view for staff users with their roles.
+        /// </summary>
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> NonCustomerOrAdminUsers()
         {
             var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
-            // Exclude the current user from the list
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(currentUserId))
             {
@@ -238,6 +259,9 @@ namespace HotelManagement.Controllers
             return View("ManageStaff", model);
         }
 
+        /// <summary>
+        /// Separately method to handle password updates.
+        /// </summary>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(string currentPassword, string newPassword)
@@ -256,6 +280,10 @@ namespace HotelManagement.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Handles updating non-critical user information,
+        /// such as first name, last name, username, and phone number.
+        /// </summary>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoRequest model)
@@ -279,14 +307,15 @@ namespace HotelManagement.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Updates the user's email address separately.
+        /// </summary>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdateEmail(string newEmail)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
-
-            //newEmail = "testmail@mail.com"; // For testing purposes, replace with actual email validation logic
 
             var result = await _userRepository.UpdateEmailAsync(user.Id, newEmail);
 
@@ -301,6 +330,9 @@ namespace HotelManagement.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Changes the role of a staff user.
+        /// </summary>
         [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> ChangeUserRole(Guid userId, string newRole)

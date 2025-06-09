@@ -29,6 +29,10 @@ namespace HotelManagement.Controllers
             _auditLogger = auditLogger;
         }
 
+        /// <summary>
+        /// Displays the food orders list with sorting options.
+        /// Based on the sortBy and sortDir parameters, it sorts the retrieved orders accordingly.
+        /// </summary>
         public async Task<IActionResult> FoodOrdersList(string sortBy , string sortDir = "asc")
         {
              var orders = await _foodOrderRepository.GetAllWithDetailsAsync();
@@ -54,6 +58,9 @@ namespace HotelManagement.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Updates the status of a food order.
+        /// </summary>
         [HttpPut]
         [Authorize(Roles = "Manager,KitchenStaff")]
         [ValidateAntiForgeryToken]
@@ -64,13 +71,16 @@ namespace HotelManagement.Controllers
             return Json(new { success = true, message = "Status updated successfully." });
         }
 
+        /// <summary>
+        /// Displays the food menu for ordering.
+        /// Groups selected foods by Id to represent the count of each food item selected.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOrder(FoodOrderCreateViewModel model)
         {
             if (!ModelState.IsValid || !model.SelectedFoodIds.Any())
             {
-                // Redisplay view with validation
                 TempData["Error"] = "You must select at least one food.";
                 return RedirectToAction("Menu");
             }
@@ -90,7 +100,7 @@ namespace HotelManagement.Controllers
                     .Select(group => new FoodOrderFood
                     {
                         FoodId = group.Key,
-                        Quantity = group.Count() // If multiple selections represent quantity
+                        Quantity = group.Count()
                     }).ToList()
             };
 

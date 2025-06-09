@@ -4,9 +4,7 @@ using HotelManagement.Models;
 using HotelManagement.Enums;
 using HotelManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using System.Diagnostics;
 using System.Security.Claims;
-using System;
 using AutoMapper;
 using HotelManagement.Logging;
 
@@ -14,7 +12,7 @@ namespace HotelManagement.Controllers
 {
     /// <summary>
     /// Controller for managing activity records - service requests by guests.
-    /// /// This controller allows guests to request services and staff to view and manage these requests.
+    /// This controller allows guests to request services and staff to view and manage these requests.
     /// </summary
     public class ActivityRecordsController : Controller
     {
@@ -29,6 +27,10 @@ namespace HotelManagement.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Displays a list of activity records with sorting options.
+        /// Sorts the records based on the specified criteria and direction.
+        /// </summary>
         public async Task<IActionResult> ActivityRecordsList(string sortBy, string sortDir = "asc")
         {
             var activities = await _activityRecordRepository.GetAllWithDetailsAsync();
@@ -53,7 +55,9 @@ namespace HotelManagement.Controllers
             return View(viewModel);
         }
 
-
+        /// <summary>
+        /// Allows guests to request a service for their room.
+        /// </summary>
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -63,7 +67,7 @@ namespace HotelManagement.Controllers
             {
                 RoomId = roomId,
                 Type = type,
-                ApplicationUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), // Get the current user's ID
+                ApplicationUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
                 Description = description,
                 Date = DateTime.Now,
                 Status = ActivityStatus.Planned
@@ -74,20 +78,25 @@ namespace HotelManagement.Controllers
             _auditLogger.Log("CreateActivityRecord", $"Activity for room {roomId} successfully created.");
 
             return Json(new { success = true, message = "Service requested successfully." });
-
         }
 
+        /// <summary>
+        /// Updates the status of an activity record.
+        /// </summary>
         [HttpPut]
         [Authorize(Roles = "Manager,Staff")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(Guid id, ActivityStatus status)
         {
             await _activityRecordRepository.UpdateStatusAsync(id, status);
-            //TempData["SuccessMessage"] = "Activity record status updated successfully.";
             _auditLogger.Log("UpdateActivityRecordStatus", $"Activity record {id} status updated to {status}.");
+
             return Json(new { success = true, message = "Status updated successfully." });
         }
 
+        /// <summary>
+        /// Deletes an activity record by its ID.
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Manager,Staff")]
         public IActionResult DeleteActivityRecord(Guid id)
@@ -104,6 +113,9 @@ namespace HotelManagement.Controllers
             return RedirectToAction("ActivityRecordsList");
         }
 
+        /// <summary>
+        /// Allows customers to delete their own activity records.
+        /// </summary>
         [HttpPost]
         [Authorize]
         public IActionResult DeleteActivityRecordByCustomer([FromBody] Guid id)
