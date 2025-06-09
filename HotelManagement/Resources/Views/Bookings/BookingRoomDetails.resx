@@ -198,6 +198,9 @@
   <data name="UpdateReview" xml:space="preserve">
     <value>Update Review</value>
   </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this service request?</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>

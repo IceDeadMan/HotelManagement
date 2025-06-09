@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using HotelManagement.Models
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json
 @inject IViewLocalizer Localizer
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -130,7 +131,10 @@
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <form asp-action="DeleteEvent" asp-route-id="@eventItem.Event.Id" method="post" onsubmit="return confirm(@Localizer["EventsListDeleteConfirm"]);">
+                                    @{
+                                        var confirmMessage = JsonSerializer.Serialize(Localizer["EventsListDeleteConfirm"].Value);
+                                    }
+                                    <form asp-action="DeleteEvent" asp-route-id="@eventItem.Event.Id" method="post" onsubmit='return confirm(@Html.Raw(confirmMessage));'>
                                         <button class="btn btn-outline-danger w-100"  type="submit">
                                             @Localizer["EventsListDelete"]
                                         </button>

@@ -126,6 +126,9 @@
   <data name="ActivityRecordsDescription" xml:space="preserve">
     <value>Popis</value>
   </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Naozaj chcete zmazať túto servisnú aktivitu?</value>
+  </data>
   <data name="ActivityRecordsGuest" xml:space="preserve">
     <value>Hosť</value>
   </data>

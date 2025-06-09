@@ -21,6 +21,145 @@ body {
   margin-bottom: 60px;
 }
 
+/* === Theme Variables === */
+:root {
+    --primary-color: #256716;      /* Soft Blue */
+    --secondary-color: #1d5a79;    /* Light Blue */
+    --accent-color: #f4c93de2;       /* Light Sand */
+    --danger-color: #C94C4C;       /* Soft Red */
+    --success-color: #408042;
+    --text-color: #243241;
+    --bg-color: #f3e9df;           /* Light Background */
+    --card-bg: #f8f7f6;
+    --border-radius: 1rem;
+    --shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+
+/* === General === */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* === Buttons === */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #1f8d29;
+    border-color: #007b10;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #2a84b0;
+    border-color: #2882af;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+/* === Cards and Panels === */
+.card, .panel, .shadow-sm {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    border: none;
+    
+}
+
+/* === Table Styling === */
+.table {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.table th {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+}
+
+.table td, .table th {
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem;
+}
+
+/* === Navbar === */
+.navbar {
+    background-color: var(--primary-color);
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: #000000 !important;
+}
+
+/* === Alerts === */
+.alert {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.alert-success {
+    background-color: #DFF0D8;
+    color: #3C763D;
+}
+
+.alert-danger {
+    background-color: #F2DEDE;
+    color: #A94442;
+}
+
+.alert-info {
+    background-color: #D9EDF7;
+    color: #31708F;
+}
+
+/* === Forms === */
+.form-control {
+    border-radius: var(--border-radius);
+    border: 1px solid #ccc;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(108, 141, 159, 0.25);
+}
+
+/* === Misc === */
+hr {
+    border-top: 1px solid #ccc;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+.badge {
+    border-radius: 0.25rem;
+    padding: 0.4em 0.6em;
+}
+
 /* Common base for all nav links */
 .nav-link {
     padding: 5px 10px;

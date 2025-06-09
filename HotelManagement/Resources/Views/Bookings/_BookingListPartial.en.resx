@@ -156,4 +156,7 @@
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
+  <data name="CancelConfirm" xml:space="preserve">
+    <value>Are you sure you want to cancel this booking?</value>
+  </data>
 </root>

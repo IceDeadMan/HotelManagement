@@ -1,7 +1,9 @@
 ﻿@using HotelManagement.Enums
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json
 @inject IViewLocalizer Localizer
 @model IEnumerable<HotelManagement.Models.Booking>
+
 
 <!-- MyBookings.cshtml -->
 <!-- This view displays the user's bookings in a table format. -->
@@ -34,10 +36,11 @@ else
             {
                 var nights = (booking.EndDate - booking.StartDate).Days;
 
-                <tr onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">
-                    <td>@booking.StartDate.ToString("dd.MM.yyyy")</td>
-                    <td>@booking.EndDate.ToString("dd.MM.yyyy")</td>
-                    <td class="@(booking.Status switch {
+                <tr>
+                    <td onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">@booking.StartDate.ToString("dd.MM.yyyy")</td>
+                    <td onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">@booking.EndDate.ToString("dd.MM.yyyy")</td>
+                    <td onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;"
+                     class="@(booking.Status switch {
                         BookingStatus.Pending => "status-pending",
                         BookingStatus.Confirmed => "status-confirmed",
                         BookingStatus.Completed => "status-completed",
@@ -46,7 +49,7 @@ else
                     })">
                         @Localizer[booking.Status.ToString()]
                     </td>
-                    <td>
+                    <td onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">
                         <ul>
                         @foreach (var room in booking.Rooms)
                         {
@@ -54,14 +57,15 @@ else
                         }
                         </ul>
                     </td>
-                    <td>@nights</td>
+                    <td onclick="location.href='@Url.Action("BookingDetails", "Bookings", new { id = booking.Id })'" style="cursor:pointer;">@nights</td>
 
                     @if (booking.Status == BookingStatus.Pending)
                     {
+                        var confirmMessage = JsonSerializer.Serialize(Localizer["CancelConfirm"].Value);
                         <td>
                             <form asp-action="CancelBooking" asp-controller="Bookings" method="post" class="d-inline">
                                 <input type="hidden" name="id" value="@booking.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(@Localizer["CancelConfirm"]);">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick='return confirm(@Html.Raw(confirmMessage));'>
                                     @Localizer["Cancel"]
                                 </button>
                             </form>

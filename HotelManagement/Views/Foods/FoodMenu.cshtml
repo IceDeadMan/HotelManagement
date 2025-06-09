@@ -3,8 +3,10 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json;
 @inject IViewLocalizer Localizer
 @using System.Globalization;
+@using System.Text.Json;
 
 <!-- Food List View -->
 <!-- This view displays a list of food items and allows admins/kitchenstaff to create/delete new food items. -->
@@ -134,10 +136,11 @@
                                         onclick='populateEditFoodModal(@Html.Raw(Json.Serialize(safeFood)))'>
                                     @Localizer["EditFood"]
                                 </button>
+                                var confirmMessage = JsonSerializer.Serialize(Localizer["FoodDeleteConfirm"].Value);
                                 <form asp-action="DeleteFood"
                                     asp-route-id="@food.Id"
                                     method="post"
-                                          onsubmit="return confirm('  @Localizer["FoodDeleteConfirm"]');"
+                                          onsubmit='return confirm(@Html.Raw(confirmMessage));'
                                     class="mb-0">
                                     @Html.AntiForgeryToken()
                                         <button class="btn btn-sm btn-outline-danger">@Localizer["FoodDelete"]</button>

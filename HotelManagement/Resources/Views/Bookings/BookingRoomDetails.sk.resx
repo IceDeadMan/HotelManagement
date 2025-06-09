@@ -198,6 +198,9 @@
   <data name="UpdateReview" xml:space="preserve">
     <value>Aktualizovať Recenziu</value>
   </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Naozaj chcete zmazať túto servisnú požiadavku?</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Zmazať</value>
   </data>

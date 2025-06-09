@@ -1,6 +1,7 @@
 ﻿@model List<HotelManagement.ViewModels.ActivityRecordViewModel>
 @using HotelManagement.Enums;
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json;
 @inject IViewLocalizer Localizer
 <!-- Service Activity Records List View -->
 <!-- This view displays a list of service activity records made by guests. -->
@@ -62,7 +63,11 @@
                     </td>
                     <td class="align-middle">
                         <form method="post" asp-action="DeleteActivityRecord" asp-route-id="@activity.Id" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm">
+                            @{
+                                var confirmMessage = JsonSerializer.Serialize(Localizer["DeleteConfirm"].Value);
+                            }
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick='return confirm(@Html.Raw(confirmMessage));'>
                                 @Localizer["ActivityRecordsDelete"]
                             </button>
                         </form>
