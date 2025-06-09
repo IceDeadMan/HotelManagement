@@ -283,18 +283,21 @@
                 if (data.success) {
                     const addBtn = document.querySelector(`.add-to-order-btn[data-food-id="${foodId}"]`);
 
-                    if (data.isAvailable) {
-                        addBtn.classList.remove("disabled", "disabled-btn");
-                        addBtn.setAttribute("title", "");
-                    } else {
-                        addBtn.classList.add("disabled", "disabled-btn");
-                        addBtn.setAttribute("title", "Not available right now");
+                    if (addBtn) {
+                        if (data.isAvailable) {
+                            addBtn.classList.remove("disabled", "disabled-btn");
+                            addBtn.setAttribute("title", "");
+                        } else {
+                            addBtn.classList.add("disabled", "disabled-btn");
+                            addBtn.setAttribute("title", "Not available right now");
+                        }
                     }
                 } else {
                     alert("Failed to update availability.");
                 }
             })
             .catch(err => {
+                console.error("Error caught during availability toggle:", err);
                 alert("An error occurred while updating availability.");
                 this.checked = !this.checked; // Revert the toggle
             });

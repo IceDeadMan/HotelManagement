@@ -82,7 +82,7 @@ namespace HotelManagement.Controllers
             if (!ModelState.IsValid || !model.SelectedFoodIds.Any())
             {
                 TempData["Error"] = "You must select at least one food.";
-                return RedirectToAction("Menu");
+                return RedirectToAction(controllerName: "Foods", actionName: "FoodMenu");
             }
 
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
