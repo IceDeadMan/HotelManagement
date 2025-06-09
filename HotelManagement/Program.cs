@@ -16,6 +16,7 @@ namespace HotelManagement
 {
     public class Program
     {
+        // Main entry point for the application configuration and initialization
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,7 @@ namespace HotelManagement
             app.Run();
         }
 
+        // Configure Serilog for structured logging and log files path
         private static void ConfigureLogging(WebApplicationBuilder builder)
         {
             Log.Logger = new LoggerConfiguration()
@@ -48,6 +50,7 @@ namespace HotelManagement
             builder.Host.UseSerilog();
         }
 
+        // Configure services for dependency injection
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
             var services = builder.Services;
@@ -93,6 +96,7 @@ namespace HotelManagement
             services.AddSession();
         }
 
+        // Add repositories to the service collection for data access and manipulation
         public static void AddRepositories(WebApplicationBuilder builder)
         {
             var services = builder.Services;
@@ -107,12 +111,15 @@ namespace HotelManagement
             services.AddScoped<RoomTypeRepository>();
             services.AddScoped<ApplicationUserRepository>();
         }
+
+        // Configure localization middleware to support multiple languages
         private static void ConfigureLocalization(WebApplication app)
         {
             var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);
         }
 
+        // Configure routes, authorization, error handling, https and others
         private static void ConfigureMiddleware(WebApplication app)
         {
             if (!app.Environment.IsDevelopment())
@@ -137,6 +144,7 @@ namespace HotelManagement
                 pattern: "{controller=Home}/{action=Index}/{id?}");
         }
 
+        // Seed images separately from the main database seeding, as it requires dynamic serialization
         private static void SeedDatabaseImages(WebApplication app)
         {
             using var scope = app.Services.CreateScope();

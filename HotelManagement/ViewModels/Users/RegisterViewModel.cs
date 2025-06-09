@@ -1,5 +1,8 @@
 ﻿namespace HotelManagement.ViewModels.Users
 {
+    /// <summary>
+    /// Represents the view model for user registration functionality.
+    /// </summary>
     public class RegisterViewModel
     {
         public string FirstName { get; set; } = string.Empty;
