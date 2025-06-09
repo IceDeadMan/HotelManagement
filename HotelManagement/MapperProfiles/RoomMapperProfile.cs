@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Maps Room entities to RoomDetailViewModel for displaying room details in the UI.
+    /// Includes handling of possible null values for RoomType properties to avoid null reference exceptions.
+    /// </summary>
     public class RoomMapperProfile : Profile
     {
         public RoomMapperProfile()

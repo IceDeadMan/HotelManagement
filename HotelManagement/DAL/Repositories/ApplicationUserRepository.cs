@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing application users in the hotel management system.
+    /// Includes methods for retrieving non-admin and non-customer users,
+    /// updating email, password, and the rest of user information, and changing the assigned role.
+    /// Does not inherit from BaseRepository, as this functionality is managed by built-in
+    /// User and Role Managers from ASP.NET Identity.
+    /// </summary>
     public class ApplicationUserRepository : IDisposable
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -20,7 +27,6 @@ namespace HotelManagement.DAL.Repositories
             _context = context;
         }
 
-        // Gets all users who do not have the "Customer" or "Admin" roles.
         public async Task<IList<ApplicationUser>> GetNonAdminAndNonCustomerUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -38,15 +44,13 @@ namespace HotelManagement.DAL.Repositories
 
             return filteredUsers;
         }
-
-        // Updates the password of a user by resetting it.
+        
         public async Task<IdentityResult> UpdatePasswordAsync(ApplicationUser user, string newPassword)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
 
-        // Updates general user information (excluding email and password).
         public async Task<IdentityResult> UpdateUserInfoAsync(ApplicationUser updatedUser)
         {
             var existingUser = await _userManager.FindByIdAsync(updatedUser.Id.ToString());
@@ -61,7 +65,6 @@ namespace HotelManagement.DAL.Repositories
             return await _userManager.UpdateAsync(existingUser);
         }
 
-        // Updates the user's email address.
         public async Task<IdentityResult> UpdateEmailAsync(Guid userId, string newEmail)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -72,7 +75,6 @@ namespace HotelManagement.DAL.Repositories
             return await _userManager.ChangeEmailAsync(user, newEmail, token);
         }
 
-        // Changes the user's role by removing all existing roles and adding a new one.
         public async Task<IdentityResult> ChangeUserRoleAsync(Guid userId, string newRole)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());

@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Provides seed data for the Booking entity.
+    /// Includes seeding of the join table "RoomBookings" to associate bookings with rooms.
+    /// </summary>
     public static class BookingSeeds
     {
         public static readonly Booking Booking1 = new Booking

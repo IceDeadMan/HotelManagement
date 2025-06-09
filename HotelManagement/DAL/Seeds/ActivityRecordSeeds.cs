@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Represents a collection of predefined activity records for seeding the database.
+    /// </summary>
     public class ActivityRecordSeeds
     {
         public static readonly ActivityRecord ActivityRecord1 = new ActivityRecord

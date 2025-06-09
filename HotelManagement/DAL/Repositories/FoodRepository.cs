@@ -4,6 +4,11 @@ using System.Data;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing food items in the hotel management system.
+    /// Additional methods for retrieving foods by IDs async, getting all foods with reviews,
+    /// updating availability status, and deleting foods with associated orders.
+    /// </summary>
     public class FoodRepository : BaseRepository<Food>
     {
         public FoodRepository(HotelManagementDbContext context) : base(context)

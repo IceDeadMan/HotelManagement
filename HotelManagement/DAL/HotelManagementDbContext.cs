@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL
 {
+    /// <summary>
+    /// Represents the database context for the hotel management system.
+    /// Includes definion of DbSets, special cases and foreign keys defined in OnModelCreating function,
+    /// joint tables, as well as initial data seeds.
+    /// Used by Entity Framework to create migrations.
+    /// </summary>
     public class HotelManagementDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public HotelManagementDbContext(DbContextOptions<HotelManagementDbContext> options)
@@ -109,7 +115,6 @@ namespace HotelManagement.DAL
                 .HasOne(er => er.User)
                 .WithMany(u => u.EventRegistrations)
                 .HasForeignKey(er => er.UserId);
-
 
 
             UserSeeds.Seed(modelBuilder);

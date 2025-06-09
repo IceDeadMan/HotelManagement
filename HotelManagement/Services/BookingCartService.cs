@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Text.Json;
-using HotelManagement.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
 using System.Security.Claims;
 using HotelManagement.ViewModels.DTOs;
 
@@ -30,15 +27,10 @@ namespace HotelManagement.Services
 			_httpContextAccessor = httpContextAccessor;
 		}
 
-		/// <summary>
-		/// Get the session key for the booking cart.
-		/// This is based on the user ID for authenticated users.
-		/// </summary>
-		/// <returns> The session key for the booking cart. </returns>
 		private string GetSessionKey()
 		{
 			var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			return userId != null ? $"BookingCart_{userId}" : SessionKey; // fallback to shared for anon
+			return userId != null ? $"BookingCart_{userId}" : SessionKey;
 		}
 
 

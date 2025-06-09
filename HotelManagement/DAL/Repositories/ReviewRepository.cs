@@ -2,6 +2,10 @@
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing reviews in the hotel management system.
+    /// Additional methods for retrieving reviews by room and food IDs, as well as by user ID.
+    /// </summary>
     public class ReviewRepository : BaseRepository<Review>
     {
         public ReviewRepository(HotelManagementDbContext context) : base(context)

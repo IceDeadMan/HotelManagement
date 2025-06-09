@@ -5,6 +5,10 @@ using HotelManagement.Models.JoinEntities;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds initial data for food orders in the database.
+    /// Includes join entities for food orders and foods.
+    /// </summary>
     public class FoodOrderSeeds
     {
         public static readonly FoodOrder FoodOrder1 = new FoodOrder

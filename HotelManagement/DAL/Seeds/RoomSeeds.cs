@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
-
 {
+    /// <summary>
+    /// Seeds initial data for rooms in the database.
+    /// </summary>
     public class RoomSeeds
     {
         public static readonly Room Room1 = new Room

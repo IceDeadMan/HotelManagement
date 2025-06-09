@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Mapper profile for mapping Review entities to ReviewViewModel.
+    /// Special case for constructing the reviewers username.
+    /// </summary>
     public class ReviewMapperProfile : Profile
     {
         public ReviewMapperProfile()

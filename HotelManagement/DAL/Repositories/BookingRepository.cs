@@ -5,6 +5,9 @@ using HotelManagement.ViewModels.DTOs;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing bookings in the hotel management system.
+    /// </summary>
     public class BookingRepository : BaseRepository<Booking>
     {
         public BookingRepository(HotelManagementDbContext context) : base(context)

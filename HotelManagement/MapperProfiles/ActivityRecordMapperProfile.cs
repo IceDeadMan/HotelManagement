@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Maps ActivityRecord entities to ActivityRecordViewModel view models.
+    /// Special case for handling guest names and room numbers.
+    /// </summary>
     public class ActivityRecordMapperProfile : Profile
     {
         public ActivityRecordMapperProfile()

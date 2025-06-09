@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Maps Booking entities to BookingSummaryViewModel for displaying booking summaries.
+    /// Special case for the guest name.
+    /// </summary>
     public class BookingMapperProfile : Profile
     {
         public BookingMapperProfile()

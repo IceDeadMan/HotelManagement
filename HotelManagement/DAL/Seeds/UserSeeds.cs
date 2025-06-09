@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds initial data for application users in the database.
+    /// </summary>
     public static class UserSeeds
     {
         static PasswordHasher<ApplicationUser> hasher = new();
@@ -157,7 +160,6 @@ namespace HotelManagement.DAL.Seeds
             SecurityStamp = Guid.Parse("67019a3d-04de-444b-bb6c-6ef934dcd29a").ToString(),
             PasswordHash = hasher.HashPassword(null, "User10@Password")
         };
-
 
         public static void Seed(ModelBuilder modelBuilder)
         {

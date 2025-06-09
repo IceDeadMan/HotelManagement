@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds the user-role relationships into the database.
+    /// </summary>
     public static class UserRoleSeeds
     {
         public static void Seed(ModelBuilder modelBuilder)

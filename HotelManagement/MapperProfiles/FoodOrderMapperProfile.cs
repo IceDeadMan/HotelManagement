@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Transforms FoodOrder entities to FoodOrderViewModel objects.
+    /// Special case for username and the list of foods in the order.
+    /// </summary>
     public class FoodOrderMapperProfile : Profile
     {
         public FoodOrderMapperProfile()

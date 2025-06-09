@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Provides seed data for events in the hotel management system.
+    /// Includes join entities for event registrations and event staff.
+    /// </summary>
     public class EventSeeds
     {
         public static readonly Event Event1 = new Event

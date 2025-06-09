@@ -1,5 +1,9 @@
 ﻿namespace HotelManagement.Logging
 {
+    /// <summary>
+    /// AuditLogger is responsible for logging user actions within the application.
+    /// Using ILogger for structured logging, it captures user actions along with optional details.
+    /// </summary>
     public class AuditLogger
     {
         private readonly ILogger<AuditLogger> _logger;

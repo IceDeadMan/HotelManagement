@@ -7,7 +7,7 @@ namespace HotelManagement.Models
     /// Represents a user in the hotel management system.
     /// This class extends the IdentityUser class to include additional properties
     /// and collections related to the user's bookings, activity records, food orders,
-    /// reviews, and events.
+    /// reviews, and events, both assigned in the case of a staff member, and ones attending.
     /// </summary>
     public class ApplicationUser : IdentityUser<Guid>
     {
