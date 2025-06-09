@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Log files
-/HotelManagement/Logging/*.txt
+/HotelManagement/Logging/LogFiles/*.txt

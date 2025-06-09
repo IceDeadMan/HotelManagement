@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using HotelManagement.Logging;
 using Microsoft.AspNetCore.Identity;
+using HotelManagement.DAL;
+using HotelManagement.Models;
 
 namespace HotelManagement
 {
@@ -18,28 +20,47 @@ namespace HotelManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            ConfigureLogging(builder);
+            ConfigureServices(builder);
+            AddRepositories(builder);
+
+            var app = builder.Build();
+
+            ConfigureLocalization(app);
+            ConfigureMiddleware(app);
+            SeedDatabaseImages(app);
+
+            app.Run();
+        }
+
+        private static void ConfigureLogging(WebApplicationBuilder builder)
+        {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.File(
-                    "Logging/all-log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("Logging/LogFiles/all-log-.txt", rollingInterval: RollingInterval.Day)
                 .WriteTo.Logger(l => l
-                    .Filter.ByIncludingOnly(logEvent =>
-                        logEvent.Properties.ContainsKey("SourceContext") &&
-                        logEvent.Properties["SourceContext"].ToString().Contains("AuditLogger"))
-                    .WriteTo.File(
-                        "Logging/user-actions-.txt", rollingInterval: RollingInterval.Day))
+                    .Filter.ByIncludingOnly(e =>
+                        e.Properties.ContainsKey("SourceContext") &&
+                        e.Properties["SourceContext"].ToString().Contains("AuditLogger"))
+                    .WriteTo.File("Logging/LogFiles/user-actions-.txt", rollingInterval: RollingInterval.Day))
                 .CreateLogger();
 
             builder.Host.UseSerilog();
+        }
 
-            builder.Services.AddSingleton<AuditLogger>();
+        private static void ConfigureServices(WebApplicationBuilder builder)
+        {
+            var services = builder.Services;
 
-            builder.Services.AddControllersWithViews()
+            services.AddSingleton<AuditLogger>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
-            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedUICultures = new[]
                 {
@@ -48,43 +69,55 @@ namespace HotelManagement
                 };
 
                 var defaultCulture = new RequestCulture(
-                    culture: "en-US",       // parsing (decimal separator for price)
-                    uiCulture: "en"         // UI translations
+                    culture: "en-US",
+                    uiCulture: "en"
                 );
 
                 options.DefaultRequestCulture = defaultCulture;
-                options.SupportedCultures = new[] { new CultureInfo("en-US") }; //parsing
+                options.SupportedCultures = new[] { new CultureInfo("en-US") };
                 options.SupportedUICultures = supportedUICultures;
 
                 options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
             });
 
-            builder.Services.AddDbContext<HotelManagement.DAL.HotelManagementDbContext>(options =>
+            services.AddDbContext<HotelManagementDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<HotelManagement.Models.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<HotelManagement.DAL.HotelManagementDbContext>()
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<HotelManagementDbContext>()
                 .AddDefaultTokenProviders();
-			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-			builder.Services.AddScoped<BookingCartService>();
-			builder.Services.AddSession();
 
-            builder.Services.AddAutoMapper(typeof(FoodOrderMapperProfile).Assembly);
+            services.AddAutoMapper(typeof(FoodOrderMapperProfile).Assembly);
 
-			AddRepositories(builder.Services);
+            services.AddScoped<BookingCartService>();
+            services.AddSession();
+        }
 
-            var app = builder.Build();
+        public static void AddRepositories(WebApplicationBuilder builder)
+        {
+            var services = builder.Services;
 
+            services.AddScoped<RoomRepository>();
+            services.AddScoped<BookingRepository>();
+            services.AddScoped<ActivityRecordRepository>();
+            services.AddScoped<FoodRepository>();
+            services.AddScoped<FoodOrderRepository>();
+            services.AddScoped<ReviewRepository>();
+            services.AddScoped<EventRepository>();
+            services.AddScoped<RoomTypeRepository>();
+            services.AddScoped<ApplicationUserRepository>();
+        }
+        private static void ConfigureLocalization(WebApplication app)
+        {
             var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);
+        }
 
-            // Configure the HTTP request pipeline.
+        private static void ConfigureMiddleware(WebApplication app)
+        {
             if (!app.Environment.IsDevelopment())
             {
-                // For unhandled exceptions (500 errors)
                 app.UseExceptionHandler("/Error/500");
-
-                // For other status codes like 404, 403, etc.
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
             else
@@ -96,38 +129,19 @@ namespace HotelManagement
             app.UseStaticFiles();
 
             app.UseRouting();
-			app.UseSession();
-
-			app.UseAuthorization();
-
-            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            app.UseSession();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-            // Seed Room Type Images if not seeded yet
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<HotelManagement.DAL.HotelManagementDbContext>();
-                RoomTypeImageSeeder.SeedImagesAsync(dbContext).GetAwaiter().GetResult();
-            }
-
-            app.Run();
         }
 
-        public static void AddRepositories(IServiceCollection services)
+        private static void SeedDatabaseImages(WebApplication app)
         {
-            services.AddScoped<RoomRepository, RoomRepository>();
-            services.AddScoped<BookingRepository, BookingRepository>();
-            services.AddScoped<ActivityRecordRepository, ActivityRecordRepository>();
-            services.AddScoped<FoodRepository, FoodRepository>();
-            services.AddScoped<FoodOrderRepository, FoodOrderRepository>();
-            services.AddScoped<ReviewRepository, ReviewRepository>();
-            services.AddScoped<EventRepository, EventRepository>();
-            services.AddScoped<RoomTypeRepository, RoomTypeRepository>();
-            services.AddScoped<ApplicationUserRepository, ApplicationUserRepository>();
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<HotelManagementDbContext>();
+            RoomTypeImageSeeder.SeedImagesAsync(dbContext).GetAwaiter().GetResult();
         }
     }
 }
