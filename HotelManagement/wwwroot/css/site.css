@@ -28,8 +28,8 @@ body {
     --accent-color: #f4c93de2;       /* Light Sand */
     --danger-color: #C94C4C;       /* Soft Red */
     --success-color: #408042;
-    --text-color: #243241;
-    --bg-color: #f3e9df;           /* Light Background */
+    --text-color: #101418;
+    --bg-color: #e9f5e9;           /* Light Background */
     --card-bg: #f8f7f6;
     --border-radius: 1rem;
     --shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
