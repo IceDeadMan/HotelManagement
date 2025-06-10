@@ -15,7 +15,7 @@ namespace HotelManagement.DAL.Seeds
             Id = Guid.Parse("371c096d-5c0b-4929-aab5-1c0289611901"),
             StartDate = new DateTime(2025, 5, 1),
             EndDate = new DateTime(2025, 5, 5),
-            Status = BookingStatus.Confirmed,
+            Status = BookingStatus.Completed,
             ApplicationUserId = UserSeeds.User1.Id
         };
 

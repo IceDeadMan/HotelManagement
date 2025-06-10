@@ -26,8 +26,8 @@
 		<div class="col-md-6">
 			<label class="form-label">@Localizer["RoomType"]</label>
 			<div class="d-flex flex-column gap-2">
-				<div class="form-check border rounded p-3 @(Model.SelectedRoomTypeId == Guid.Empty ? "bg-light border-primary" : "")">
-					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="" @(Model.SelectedRoomTypeId == Guid.Empty ? "checked" : "") />
+				<div class="form-check border rounded p-3">
+					<input class="form-check-input" type="radio" name="roomTypeId" id="roomTypeAny" value="@Guid.Empty" @(Model.SelectedRoomTypeId == Guid.Empty ? "checked" : "") />
 					<label class="form-check-label w-100" for="roomTypeAny">
 						-- @Localizer["LabelAny"] --
 					</label>
@@ -36,9 +36,8 @@
 				@foreach (var type in Model.RoomTypes)
 				{
 					var label = $"{type.Name} - {type.Description} Capacity: {type.Capacity}, Price: {type.Price.ToString("N2", CultureInfo.InvariantCulture) + " €"} per night";
-					var isSelected = (type.Id == Model.SelectedRoomTypeId);
-					<div class="form-check border rounded p-3 @(isSelected ? "bg-light border-primary" : "")">
-						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(isSelected ? "checked" : "") />
+					<div class="form-check border rounded p-3">
+						<input class="form-check-input" type="radio" name="roomTypeId" id="roomType_@type.Id" value="@type.Id" @(type.Id == Model.SelectedRoomTypeId ? "checked" : "") />
 						<label class="form-check-label w-100" for="roomType_@type.Id">
 							@label
 						</label>
