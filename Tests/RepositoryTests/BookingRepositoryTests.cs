@@ -35,7 +35,7 @@ namespace Tests.RepositoryTests
             var booking = _bookingRepository.GetById(bookingId);
 
             Assert.NotNull(booking);
-            Assert.Equal(BookingStatus.Confirmed, booking.Status);
+            Assert.Equal(BookingStatus.Completed, booking.Status);
         }
 
         [Fact]
