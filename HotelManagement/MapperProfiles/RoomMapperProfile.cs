@@ -4,6 +4,10 @@ using HotelManagement.ViewModels;
 
 namespace HotelManagement.MapperProfiles
 {
+    /// <summary>
+    /// Maps Room entities to RoomDetailViewModel for displaying room details in the UI.
+    /// Includes handling of possible null values for RoomType properties to avoid null reference exceptions.
+    /// </summary>
     public class RoomMapperProfile : Profile
     {
         public RoomMapperProfile()
@@ -20,7 +24,9 @@ namespace HotelManagement.MapperProfiles
                 .ForMember(dest => dest.RoomTypePrice,
                            opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Price : 0m))
                 .ForMember(dest => dest.RoomTypeCapacity,
-                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Capacity : 0));
+                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Capacity : 0))
+                .ForMember(dest => dest.RoomTypePhoto,
+                           opt => opt.MapFrom(src => src.RoomType != null ? src.RoomType.Photo : null));
         }
     }
 }

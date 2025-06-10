@@ -120,8 +120,14 @@
   <data name="ActivityRecordsDate" xml:space="preserve">
     <value>Dátum</value>
   </data>
+  <data name="ActivityRecordsDelete" xml:space="preserve">
+    <value>Zmazať</value>
+  </data>
   <data name="ActivityRecordsDescription" xml:space="preserve">
     <value>Popis</value>
+  </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Naozaj chcete zmazať túto servisnú aktivitu?</value>
   </data>
   <data name="ActivityRecordsGuest" xml:space="preserve">
     <value>Hosť</value>
@@ -130,7 +136,7 @@
     <value>Izba</value>
   </data>
   <data name="ActivityRecordsStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>Stav</value>
   </data>
   <data name="ActivityRecordsType" xml:space="preserve">
     <value>Typ</value>
@@ -140,5 +146,14 @@
   </data>
   <data name="ServiceActivityRequests" xml:space="preserve">
     <value>Požiadavky Aktivít</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Prebieha</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Plánovaná</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
   </data>
 </root>

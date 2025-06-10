@@ -138,4 +138,16 @@
   <data name="FoodOrdersTitle" xml:space="preserve">
     <value>Food Orders</value>
   </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
 </root>

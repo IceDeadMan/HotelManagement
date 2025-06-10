@@ -132,8 +132,11 @@
   <data name="BookingTo" xml:space="preserve">
     <value>Do</value>
   </data>
+  <data name="Booked" xml:space="preserve">
+    <value>Obsadené</value>
+  </data>
   <data name="PriceDetail" xml:space="preserve">
-    <value>Cena</value>
+    <value>Cena za noc</value>
   </data>
   <data name="RoomCalendar" xml:space="preserve">
     <value>Kalendár</value>
@@ -161,5 +164,41 @@
   </data>
   <data name="RoomTypeDetail" xml:space="preserve">
     <value>Typ Izby</value>
+  </data>
+  <data name="ActivitiesForRoom" xml:space="preserve">
+    <value>Servisné aktivity pre túto izbu</value>
+  </data>
+  <data name="ActivityGuest" xml:space="preserve">
+    <value>Požiadavka od</value>
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ActivityStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="ServiceType" xml:space="preserve">
+    <value>Typ servisu</value>
+  </data>
+  <data name="RequestService" xml:space="preserve">
+    <value>Požiadať o servis</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="ActivityDate" xml:space="preserve">
+    <value>Dátum</value>
+  </data>
+  <data name="ActivityDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Prebieha</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Plánovaná</value>
   </data>
 </root>

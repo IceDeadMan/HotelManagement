@@ -120,6 +120,12 @@
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Slovak" xml:space="preserve">
+    <value>Slovak</value>
+  </data>
   <data name="HotelManagement" xml:space="preserve">
     <value>Hotel Management</value>
   </data>

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using HotelManagement.Models
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json
 @inject IViewLocalizer Localizer
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -17,18 +18,6 @@
 }
 
 <h3>@Localizer["EventsListTitle"]</h3>
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Error"]
-    </div>
-}
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Success"]
-    </div>
-}
 
 <div class="container">
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -69,12 +58,12 @@
         @foreach (var eventItem in Model.Events)
         {
             <div class="col">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 shadow-sm @(eventItem.IsUserInvolved ? "border-primary border-3" : "")">
                     <div class="card-body">
                         <h5 class="card-title">@eventItem.Event.Name</h5>
                         <p class="card-text">@eventItem.Event.Description</p>
                         <hr />
-                        <p><strong>@Localizer["EventsListDate"]:</strong> @eventItem.Event.Date.ToString("dd/MM/yyyy")</p>
+                        <p><strong>@Localizer["EventsListDate"]:</strong> @eventItem.Event.Date.ToString("dd.MM.yyyy")</p>
                         <p><strong>@Localizer["EventsListTime"]:</strong> @eventItem.Event.Date.ToString("HH:mm")</p>
                         <p><strong>@Localizer["EventsListFreeSpots"]:</strong> @(@eventItem.Event.Capacity - eventItem.TotalRegisteredParticipants) / @eventItem.Event.Capacity</p>
                         @if ((isAdmin || isStaff) && eventItem.Event.StaffMembers != null && eventItem.Event.StaffMembers.Any())
@@ -83,45 +72,76 @@
                             <ul>
                                 @foreach (var staff in eventItem.Event.StaffMembers)
                                 {
-                                    <li>@staff.UserName</li>
+                                    <li>@(staff.FirstName + " " + staff.LastName)</li>
                                 }
                             </ul>
                         }
+                        @if (!SignInManager.IsSignedIn(User)) {
+                            <span>@Localizer["ToRegister"] <a href="/Users/Login">@Localizer["Login"]</a> @Localizer["Or"] <a href="/Users/Register">@Localizer["Register"]</a>.</span>
+                        }
                     </div>
-                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            
-                            @if (eventItem.IsUserRegistered)
+                    <div class="card-footer bg-transparent border-top-0">
+                        <div class="row g-2">
+                            @* Row 1 *@
+                            <div class="col-6">
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    if (eventItem.IsUserRegistered)
+                                    {
+                                        <form asp-action="UnregisterFromEvent" method="post">
+                                            <input type="hidden" name="eventId" value="@eventItem.Event.Id" />
+                                            <button class="btn btn-warning w-100" >@Localizer["EventsListCancelAttendance"]</button>
+                                        </form>
+                                    }
+                                    else if (eventItem.TotalRegisteredParticipants < eventItem.Event.Capacity)
+                                    {
+                                        <button class="btn btn-primary w-100"  data-bs-toggle="modal" data-bs-target="#registerModal-@eventItem.Event.Id">
+                                            @Localizer["EventsListAttend"]
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary w-100"  disabled>
+                                            @Localizer["EventsListFull"]
+                                        </button>
+                                    }
+                                }
+                            </div>
+
+                            @if (isAdmin)
                             {
-                                <form asp-action="UnregisterFromEvent" method="post" class="d-inline">
-                                    <input type="hidden" name="eventId" value="@eventItem.Event.Id" />
-                                    <button type="submit" class="btn btn-warning">@Localizer["EventsListCancelAttendance"]</button>
-                                </form>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-secondary w-100"  data-bs-toggle="modal" data-bs-target="#assignStaffModal-@eventItem.Event.Id">
+                                        @Localizer["EventsListAssign"]
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    @{
+                                        var safeEventData = new {
+                                            Id = eventItem.Event.Id,
+                                            Name = eventItem.Event.Name,
+                                            Description = eventItem.Event.Description,
+                                            Date = eventItem.Event.Date,
+                                            Capacity = eventItem.Event.Capacity
+                                        };
+                                    }
+                                    <button class="btn btn-outline-warning w-100"  data-bs-toggle="modal" data-bs-target="#editEventModal"
+                                            onclick='populateEditEventModal(@Html.Raw(Json.Serialize(safeEventData)))'>
+                                        @Localizer["Edit"]
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    @{
+                                        var confirmMessage = JsonSerializer.Serialize(Localizer["EventsListDeleteConfirm"].Value);
+                                    }
+                                    <form asp-action="DeleteEvent" asp-route-id="@eventItem.Event.Id" method="post" onsubmit='return confirm(@Html.Raw(confirmMessage));'>
+                                        <button class="btn btn-outline-danger w-100"  type="submit">
+                                            @Localizer["EventsListDelete"]
+                                        </button>
+                                    </form>
+                                </div>
                             }
-                            else if (eventItem.TotalRegisteredParticipants < eventItem.Event.Capacity)
-                            {
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal-@eventItem.Event.Id">@Localizer["EventsListAttend"]</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary" disabled>@Localizer["EventsListFull"]</button>
-                            }
-                        }
-                        else
-                        {
-                            <span class="text-muted">@Localizer["EventsListLogin"]</span>
-                        }
-                        @if (isAdmin)
-                        {
-                            <button class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#assignStaffModal-@eventItem.Event.Id">@Localizer["EventsListAssign"]</button>
-                        }
-                        @if (isAdmin)
-                        {
-                            <form asp-action="DeleteEvent" asp-route-id="@eventItem.Event.Id" method="post" onsubmit="return confirm(@Localizer["EventsListDeleteConfirm"]);">
-                                <button type="submit" class="btn btn-outline-danger">@Localizer["EventsListDelete"]</button>
-                            </form>
-                        }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,5 +156,60 @@
         }
     </div>
 </div>
+
+@* --- Edit Event Modal --- *@
+<div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editEventForm" asp-action="EditEvent" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEventModalLabel">@Localizer["EditEventTitle"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editEventId" />
+                    <div class="mb-2">
+                        <label class="form-label">@Localizer["EventsListName"]</label>
+                        <input type="text" name="Name" id="editEventName" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">@Localizer["EventsListDescription"]</label>
+                        <textarea name="Description" id="editEventDescription" class="form-control" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">@Localizer["EventsListDate"]</label>
+                        <input type="date" name="DatePart" id="editEventDate" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">@Localizer["EventsListTime"]</label>
+                        <input type="time" name="TimePart" id="editEventTime" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["EventsListCapacity"]</label>
+                        <input type="number" name="Capacity" id="editEventCapacity" class="form-control" min="1" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="submit" class="btn btn-primary">@Localizer["Edit"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function populateEditEventModal(eventData) {
+        document.getElementById("editEventId").value = eventData.id;
+        document.getElementById("editEventName").value = eventData.name;
+        document.getElementById("editEventDescription").value = eventData.description;
+
+        const date = new Date(eventData.date);
+        document.getElementById("editEventDate").value = date.toISOString().split('T')[0];
+        document.getElementById("editEventTime").value = date.toTimeString().substring(0, 5);
+
+        document.getElementById("editEventCapacity").value = eventData.capacity;
+    }
+</script>
 
         

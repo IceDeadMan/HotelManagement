@@ -1,6 +1,7 @@
 ﻿@model List<HotelManagement.ViewModels.ActivityRecordViewModel>
 @using HotelManagement.Enums;
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json;
 @inject IViewLocalizer Localizer
 <!-- Service Activity Records List View -->
 <!-- This view displays a list of service activity records made by guests. -->
@@ -13,45 +14,63 @@
     <h2>@Localizer["ServiceActivityRequests"]</h2>
     @Html.AntiForgeryToken()
     <table class="table table-bordered table-striped mt-3">
+        @{
+            var currentSort = Context.Request.Query["sortBy"];
+            var currentDir = Context.Request.Query["sortDir"];
+            string GetSortDir(string field) => (currentSort == field && currentDir == "asc") ? "desc" : "asc";
+        }
+
         <thead class="table-dark">
             <tr>
-                <th>@Localizer["ActivityRecordsGuest"]</th>
-                <th>@Localizer["ActivityRecordsRoom"]</th>
-                <th>@Localizer["ActivityRecordsType"]</th>
-                <th>@Localizer["ActivityRecordsDescription"]</th>
-                <th>@Localizer["ActivityRecordsDate"]</th>
-                <th>@Localizer["ActivityRecordsStatus"]</th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="GuestName" asp-route-sortDir="@GetSortDir("GuestName")">@Localizer["ActivityRecordsGuest"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="RoomNumber" asp-route-sortDir="@GetSortDir("RoomNumber")">@Localizer["ActivityRecordsRoom"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Type" asp-route-sortDir="@GetSortDir("Type")">@Localizer["ActivityRecordsType"]</a></th>
+                <th>@Localizer["ActivityRecordsDescription"]</th> <!-- optional to sort -->
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Date" asp-route-sortDir="@GetSortDir("Date")">@Localizer["ActivityRecordsDate"]</a></th>
+                <th><a class="text-white" asp-action="ActivityRecordsList" asp-route-sortBy="Status" asp-route-sortDir="@GetSortDir("Status")">@Localizer["ActivityRecordsStatus"]</a></th>
+                <th>@Localizer["ActivityRecordsDelete"]</th>   
             </tr>
         </thead>
         <tbody>
             @foreach (var activity in Model)
             {
                 <tr data-activity-id="@activity.Id">
-                    <td>@activity.GuestName</td>
-                    <td>@activity.RoomNumber</td>
-                    <td>@activity.Type</td>
-                    <td>@activity.Description</td>
-                    <td>@activity.Date.ToString("g")</td>
+                    <td class="align-middle">@activity.GuestName</td>
+                    <td class="align-middle">@activity.RoomNumber</td>
+                    <td class="align-middle">@activity.Type</td>
+                    <td class="align-middle">@activity.Description</td>
+                    <td class="align-middle">@activity.Date.ToString("dd.MM.yyyy")</td>
 
                     <!-- AJAX Status Buttons -->
                     <td>
                         <div class="d-flex flex-column gap-1 activity-status-group" data-id="@activity.Id">
                             @foreach (ActivityStatus status in Enum.GetValues(typeof(ActivityStatus)))
                             {
-                                var statusStr = status.ToString();
+                                var statusStr = status.ToString().ToLower(); // lowercase for CSS
                                 var isChecked = status == activity.Status;
                                 var btnClass = isChecked
-                                    ? "btn btn-sm btn-primary rounded-pill w-100"
-                                    : "btn btn-sm btn-outline-secondary rounded-pill w-100";
+                                    ? $"btn btn-sm rounded-pill w-100 status-btn-{statusStr}"
+                                    : $"btn btn-sm rounded-pill w-100 status-btn-outline-{statusStr}";
 
                                 <button type="button"
                                         class="@btnClass status-btn"
                                         data-status="@statusStr"
                                         data-current="@(isChecked.ToString().ToLower())">
-                                    @statusStr
+                                    @Localizer[status.ToString()]
                                 </button>
                             }
                         </div>
+                    </td>
+                    <td class="align-middle">
+                        <form method="post" asp-action="DeleteActivityRecord" asp-route-id="@activity.Id" class="d-inline">
+                            @{
+                                var confirmMessage = JsonSerializer.Serialize(Localizer["DeleteConfirm"].Value);
+                            }
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick='return confirm(@Html.Raw(confirmMessage));'>
+                                @Localizer["ActivityRecordsDelete"]
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }
@@ -82,15 +101,25 @@
                 });
 
                 if (response.ok) {
-                    // Update button styling
-                    const buttons = this.closest('.activity-status-group').querySelectorAll('.status-btn');
+                    const group = this.closest('.activity-status-group');
+                    const buttons = group.querySelectorAll('.status-btn');
+
                     buttons.forEach(btn => {
-                        btn.classList.remove('btn-primary');
-                        btn.classList.add('btn-outline-secondary');
+                        const status = btn.dataset.status.toLowerCase();
+
+                        // Remove both filled and outline classes
+                        btn.classList.remove(`status-btn-${status}`);
+                        btn.classList.remove(`status-btn-outline-${status}`);
+
+                        // Apply outline style to all
+                        btn.classList.add(`status-btn-outline-${status}`);
                     });
 
-                    this.classList.remove('btn-outline-secondary');
-                    this.classList.add('btn-primary');
+                    const currentStatus = this.dataset.status.toLowerCase();
+
+                    // Highlight the clicked button with the filled style
+                    this.classList.remove(`status-btn-outline-${currentStatus}`);
+                    this.classList.add(`status-btn-${currentStatus}`);
                 } else {
                     console.error('Failed to update status');
                 }

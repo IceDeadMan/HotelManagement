@@ -1,13 +1,11 @@
-using System.Diagnostics;
 using HotelManagement.Logging;
-using HotelManagement.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagement.Controllers
 {
     /// <summary>
-    /// HomeController handles the main page and privacy policy of the hotel management system.
+    /// HomeController handles the main page of the hotel management system.
     /// </summary>
     public class HomeController : Controller
     {
@@ -23,11 +21,9 @@ namespace HotelManagement.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// SetLanguage allows users to change the application's language and set it in a cookie.
+        /// </summary>
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
@@ -42,12 +38,5 @@ namespace HotelManagement.Controllers
             }
             return LocalRedirect(returnUrl);
         }
-
-        // moved to error controller
-        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        // public IActionResult Error()
-        // {
-        //     return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        // }
     }
 }

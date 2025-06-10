@@ -4,6 +4,9 @@ using HotelManagement.Enums;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing activity records in the hotel management system.
+    /// </summary>
     public class ActivityRecordRepository : BaseRepository<ActivityRecord>
     {
         public ActivityRecordRepository(HotelManagementDbContext context) : base(context)

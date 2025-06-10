@@ -126,6 +126,12 @@
   <data name="Or" xml:space="preserve">
     <value>or</value>
   </data>
+  <data name="Events" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="FoodMenu" xml:space="preserve">
+    <value>Food Menu</value>
+  </data>
   <data name="OurRooms" xml:space="preserve">
     <value>Our Rooms</value>
   </data>
@@ -134,6 +140,9 @@
   </data>
   <data name="ToBook" xml:space="preserve">
     <value>To book a stay in our hotel, please</value>
+  </data>
+  <data name="BookRoom" xml:space="preserve">
+    <value>Create a Booking</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Welcome to our Hotel Management App</value>

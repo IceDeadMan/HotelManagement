@@ -126,6 +126,12 @@
   <data name="Or" xml:space="preserve">
     <value>alebo</value>
   </data>
+  <data name="Events" xml:space="preserve">
+    <value>Udalosti</value>
+  </data>
+  <data name="FoodMenu" xml:space="preserve">
+    <value>Ponuka jedál</value>
+  </data>
   <data name="OurRooms" xml:space="preserve">
     <value>Naše Izby</value>
   </data>
@@ -134,6 +140,9 @@
   </data>
   <data name="ToBook" xml:space="preserve">
     <value>Pre rezervovanie izby v našom hoteli sa prosím</value>
+  </data>
+  <data name="BookRoom" xml:space="preserve">
+    <value>Vytvoriť Rezerváciu</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Vitajte na našej aplikácií Správa Hotelu</value>

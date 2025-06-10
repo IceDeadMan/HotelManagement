@@ -120,6 +120,12 @@
   <data name="Home" xml:space="preserve">
     <value>Domov</value>
   </data>
+  <data name="English" xml:space="preserve">
+    <value>Anglicky</value>
+  </data>
+  <data name="Slovak" xml:space="preserve">
+    <value>Slovensky</value>
+  </data>
   <data name="HotelManagement" xml:space="preserve">
     <value>Správa Hotelu</value>
   </data>

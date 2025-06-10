@@ -121,7 +121,7 @@
     <value>Pridať rezenciu pre túto izbu.</value>
   </data>
   <data name="AlreadyReviewed" xml:space="preserve">
-    <value>Túto izbu ste už ohodnotili. Svoju recenziu môžte aktualizovať tuto.</value>
+    <value>Túto izbu ste už ohodnotili. Svoju recenziu môžte aktualizovať tu.</value>
   </data>
   <data name="BackToBooking" xml:space="preserve">
     <value>Späť na Rezerváciu</value>
@@ -156,11 +156,29 @@
   <data name="Rating" xml:space="preserve">
     <value>Hodnotenie (z 10)</value>
   </data>
+  <data name="Nights" xml:space="preserve">
+    <value>noci</value>
+  </data>
   <data name="RequestService" xml:space="preserve">
     <value>Požiadať o Servis</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Izba</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Plánovaná</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Podaná</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Vybavuje sa</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončená</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Zrušená</value>
   </data>
   <data name="RoomDetails" xml:space="preserve">
     <value>Detail Izby</value>
@@ -171,7 +189,7 @@
   <data name="ServiceRequests" xml:space="preserve">
     <value>Požiadavky na Servis</value>
   </data>
-  <data name="ServiceTpe" xml:space="preserve">
+  <data name="ServiceType" xml:space="preserve">
     <value>Typ Servisu</value>
   </data>
   <data name="SubmitReview" xml:space="preserve">
@@ -179,5 +197,11 @@
   </data>
   <data name="UpdateReview" xml:space="preserve">
     <value>Aktualizovať Recenziu</value>
+  </data>
+  <data name="DeleteActivityConfirm" xml:space="preserve">
+    <value>Naozaj chcete zmazať túto servisnú požiadavku?</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Zmazať</value>
   </data>
 </root>

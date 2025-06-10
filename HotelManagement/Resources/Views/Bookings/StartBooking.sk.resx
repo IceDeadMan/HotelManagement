@@ -126,8 +126,17 @@
   <data name="CreateBooking" xml:space="preserve">
     <value>Vytvoriť Rezerváciu</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Podrobnosti</value>
+  </data>
   <data name="LabelAny" xml:space="preserve">
-    <value>Vyber</value>
+    <value>Všetky typy</value>
+  </data>
+  <data name="Nights" xml:space="preserve">
+    <value>Počet nocí</value>
+  </data>
+  <data name="NoPhoto" xml:space="preserve">
+    <value>Obrázok nenájdený</value>
   </data>
   <data name="NumberOfRooms" xml:space="preserve">
     <value>Počet izieb v košíku</value>
@@ -146,6 +155,12 @@
   </data>
   <data name="RoomType" xml:space="preserve">
     <value>Typ Izby</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Príchod</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Odchod</value>
   </data>
   <data name="SelectDuration" xml:space="preserve">
     <value>Prosím vyberte dĺžku pobytu</value>

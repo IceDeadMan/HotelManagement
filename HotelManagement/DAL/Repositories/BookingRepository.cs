@@ -1,10 +1,13 @@
 ﻿using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using HotelManagement.Enums;
-using HotelManagement.Models.DTOs;
+using HotelManagement.ViewModels.DTOs;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing bookings in the hotel management system.
+    /// </summary>
     public class BookingRepository : BaseRepository<Booking>
     {
         public BookingRepository(HotelManagementDbContext context) : base(context)
@@ -65,7 +68,7 @@ namespace HotelManagement.DAL.Repositories
                     StartDate = b.StartDate,
                     EndDate = b.EndDate,
                     Status = b.Status,
-                    UserName = b.ApplicationUser.UserName,
+                    UserName = b.ApplicationUser.FirstName + " " + b.ApplicationUser.LastName,
                     RoomNumbers = b.Rooms.Select(r => r.RoomNumber).ToList()
                 })
                 .ToListAsync();

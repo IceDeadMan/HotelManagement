@@ -120,6 +120,15 @@
   <data name="BookingCart" xml:space="preserve">
     <value>Nákupný Košík</value>
   </data>
+  <data name="BookingSummary" xml:space="preserve">
+    <value>Vaša Rezervácia</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Príchod</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Odchod</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Zavrieť</value>
   </data>
@@ -128,5 +137,29 @@
   </data>
   <data name="EmptyCart" xml:space="preserve">
     <value>Váš nákupný košík je prázdny.</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ Izby</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Izba</value>
+  </data>
+  <data name="FinalizeBooking" xml:space="preserve">
+    <value>Dokončiť Rezerváciu</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Odstrániť</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Medzisúčet</value>
+  </data>
+  <data name="TotalNights" xml:space="preserve">
+    <value>Počet nocí</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapacita</value>
+  </data>
+  <data name="PriceNight" xml:space="preserve">
+    <value>Cena za noc</value>
   </data>
 </root>

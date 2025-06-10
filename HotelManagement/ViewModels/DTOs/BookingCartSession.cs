@@ -1,4 +1,4 @@
-﻿namespace HotelManagement.Models.DTOs
+﻿namespace HotelManagement.ViewModels.DTOs
 {
 	/// <summary>
 	/// Represents a session for a booking cart.

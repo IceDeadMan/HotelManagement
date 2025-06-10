@@ -2,12 +2,12 @@
 using HotelManagement.Enums;
 using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Services;
-using HotelManagement.Models.DTOs;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using HotelManagement.ViewModels;
 using HotelManagement.Logging;
+using HotelManagement.ViewModels.DTOs;
 
 
 namespace HotelManagement.Controllers
@@ -59,6 +59,16 @@ namespace HotelManagement.Controllers
 				SelectedRoomTypeId = Guid.Empty, // Default to no room type selected
 				Cart = cart
 			};
+
+			if (cart.RoomIds.Count > 0)
+			{
+				var firstRoom = _roomRepository.GetById(cart.RoomIds.FirstOrDefault());
+				if (firstRoom != null)
+				{
+					viewModel.StartDate = cart.StartDate.ToString("yyyy-MM-dd");
+					viewModel.EndDate = cart.EndDate.ToString("yyyy-MM-dd");
+				}
+			}
 
 			return View(viewModel);
 		}
@@ -162,8 +172,6 @@ namespace HotelManagement.Controllers
 			return View("BookingCart", viewModel);
 		}
 
-
-
 		/// <summary>
 		/// FinalizeBooking processes the booking by checking room availability and creating a booking record.
 		/// </summary>
@@ -216,7 +224,6 @@ namespace HotelManagement.Controllers
 			_bookingCartService.ClearCart();
 			_auditLogger.Log("FinalizeBooking", "Booking successfully finalized.");
 
-			TempData["Success"] = "Booking finalized successfully!";
 			return View("BookingConfirmation", booking);
 		}
 
@@ -369,7 +376,7 @@ namespace HotelManagement.Controllers
 		/// <summary>
 		/// CancelBooking allows users to cancel their own bookings.
 		/// It checks if the booking exists, if the user is the owner, and if the booking status is pending.
-		/// /// </summary>
+		/// </summary>
 		[HttpPost]
 		[Authorize]
 		public async Task<IActionResult> CancelBooking(Guid id)
@@ -384,7 +391,7 @@ namespace HotelManagement.Controllers
 			var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 			if (booking.ApplicationUserId.ToString() != currentUserId)
 			{
-				return Forbid(); // User is not allowed to cancel someone else's booking
+				return Forbid();
 			}
 
 			if (booking.Status != BookingStatus.Pending)
@@ -401,20 +408,6 @@ namespace HotelManagement.Controllers
 		}
 
 		/// <summary>
-		/// Delete removes a booking by its ID.
-		/// This action is restricted to authorized users with specific roles.
-		/// </summary>
-		/// <param name="id"> The ID of the booking to be deleted. </param>
-		/// <returns> A redirect to the reception view after deletion. </returns>
-		// [HttpPost]
-		// [Authorize(Roles = "Manager,Receptionist")]
-		// public IActionResult Delete(Guid id)
-		// {
-		// 	_bookingRepository.Delete(id);
-		// 	return RedirectToAction(nameof(Reception));
-		// }
-
-		/// <summary>
 		/// AvailableRooms displays a list of available rooms based on the selected criteria - room type and stay duration.
 		/// If filters out the rooms that are already booked during the selected dates.
 		/// /</summary>
@@ -429,7 +422,6 @@ namespace HotelManagement.Controllers
 			var rooms = await _roomRepository.GetAllRoomsWithDetailAsync();
 			var cart = _bookingCartService.GetCart();
 
-			// this is not using the IsRoomAvailableAsync method since filtering the rooms in memory should be better for performance
 			var availableRooms = rooms
 				.Where(r => (roomTypeId == Guid.Empty || r.RoomTypeId == roomTypeId) &&
 							!r.Bookings.Any(b => b.StartDate < end && b.EndDate > start))

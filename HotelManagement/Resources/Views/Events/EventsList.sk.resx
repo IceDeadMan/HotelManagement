@@ -168,4 +168,22 @@
   <data name="EventsListTitle" xml:space="preserve">
     <value>Udalosti</value>
   </data>
+  <data name="Or" xml:space="preserve">
+    <value>alebo</value>
+  </data>
+  <data name="ToRegister" xml:space="preserve">
+    <value>Pre registráciu na udalosť sa </value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>vytvorte účet </value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>prihláste</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
 </root>

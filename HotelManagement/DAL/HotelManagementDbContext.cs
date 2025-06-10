@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL
 {
+    /// <summary>
+    /// Represents the database context for the hotel management system.
+    /// Includes definion of DbSets, special cases and foreign keys defined in OnModelCreating function,
+    /// joint tables, as well as initial data seeds.
+    /// Used by Entity Framework to create migrations.
+    /// </summary>
     public class HotelManagementDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public HotelManagementDbContext(DbContextOptions<HotelManagementDbContext> options)
@@ -28,6 +34,24 @@ namespace HotelManagement.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(r => r.Reviews)
+                .WithOne(rev => rev.Room)
+                .HasForeignKey(rev => rev.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(r => r.ActivityRecords)
+                .WithOne(ar => ar.Room)
+                .HasForeignKey(ar => ar.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Food>()
+                .HasMany(f => f.Reviews)
+                .WithOne(rev => rev.Food)
+                .HasForeignKey(rev => rev.FoodId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Food>()
                 .Property(b => b.Price)
@@ -58,8 +82,14 @@ namespace HotelManagement.DAL
                 .WithMany(b => b.Rooms)
                 .UsingEntity<Dictionary<string, object>>(
                     "RoomBookings",
-                    r => r.HasOne<Booking>().WithMany().HasForeignKey("BookingsId"),
-                    b => b.HasOne<Room>().WithMany().HasForeignKey("RoomsId"),
+                    r => r.HasOne<Booking>()
+                          .WithMany()
+                          .HasForeignKey("BookingsId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    b => b.HasOne<Room>()
+                          .WithMany()
+                          .HasForeignKey("RoomsId")
+                          .OnDelete(DeleteBehavior.Cascade),
                     je =>
                     {
                         je.HasKey("BookingsId", "RoomsId");
@@ -71,8 +101,14 @@ namespace HotelManagement.DAL
                 .WithMany(u => u.AssignedEvents)
                 .UsingEntity<Dictionary<string, object>>(
                     "EventStaff",
-                    e => e.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId"),
-                    u => u.HasOne<Event>().WithMany().HasForeignKey("EventId"),
+                    e => e.HasOne<ApplicationUser>()
+                          .WithMany()
+                          .HasForeignKey("UserId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    u => u.HasOne<Event>()
+                          .WithMany()
+                          .HasForeignKey("EventId")
+                          .OnDelete(DeleteBehavior.Cascade),
                     je =>
                     {
                         je.HasKey("UserId", "EventId");
@@ -91,7 +127,6 @@ namespace HotelManagement.DAL
                 .HasOne(er => er.User)
                 .WithMany(u => u.EventRegistrations)
                 .HasForeignKey(er => er.UserId);
-
 
 
             UserSeeds.Seed(modelBuilder);

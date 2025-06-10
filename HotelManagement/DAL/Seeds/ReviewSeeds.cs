@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds initial data for reviews in the database.
+    /// </summary>
     public class ReviewSeeds
     {
         public static readonly Review Review1 = new Review

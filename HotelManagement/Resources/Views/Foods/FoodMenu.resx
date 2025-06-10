@@ -162,6 +162,9 @@
   <data name="IfYouStay" xml:space="preserve">
     <value>If you stay at our hotel, you can order food from the menu.</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="PlaceOrder" xml:space="preserve">
     <value>Place Order</value>
   </data>
@@ -170,5 +173,17 @@
   </data>
   <data name="SelectRoom" xml:space="preserve">
     <value>Select Room</value>
+  </data>
+  <data name="MyBookings" xml:space="preserve">
+    <value> your bookings</value>
+  </data>
+  <data name="ToCurrentOrders" xml:space="preserve">
+    <value>To view your current food orders, navigate to a specific room in </value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="EditFood" xml:space="preserve">
+    <value>Edit</value>
   </data>
 </root>

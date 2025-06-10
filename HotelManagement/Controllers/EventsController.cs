@@ -33,10 +33,17 @@ namespace HotelManagement.Controllers
         /// </summary>
         public async Task<IActionResult> EventsList()
         {
-            var currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var currentUserId = Guid.Empty;
+            if (User.Identity.IsAuthenticated)
+            {
+                currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
 
             var events = await _eventRepository.GetAllWithDetailsAsync();
             var isManager = User.IsInRole("Manager");
+
+            // Only fetch staff if the user is a manager
+            var allStaff = isManager ? await _userManager.GetUsersInRoleAsync("Staff") : new List<ApplicationUser>();
 
             var viewModel = new EventListViewModel
             {
@@ -45,9 +52,14 @@ namespace HotelManagement.Controllers
                 Events = events.Select(e => new EventListItemViewModel
                 {
                     Event = e,
-                    TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 99,
+                    TotalRegisteredParticipants = e.Registrations?.Sum(r => r.NumberOfParticipants) ?? 0,
                     IsUserRegistered = e.Registrations.Any(r => r.UserId == currentUserId),
-                    AllAssignableStaff = isManager ? _userManager.GetUsersInRoleAsync("Staff").Result.ToList() : new List<ApplicationUser>(),
+                    IsUserInvolved = e.Registrations.Any(r => r.UserId == currentUserId) || e.StaffMembers.Any(s => s.Id == currentUserId),
+                    AllAssignableStaff = isManager
+                        ? allStaff
+                            .Where(staff => !e.StaffMembers.Any(assigned => assigned.Id == staff.Id))
+                            .ToList()
+                        : new List<ApplicationUser>(),
                 }).ToList()
             };
 
@@ -81,6 +93,7 @@ namespace HotelManagement.Controllers
             _eventRepository.Create(newEvent);
             _auditLogger.Log("CreateEvent", $"Event '{Name}' created by successfully.");
 
+            TempData["Success"] = "Event created successfully.";
             return RedirectToAction("EventsList");
         }
 
@@ -104,6 +117,7 @@ namespace HotelManagement.Controllers
                 TempData["Error"] = "Event not found.";
             }
 
+            TempData["Success"] = "Event deleted successfully.";
             return RedirectToAction("EventsList");
         }
 
@@ -213,6 +227,31 @@ namespace HotelManagement.Controllers
             _auditLogger.Log("UnassignStaffFromEvent", $"Staff member {staffUserId} unassigned from event {eventId}.");
             return RedirectToAction("EventsList");
         }
+
+        /// <summary>
+        /// EditEvent allows managers to edit the details of an existing event.
+        /// It takes the event ID and the new details as parameters.
+        /// </summary>
+        [HttpPost]
+        [Authorize(Roles = "Manager")]
+        public IActionResult EditEvent(Guid Id, string Name, string Description, DateTime DatePart, TimeSpan TimePart, int Capacity)
+        {
+            var fullDate = DatePart.Date + TimePart;
+            var eventToUpdate = _eventRepository.GetById(Id);
+
+            if (eventToUpdate == null) 
+                return NotFound();
+
+            eventToUpdate.Name = Name;
+            eventToUpdate.Description = Description;
+            eventToUpdate.Date = fullDate;
+            eventToUpdate.Capacity = Capacity;
+
+            _eventRepository.Update(eventToUpdate);
+
+            return RedirectToAction("EventsList");
+        }
+            
 
     }
 }

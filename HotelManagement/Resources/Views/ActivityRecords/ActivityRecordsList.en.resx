@@ -120,8 +120,14 @@
   <data name="ActivityRecordsDate" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="ActivityRecordsDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="ActivityRecordsDescription" xml:space="preserve">
     <value>Description</value>
+  </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this activity record?</value>
   </data>
   <data name="ActivityRecordsGuest" xml:space="preserve">
     <value>Guest</value>
@@ -140,5 +146,14 @@
   </data>
   <data name="ServiceActivityRequests" xml:space="preserve">
     <value>Service Activity Requests</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
   </data>
 </root>

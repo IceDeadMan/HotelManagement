@@ -3,6 +3,7 @@
 @model BookingCartViewModel
 @using HotelManagement.Models
 @using HotelManagement.ViewModels;
+@using System.Globalization;
 
 <!-- Booking Cart View -->
 <!-- This view displays the booking cart with the selected rooms, their types, and prices.
@@ -19,17 +20,9 @@
     return;
 }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-        @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=@Localizer["Close"]></button>
-    </div>
-}
-
 <h2>@Localizer["BookingSummary"]</h2>
-<p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToShortDateString()</strong></p>
-<p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToShortDateString()</strong></p>
+<p>@Localizer["CheckIn"]: <strong>@Model.StartDate.ToString("dd.MM.yyyy")</strong></p>
+<p>@Localizer["CheckOut"]: <strong>@Model.EndDate.ToString("dd.MM.yyyy")</strong></p>
 <p>@Localizer["TotalNights"]: <strong>@Model.Nights</strong></p>
 
 <table class="table">
@@ -50,8 +43,8 @@
                 <td>@item.RoomNumber</td>
                 <td>@item.RoomTypeDescription</td>
                 <td>@item.Capacity</td>
-                <td>@item.PricePerNight.ToString("C")</td>
-                <td>@item.Subtotal.ToString("C")</td>
+                <td>@item.PricePerNight.ToString("N2", CultureInfo.InvariantCulture) €</td>
+                <td>@item.Subtotal.ToString("N2", CultureInfo.InvariantCulture) €</td>
                 <td>
                     <form class="remove-room-form" asp-controller="Bookings" asp-action="RemoveFromBookingCart" method="post">
                         <input type="hidden" name="roomId" value="@item.RoomId" />
@@ -63,7 +56,7 @@
     </tbody>
 </table>
 
-<h4>Total: @Model.TotalPrice.ToString("C")</h4>
+<h4>Total: @Model.TotalPrice.ToString("N2", CultureInfo.InvariantCulture) €</h4>
 
 <form asp-controller="Bookings" asp-action="FinalizeBooking" method="post">
     <button type="submit" class="btn btn-success">@Localizer["FinalizeBooking"]</button>

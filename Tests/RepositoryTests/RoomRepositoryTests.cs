@@ -55,6 +55,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingRoom()
         {
             var roomToUpdate = _roomRepository.GetById(Guid.Parse("a242ae42-b5f3-417e-9277-b89ac16fca21"));
+
             Assert.NotNull(roomToUpdate);
 
             roomToUpdate.Description = "Updated Description";
@@ -69,6 +70,7 @@ namespace Tests.RepositoryTests
         public void Delete_ExistingRoom()
         {
             var roomToDelete = _roomRepository.GetById(Guid.Parse("a242ae42-b5f3-417e-9277-b89ac16fca23"));
+
             Assert.NotNull(roomToDelete);
 
             _roomRepository.Delete(roomToDelete.Id);

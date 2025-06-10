@@ -26,7 +26,7 @@ namespace HotelManagement.DAL.Repositories
         {
             return !await _context.Bookings
                 .Include(b => b.Rooms)
-                //.Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
+                .Where(b => b.Status != BookingStatus.Cancelled) // optional if we allow cancelling bookings
                 .AnyAsync(b =>
                     b.Rooms.Any(r => r.Id == roomId) &&
                     b.StartDate < endDate &&
@@ -60,10 +60,10 @@ namespace HotelManagement.DAL.Repositories
         public async Task<Room?> GetRoomWithDetailsAsync(Guid id)
         {
             return await _context.Rooms
-                .Include(r => r.Bookings)
-                .Include(r => r.ActivityRecords)
-                .Include(r => r.FoodOrders)
-                .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser)// for usernames 
+                .Include(r => r.Bookings).ThenInclude(b => b.ApplicationUser) // for usernames
+                .Include(r => r.ActivityRecords).ThenInclude(ar => ar.ApplicationUser) // for usernames
+                .Include(r => r.FoodOrders).ThenInclude(f => f.FoodOrderFoods).ThenInclude(fof => fof.Food) // for food orders
+                .Include(r => r.Reviews).ThenInclude(r => r.ApplicationUser) // for usernames 
                 .Include(r => r.RoomType)
                 .AsSplitQuery() // query is very slow without this, could be set in global db context options
                 .FirstOrDefaultAsync(r => r.Id == id);
@@ -101,6 +101,26 @@ namespace HotelManagement.DAL.Repositories
                     b.EndDate >= currentDate &&
                     b.Status == BookingStatus.Confirmed)) // Only include confirmed bookings
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Deletes a room by its ID, along with any orphaned bookings that are no longer associated with any rooms.
+        /// </summary>
+        public new void Delete(Guid id)
+        {
+            var room = _context.Rooms.SingleOrDefault(r => r.Id == id);
+            if (room == null) return;
+
+            _context.Rooms.Remove(room);
+            _context.SaveChanges();
+
+            var orphanedBookings = _context.Bookings
+                .Where(b => !_context.Set<Dictionary<string, object>>("RoomBookings")
+                    .Any(rb => EF.Property<Guid>(rb, "BookingsId") == b.Id))
+                .ToList();
+
+            _context.Bookings.RemoveRange(orphanedBookings);
+            _context.SaveChanges();
         }
     }
 }

@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository for managing events in the hotel management system.
+    /// Includes additional for managing user-events join table operations,
+    /// such as assigning staff to events, registering users to events,
+    /// their reverse operations, and checking whether a user is registered to an event.
+    /// Includes methods for retrieving events with their details, including staff members and registrations.
+    /// </summary>
     public class EventRepository : BaseRepository<Event>
     {
         public EventRepository(HotelManagementDbContext context) : base(context)

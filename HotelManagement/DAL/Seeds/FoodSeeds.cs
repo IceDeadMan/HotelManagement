@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds initial data for food items in the database.
+    /// </summary>
     public class FoodSeeds
     {
         public static readonly Food Food1 = new Food

@@ -1,4 +1,4 @@
-﻿namespace HotelManagement.Models.DTOs
+﻿namespace HotelManagement.ViewModels.DTOs
 {
 	/// <summary>
 	/// Represents a request to book a room for a specific period.

@@ -1,28 +1,22 @@
-using System;
 using HotelManagement.Models;
-using HotelManagement.Models.DTOs;
+using HotelManagement.ViewModels.DTOs;
 
-namespace HotelManagement.ViewModels;
-
-/// <summary>
-/// StartBookingViewModel is used to manage the booking process.
-/// It contains properties for filtering available rooms by type and date,
-/// as well as properties for displaying available rooms and the current booking cart.
-/// </summary>
-public class StartBookingViewModel
+namespace HotelManagement.ViewModels
 {
-    // Dropdown list of all room types
-    public List<RoomType> RoomTypes { get; set; } = new();
 
-    // Filter inputs
-    public Guid SelectedRoomTypeId { get; set; }
-    public string? StartDate { get; set; }
-    public string? EndDate { get; set; }
-
-    // Result of search
-    public List<Room> AvailableRooms { get; set; } = new();
-
-    // Booking cart (room IDs and selected dates)
-    public BookingCartSession Cart { get; set; }
+    /// <summary>
+    /// StartBookingViewModel is used to manage the booking process.
+    /// It contains properties for filtering available rooms by type and date,
+    /// as well as properties for displaying available rooms and the current booking cart.
+    /// </summary>
+    public class StartBookingViewModel
+    {
+        public List<RoomType> RoomTypes { get; set; } = new();
+        public Guid SelectedRoomTypeId { get; set; }
+        public string? StartDate { get; set; }
+        public string? EndDate { get; set; }
+        public List<Room> AvailableRooms { get; set; } = new();
+        public BookingCartSession Cart { get; set; }
+    }
 }
 

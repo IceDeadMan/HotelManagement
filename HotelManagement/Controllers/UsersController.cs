@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Identity;
-using HotelManagement.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using HotelManagement.Logging;
-
+using HotelManagement.ViewModels.Users;
+using AutoMapper;
+using HotelManagement.DAL.Repositories;
+using HotelManagement.ViewModels.DTOs;
+using HotelManagement.ViewModels;
 
 namespace HotelManagement.Controllers
 {
@@ -16,16 +19,26 @@ namespace HotelManagement.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationUserRepository _userRepository;
         private readonly AuditLogger _auditLogger;
+        private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
         public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-                               AuditLogger auditLogger)
+                               AuditLogger auditLogger, IMapper mapper, ApplicationUserRepository userRepository,
+                                RoleManager<IdentityRole<Guid>> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userRepository = userRepository;
             _auditLogger = auditLogger;
+            _mapper = mapper;
+            _roleManager = roleManager;
         }
 
+        /// <summary>
+        /// Displays the registration view.
+        /// </summary>
         public IActionResult Register()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -34,6 +47,10 @@ namespace HotelManagement.Controllers
             }
             return View();
         }
+
+        /// <summary>
+        /// Displays the login view.
+        /// </summary>
         public IActionResult Login()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -43,16 +60,29 @@ namespace HotelManagement.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Handles customer user registration.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+            var user = _mapper.Map<ApplicationUser>(model);
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
+                var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+                if (!roleResult.Succeeded)
+                {
+                    _auditLogger.Log("Register", $"Failed to assign Customer role to user {model.Username}.");
+                    foreach (var error in roleResult.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+
+                    return View(model);
+                }
+
                 _auditLogger.Log("Register", $"User {model.Username} registered successfully.");
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("RoomsList", "Rooms");
@@ -65,6 +95,92 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Handles staff user registration by a manager.
+        /// Tries to create a new user as a staff member and assign the "Staff" role.
+        /// Then refreshes the list of users and their roles for display.
+        /// </summary>
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public async Task<IActionResult> RegisterStaff(RegisterViewModel model)
+        {
+            var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
+
+            var roles = _roleManager.Roles
+                .Where(r => r.Name != "Customer")
+                .Select(r => r.Name)
+                .ToList();
+
+            var userRoles = new Dictionary<Guid, string>();
+            foreach (var u in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(u);
+                userRoles[u.Id] = userRoleList.FirstOrDefault() ?? "None";
+            }
+
+            var manageStaffModel = new ManageStaffViewModel
+            {
+                Users = users.ToList(),
+                AvailableRoles = roles,
+                UserRoles = userRoles
+            };
+
+            if (!ModelState.IsValid)
+                return View("ManageStaff", manageStaffModel);
+
+            var user = _mapper.Map<ApplicationUser>(model);
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                _auditLogger.Log("RegisterStaff", $"Staff user registration failed for {model.Username}.");
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View("ManageStaff", manageStaffModel);
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Staff");
+            if (!roleResult.Succeeded)
+            {
+                _auditLogger.Log("RegisterStaff", $"Failed to assign Staff role to user {model.Username}.");
+                foreach (var error in roleResult.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View("ManageStaff", manageStaffModel);
+            }
+
+            _auditLogger.Log("RegisterStaff", $"Staff user {model.Username} registered successfully.");
+
+            users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
+            userRoles = new Dictionary<Guid, string>();
+            foreach (var u in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(u);
+                userRoles[u.Id] = userRoleList.FirstOrDefault() ?? "None";
+            }
+
+            manageStaffModel.Users = users.ToList();
+            manageStaffModel.UserRoles = userRoles;
+            ModelState.Clear();
+            TempData["Success"] = "Staff user registered successfully.";
+            return View("ManageStaff", manageStaffModel);
+        }
+
+        /// <summary>
+        /// Login method for user authentication
+        /// Validates the user credentials and signs in the user if successful.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -80,15 +196,23 @@ namespace HotelManagement.Controllers
 
             _auditLogger.Log("Login", "Unsuccessful login attempt.");
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ViewBag.LoginFailed = true;
             return View(model);
         }
 
+        /// <summary>
+        /// Logs out the current user and redirects to the login page.
+        /// </summary>
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             _auditLogger.Log("Logout", "User logged out.");
             return RedirectToAction("Login");
         }
+
+        /// <summary>
+        /// Displays the user's profile information.
+        /// </summary>
         [Authorize]
         public async Task<IActionResult> Profile()
         {
@@ -98,5 +222,131 @@ namespace HotelManagement.Controllers
             _auditLogger.Log("ProfileView", $"User {user.UserName} accessed their profile.");
             return View(user);
         }
+
+        /// <summary>
+        /// Displays the management view for staff users with their roles.
+        /// </summary>
+        [Authorize(Roles = "Manager")]
+        [HttpGet]
+        public async Task<IActionResult> NonCustomerOrAdminUsers()
+        {
+            var users = await _userRepository.GetNonAdminAndNonCustomerUsersAsync();
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
+            }
+            var roles = _roleManager.Roles
+                .Where(r => r.Name != "Customer")
+                .Select(r => r.Name)
+                .ToList();
+
+            var userRoles = new Dictionary<Guid, string>();
+            foreach (var user in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(user);
+                var role = userRoleList.FirstOrDefault() ?? "None";
+                userRoles[user.Id] = role;
+            }
+
+            var model = new ManageStaffViewModel
+            {
+                Users = users.ToList(),
+                AvailableRoles = roles,
+                UserRoles = userRoles
+            };
+
+            return View("ManageStaff", model);
+        }
+
+        /// <summary>
+        /// Separately method to handle password updates.
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(string currentPassword, string newPassword)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Password updated successfully.";
+                _auditLogger.Log("UpdatePassword", $"Password updated for user {user.UserName}");
+                return Ok();
+            }
+            TempData["Error"] = "Failed to update password.";
+            return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Handles updating non-critical user information,
+        /// such as first name, last name, username, and phone number.
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoRequest model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            user.FirstName = string.IsNullOrWhiteSpace(model.FirstName) ? user.FirstName : model.FirstName;
+            user.LastName = string.IsNullOrWhiteSpace(model.LastName) ? user.LastName : model.LastName;
+            user.UserName = string.IsNullOrWhiteSpace(model.UserName) ? user.UserName : model.UserName;
+            user.PhoneNumber = string.IsNullOrWhiteSpace(model.PhoneNumber) ? user.PhoneNumber : model.PhoneNumber;
+
+            var result = await _userRepository.UpdateUserInfoAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "User information updated successfully.";
+                _auditLogger.Log("UpdateUserInfo", $"Updated info for user {user.UserName}");
+                return Ok();
+            }
+            TempData["Error"] = "Failed to update user information.";
+            return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Updates the user's email address separately.
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateEmail(string newEmail)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var result = await _userRepository.UpdateEmailAsync(user.Id, newEmail);
+
+            if (result.Succeeded)
+            {
+                _auditLogger.Log("UpdateEmail", $"Updated email for user {user.UserName} to {newEmail}");
+                TempData["Success"] = "Email updated successfully.";
+                return Ok();
+            }
+
+            TempData["Error"] = "Failed to update email.";
+            return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Changes the role of a staff user.
+        /// </summary>
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeUserRole(Guid userId, string newRole)
+        {
+            var result = await _userRepository.ChangeUserRoleAsync(userId, newRole);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = $"User role changed to {newRole} successfully.";
+                _auditLogger.Log("ChangeUserRole", $"Changed role of user {userId} to {newRole}");
+                return Ok();
+            }
+            TempData["Error"] = "Failed to change user role.";
+            return BadRequest(result.Errors);
+        }
+
     }
 }

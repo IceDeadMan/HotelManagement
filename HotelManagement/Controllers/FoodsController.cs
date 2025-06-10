@@ -55,6 +55,7 @@ namespace HotelManagement.Controllers
             };
 
             _foodRepository.Create(newFood);
+            TempData["Success"] = "Food item created successfully.";
             _auditLogger.Log("CreateFood", $"New food {Name} created successfully.");
 
             return RedirectToAction("FoodMenu");
@@ -74,6 +75,11 @@ namespace HotelManagement.Controllers
             {
                 _foodRepository.Delete(id);
                 _auditLogger.Log("DeleteFood", $"Food with ID {id} deleted successfully.");
+                TempData["Success"] = "Food item deleted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Food item not found.";
             }
             return RedirectToAction("FoodMenu");
         }
@@ -89,13 +95,9 @@ namespace HotelManagement.Controllers
         {
             var currentDate = DateTime.Now;
 
-            // Fetch all foods for display
             var foods = await _foodRepository.GetAllWithReviewsAsync();
-
-            // Default values
             var availableRooms = new List<Room>();
 
-            // Only attempt room check if user is logged in
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -124,7 +126,7 @@ namespace HotelManagement.Controllers
         [HttpPut]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager,KitchenStaff")]
-        public IActionResult ToggleAvailability(Guid id)
+        public async Task<IActionResult> ToggleAvailability(Guid id)
         {
             var food = _foodRepository.GetById(id);
             if (food == null)
@@ -132,11 +134,32 @@ namespace HotelManagement.Controllers
                 return NotFound();
             }
 
-            food.IsAvailable = !food.IsAvailable;
-            _foodRepository.Update(food);
+            await _foodRepository.UpdateStatus(id, !food.IsAvailable);
             _auditLogger.Log("ToggleAvailability", $"Food {food.Name} availability toggled to {food.IsAvailable}.");
 
             return Json(new { success = true, isAvailable = food.IsAvailable });
+        }
+
+        /// <summary>
+        /// EditFood allows staff and managers to edit the details of a food item.
+        /// It takes the food details as parameters and updates the food item in the database.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,KitchenStaff")]
+        public IActionResult EditFood(Food food)
+        {
+            if (!ModelState.IsValid) return RedirectToAction("FoodMenu");
+
+            var updateId = _foodRepository.Update(food);
+            if (updateId == null)
+            {
+                TempData["Error"] = "Failed to update food item.";
+                _auditLogger.Log("EditFood", $"Failed to update food {food.Name}.");
+                return RedirectToAction("FoodMenu");
+            }
+            TempData["Success"] = "Food item updated successfully.";
+            return RedirectToAction("FoodMenu");
         }
     }
 }

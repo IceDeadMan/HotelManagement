@@ -16,6 +16,7 @@
 	<!--Fails/its probably not needed v-->
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
 	<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/locales-all.global.min.js"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HotelManagement.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -32,27 +33,24 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav">
                         <!-- Public Buttons -->
-                        <li class="nav-item me-3">
-                            <a class="nav-link nav-public" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item me-3">
+                        <li class="nav-item ">
                             <a class="nav-link nav-public" asp-controller="Rooms" asp-action="RoomsList">@Localizer["Rooms"]</a>
                         </li>
-                        <li class="nav-item me-3">
+                        <li class="nav-item ">
                             <a class="nav-link nav-public" asp-controller="Events" asp-action="EventsList">@Localizer["Events"]</a>
                         </li>
-                        <li class="nav-item me-3">
+                        <li class="nav-item ">
                             <a class="nav-link nav-public" asp-controller="Foods" asp-action="FoodMenu">@Localizer["FoodMenu"]</a>
                         </li>
 
                         <!-- Authenticated Buttons -->
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item me-3">
+                            <li class="nav-item ">
                                 <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="StartBooking">@Localizer["BookRoom"]</a>
                             </li>
                             @await Component.InvokeAsync("BookingCartNav")
-                            <li class="nav-item me-3">
+                            <li class="nav-item ">
                                 <a class="nav-link nav-auth" asp-controller="Bookings" asp-action="MyBookings">@Localizer["MyBookings"]</a>
                             </li>
                         }
@@ -60,19 +58,19 @@
                         <!-- Role-Based Buttons -->
                         @if (User.IsInRole("Manager") || User.IsInRole("Receptionist"))
                         {
-                            <li class="nav-item me-3">
+                            <li class="nav-item ">
                                 <a class="nav-link nav-role" asp-controller="Bookings" asp-action="Reception">@Localizer["Reception"]</a>
                             </li>
                         }
                         @if (User.IsInRole("Manager") || User.IsInRole("KitchenStaff"))
                         {
-                            <li class="nav-item me-3">
+                            <li class="nav-item ">
                                 <a class="nav-link nav-role" asp-controller="FoodOrders" asp-action="FoodOrdersList">@Localizer["FoodOrders"]</a>
                             </li>
                         }
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
                         {
-                            <li class="nav-item me-3">
+                            <li class="nav-item ">
                                 <a class="nav-link nav-role" asp-controller="ActivityRecords" asp-action="ActivityRecordsList">@Localizer["ServiceActivities"]</a>
                             </li>
                         }
@@ -81,32 +79,37 @@
                     <ul class="navbar-nav ms-auto">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item me-2">
-                                <a class="btn btn-outline-primary" asp-area="" asp-controller="Users" asp-action="Profile">@User.Identity.Name</a>
+                            <li class="nav-item me-1">
+                                <a class="btn btn-outline-primary" style="white-space: nowrap;" asp-area="" asp-controller="Users" asp-action="Profile">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-danger" asp-area="" asp-controller="Users" asp-action="Logout">@Localizer["Logout"]</a>
+                                <a class="btn btn-outline-danger" style="white-space: nowrap;" asp-area="" asp-controller="Users" asp-action="Logout">@Localizer["Logout"]</a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item me-2">
+                            <li class="nav-item me-1">
                                 <a class="btn btn-outline-success" asp-area="" asp-controller="Users" asp-action="Login">@Localizer["Login"]</a>
                             </li>
                             <li class="nav-item">
                                 <a class="btn btn-outline-secondary" asp-area="" asp-controller="Users" asp-action="Register">@Localizer["Register"]</a>
                             </li>
                         }
-                        <li>
-                            <form id="selectLanguage" method="post" asp-controller="Home" asp-action="SetLanguage" class="language-selector">
+                        <li class="nav-item ms-1">
+                            <form id="selectLanguage" method="post" asp-controller="Home" asp-action="SetLanguage" class="d-flex align-items-center">
                                 @{
                                     var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
                                     var currentUICulture = requestCultureFeature?.RequestCulture.UICulture.Name ?? "en";
                                 }
-                                <select name="culture" onchange="this.form.submit()">
-                                    <option value="en" selected="@(currentUICulture == "en" ? "selected" : null)">English</option>
-                                    <option value="sk" selected="@(currentUICulture == "sk" ? "selected" : null)">Slovak</option>
+
+                                <select name="culture"
+                                        class="form-select form-select-sm btn"
+                                        style="width: auto; min-width: 120px;"
+                                        onchange="this.form.submit()">
+                                    <option value="en" selected="@(currentUICulture == "en" ? "selected" : null)">@Localizer["English"]</option>
+                                    <option value="sk" selected="@(currentUICulture == "sk" ? "selected" : null)">@Localizer["Slovak"]</option>
                                 </select>
+
                                 <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
                             </form>
                         </li>
@@ -117,13 +120,27 @@
     </header>
     <div class="container" style="padding-top: 70px;">
         <main role="main" class="pb-3">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - HotelManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - HotelManagement</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

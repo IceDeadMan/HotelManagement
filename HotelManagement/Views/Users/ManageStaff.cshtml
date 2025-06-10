@@ -1,0 +1,132 @@
+﻿@using HotelManagement.ViewModels
+@using HotelManagement.ViewModels.Users
+@using HotelManagement.Enums
+@using Microsoft.AspNetCore.Antiforgery
+@model ManageStaffViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Manage Staff Accounts";
+}
+
+<h2>@Localizer["ManageStaff"]</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Username"]</th>
+                <th>@Localizer["Email"]</th>
+                <th>@Localizer["CurrentRole"]</th>
+                <th>@Localizer["ChangeRole"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                var currentRole = Model.UserRoles[user.Id];
+                <tr>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@currentRole</td>
+                    <td>
+                        <form class="role-change-form" method="post">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <select name="newRole" class="role-dropdown">
+                                @foreach (var role in Model.AvailableRoles)
+                                {
+                                    <option value="@role" selected="@(role == currentRole)">
+                                    @role
+                                </option>
+                                }
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+<div class="card my-4 border-success shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title text-success">@Localizer["RegisterNewStaff"]</h5>
+
+        <form asp-action="RegisterStaff" method="post">
+            @Html.AntiForgeryToken()
+
+            @if (ViewData.ModelState.ErrorCount > 0)
+            {
+                @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+            }
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">@Localizer["FirstName"]</label>
+                    <input name="FirstName" class="form-control" placeholder="@Localizer["FirstName"]" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">@Localizer["LastName"]</label>
+                    <input name="LastName" class="form-control" placeholder="@Localizer["LastName"]" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">@Localizer["PhoneNumber"]</label>
+                    <input name="PhoneNumber" class="form-control" placeholder="@Localizer["PhoneNumber"]" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">@Localizer["Username"]</label>
+                    <input name="Username" class="form-control" placeholder="@Localizer["Username"]" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="Email" class="form-control" placeholder="Email" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">@Localizer["Password"]</label>
+                    <input type="password" name="Password" class="form-control" placeholder="@Localizer["Password"]" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">@Localizer["RegisterStaff"]</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.querySelectorAll(".role-dropdown").forEach(dropdown => {
+        dropdown.addEventListener("change", function () {
+            const form = this.closest("form");
+            const formData = new FormData(form);
+
+            fetch("/Users/ChangeUserRole", {
+                method: "POST",
+                headers: {
+                    "RequestVerificationToken": formData.get("__RequestVerificationToken")
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Role changed successfully.");
+                    location.reload();
+                } else {
+                    alert("Failed to change role.");
+                }
+            });
+        });
+    });
+</script>
+
+}

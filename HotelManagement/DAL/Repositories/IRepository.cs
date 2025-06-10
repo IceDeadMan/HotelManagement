@@ -2,6 +2,9 @@
 
 namespace HotelManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Generic repository interface for CRUD operations on models.
+    /// </summary>
     public interface IRepository<TModel> where TModel : IModel
     {
         IList<TModel> GetAll();

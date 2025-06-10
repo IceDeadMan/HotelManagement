@@ -77,6 +77,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingReview()
         {
             var reviewToUpdate = _reviewRepository.GetById(Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7291"));
+
             Assert.NotNull(reviewToUpdate);
 
             reviewToUpdate.Comment = "Updated Comment";
@@ -91,6 +92,7 @@ namespace Tests.RepositoryTests
         public void Delete_ExistingReview()
         {
             var reviewToDelete = _reviewRepository.GetById(Guid.Parse("4aef3307-19ee-4b61-8efa-8828279e7294"));
+
             Assert.NotNull(reviewToDelete);
 
             _reviewRepository.Delete(reviewToDelete.Id);

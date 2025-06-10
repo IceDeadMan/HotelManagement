@@ -54,7 +54,7 @@ namespace Tests.RepositoryTests
             var activityRecord = _activityRecordRepository.GetById(activityRecordId);
 
             Assert.NotNull(activityRecord);
-            Assert.Equal(ActivityStatus.Planned, activityRecord.Status);
+            Assert.Equal(ActivityStatus.Completed, activityRecord.Status);
         }
 
         [Fact]
@@ -71,7 +71,6 @@ namespace Tests.RepositoryTests
             };
             var newActivityRecordId = _activityRecordRepository.Create(newActivityRecord);
             var createdActivityRecord = _activityRecordRepository.GetById(newActivityRecordId);
-
             var user = _context.Users.Find(UserSeeds.User3.Id);
 
             Assert.NotNull(createdActivityRecord);
@@ -84,6 +83,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingActivityRecord()
         {
             var activityRecordToUpdate = _activityRecordRepository.GetById(Guid.Parse("db1ae6ab-91a7-4aaf-a08a-4097ce670a31"));
+
             Assert.NotNull(activityRecordToUpdate);
 
             activityRecordToUpdate.Description = "Updated Description";
@@ -98,6 +98,7 @@ namespace Tests.RepositoryTests
         public void Delete_ExistingActivityRecord()
         {
             var activityRecordToDelete = _activityRecordRepository.GetById(Guid.Parse("db1ae6ab-91a7-4aaf-a08a-4097ce670a32"));
+
             Assert.NotNull(activityRecordToDelete);
 
             _activityRecordRepository.Delete(activityRecordToDelete.Id);

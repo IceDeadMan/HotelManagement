@@ -44,6 +44,7 @@ namespace Tests.RepositoryTests
         public void Create_NewFoodOrder()
         {
             var foodItem = _foodRepository.GetById(FoodSeeds.Food1.Id);
+
             Assert.NotNull(foodItem);
 
             var newFoodOrder = new FoodOrder
@@ -66,8 +67,6 @@ namespace Tests.RepositoryTests
 
             Assert.NotNull(createdFoodOrder);
             Assert.Equal(OrderStatus.Pending, createdFoodOrder.Status);
-
-            // Also assert the join entity was saved properly
             Assert.NotNull(createdFoodOrder.FoodOrderFoods);
             Assert.Single(createdFoodOrder.FoodOrderFoods);
             Assert.Equal(foodItem.Id, createdFoodOrder.FoodOrderFoods.First().FoodId);
@@ -78,6 +77,7 @@ namespace Tests.RepositoryTests
         public void Update_ExistingFoodOrder()
         {
             var foodOrderToUpdate = _foodOrderRepository.GetById(Guid.Parse("41d65c90-de3e-49be-8802-8cbc5b4e2961"));
+
             Assert.NotNull(foodOrderToUpdate);
 
             foodOrderToUpdate.Description = "Updated Description";

@@ -120,6 +120,12 @@
   <data name="Back" xml:space="preserve">
     <value>Späť na Moje Rezervácie</value>
   </data>
+  <data name="After" xml:space="preserve">
+    <value>po</value>
+  </data>
+  <data name="Until" xml:space="preserve">
+    <value>do</value>
+  </data>
   <data name="BookingDetails" xml:space="preserve">
     <value>Detail Rezervácie</value>
   </data>
@@ -145,7 +151,7 @@
     <value>Izby</value>
   </data>
   <data name="Subtotal" xml:space="preserve">
-    <value>Celkovo</value>
+    <value>Medzisúčet</value>
   </data>
   <data name="TotalNights" xml:space="preserve">
     <value>Počet Nocí</value>
@@ -155,5 +161,17 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Čakajúci</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončený</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Potvrdený</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Zrušený</value>
   </data>
 </root>

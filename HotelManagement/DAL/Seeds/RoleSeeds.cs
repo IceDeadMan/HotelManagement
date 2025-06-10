@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds predefined identity roles into the database.
+    /// </summary>
     public static class RoleSeeds
     {
         public static readonly IdentityRole<Guid> Customer = new IdentityRole<Guid>

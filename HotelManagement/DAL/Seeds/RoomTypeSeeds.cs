@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Seeds initial data for room types in the database.
+    /// </summary>
     public class RoomTypeSeeds
     {
         public static readonly RoomType RoomType1 = new RoomType

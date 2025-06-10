@@ -2,6 +2,7 @@
 @inject IViewLocalizer Localizer
 @model HotelManagement.ViewModels.BookingRoomDetailViewModel
 @using HotelManagement.Enums
+@using System.Globalization;
 
 <!-- Booking Room Details View -->
 <!-- This view displays the details of a specific room in a booking, including food orders, service requests, and reviews. -->
@@ -11,16 +12,8 @@
     var nights = (Model.Booking.EndDate - Model.Booking.StartDate).Days;
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-
 <h2>@Localizer["Room"] @Model.Room.RoomNumber</h2>
-<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToShortDateString() - @Model.Booking.EndDate.ToShortDateString() (@nights nights)</p>
+<p><strong>@Localizer["BookingPeriod"]:</strong> @Model.Booking.StartDate.ToString("dd.MM.yyyy") - @Model.Booking.EndDate.ToString("dd.MM.yyyy") (@nights @Localizer["Nights"])</p>
 <p><strong>@Localizer["RoomType"]:</strong> @Model.Room.RoomType?.Name, @Model.Room.RoomType?.Description</p>
 <p><strong>@Localizer["Description"]:</strong> @Model.Room.Description</p>
 
@@ -33,8 +26,19 @@
         @foreach (var order in Model.FoodOrders)
         {
             <li>
-                <strong>@order.OrderDate.ToShortDateString():</strong> @order.Description
-                (Status: @order.Status)
+                <strong>@order.OrderDate.ToString("dd.MM.yyyy"):</strong> @order.Description <span class="@(order.Status switch {
+                OrderStatus.Pending => "status-pending",
+                OrderStatus.InProgress => "status-in-progress",
+                OrderStatus.Completed => "status-completed",
+                OrderStatus.Cancelled => "status-cancelled",
+                _ => ""
+            })"> - @Localizer[order.Status.ToString()]</span>
+                <ul class="list-unstyled mb-0">
+                    @foreach (var food in order.FoodOrderFoods)
+                    {
+                        <li>@food.Food.Name - @food.Quantity x @food.Food.Price.ToString("N2", CultureInfo.InvariantCulture) €</li>
+                    }
+                </ul>
             </li>
         }
     </ul>
@@ -59,12 +63,24 @@ else
     <ul>
         @foreach (var activity in Model.ActivityRecords)
         {
-            <li>
-                <strong>@activity.Date.ToShortDateString():</strong> @activity.Type - @activity.Description
-                (Status: @activity.Status)
+            <li id="activity-@activity.Id">
+                <strong>@activity.Date.ToString("dd.MM.yyyy"):</strong> @activity.Type - @activity.Description
+                <span class="@(activity.Status switch {
+                    ActivityStatus.Planned => "status-planned",
+                    ActivityStatus.InProgress => "status-in-progress",
+                    ActivityStatus.Completed => "status-completed",
+                    _ => ""
+                })"> - @Localizer[activity.Status.ToString()]</span>
+
+                @if (activity.Status == ActivityStatus.Planned)
+                {
+                    <button class="btn btn-danger btn-sm ms-2" onclick="deleteActivity('@activity.Id')">
+                        @Localizer["Delete"]
+                    </button>
+                }
             </li>
         }
-    </ul>
+        </ul>
 }
 else
 {
@@ -121,7 +137,7 @@ else
             <label for="Comment">@Localizer["Comment"]</label>
             <textarea name="Comment" class="form-control">@Model.Review.Comment</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">@Localizer["Update Review"]</button>
+        <button type="submit" class="btn btn-primary">@Localizer["UpdateReview"]</button>
     </form>
 }
 else
@@ -188,12 +204,33 @@ else
         }
 
         if (editReviewForm) {
-            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Reviews")'), 'PUT');
+            editReviewForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("EditRoomReview", "Reviews")'), 'POST');
         }
 
         if (addActivityForm) {
             addActivityForm.addEventListener("submit", e => handleFormSubmit(e, '@Url.Action("Add", "ActivityRecords")'), 'POST');
         }
     });
+    function deleteActivity(activityId) {
+        if (!confirm("@Localizer["DeleteActivityConfirm"]")) {
+            return;
+        }
+
+        fetch("/ActivityRecords/DeleteActivityRecordByCustomer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify(activityId) // Send raw GUID string
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                response.text().then(text => alert(text || "Could not delete activity."));
+            }
+        });
+    }
     </script>
 }

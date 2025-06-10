@@ -168,4 +168,22 @@
   <data name="EventsListTitle" xml:space="preserve">
     <value>Events List</value>
   </data>
+  <data name="Or" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="ToRegister" xml:space="preserve">
+    <value>To register for this event, </value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>create account</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>login</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>

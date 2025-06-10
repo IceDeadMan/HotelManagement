@@ -123,14 +123,26 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
   <data name="CheckIn" xml:space="preserve">
     <value>Check-in</value>
   </data>
   <data name="CheckOut" xml:space="preserve">
     <value>Check-out</value>
   </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Confirmed</value>
+  </data>
   <data name="EndDate" xml:space="preserve">
     <value>End Date</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
   </data>
   <data name="Rooms" xml:space="preserve">
     <value>Rooms</value>
@@ -143,5 +155,8 @@
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
+  </data>
+  <data name="CancelConfirm" xml:space="preserve">
+    <value>Are you sure you want to cancel this booking?</value>
   </data>
 </root>

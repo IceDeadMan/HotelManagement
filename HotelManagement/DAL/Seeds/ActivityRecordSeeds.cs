@@ -3,15 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagement.DAL.Seeds
 {
+    /// <summary>
+    /// Represents a collection of predefined activity records for seeding the database.
+    /// </summary>
     public class ActivityRecordSeeds
     {
         public static readonly ActivityRecord ActivityRecord1 = new ActivityRecord
         {
             Id = Guid.Parse("db1ae6ab-91a7-4aaf-a08a-4097ce670a31"),
-            Date = new DateTime(2023, 10, 1),
+            Date = new DateTime(2025, 5, 5),
             Description = "Room 101 cleaning",
             Type = Enums.ActivityType.Cleaning,
-            Status = Enums.ActivityStatus.Planned,
+            Status = Enums.ActivityStatus.Completed,
             RoomId = RoomSeeds.Room1.Id,
             ApplicationUserId = UserSeeds.User1.Id
         };
@@ -33,7 +36,7 @@ namespace HotelManagement.DAL.Seeds
             Date = new DateTime(2024, 10, 2),
             Description = "Room 102 cleaning",
             Type = Enums.ActivityType.Cleaning,
-            Status = Enums.ActivityStatus.Planned,
+            Status = Enums.ActivityStatus.Completed,
             RoomId = RoomSeeds.Room2.Id,
             ApplicationUserId = UserSeeds.User3.Id
         };
@@ -55,7 +58,7 @@ namespace HotelManagement.DAL.Seeds
             Date = new DateTime(2025, 7, 12),
             Description = "Room 104 cleaning",
             Type = Enums.ActivityType.Cleaning,
-            Status = Enums.ActivityStatus.Completed,
+            Status = Enums.ActivityStatus.Planned,
             RoomId = RoomSeeds.Room4.Id,
             ApplicationUserId = UserSeeds.User8.Id
         };
@@ -71,10 +74,22 @@ namespace HotelManagement.DAL.Seeds
             ApplicationUserId = UserSeeds.User3.Id
         };
 
+        public static readonly ActivityRecord ActivityRecord7 = new ActivityRecord
+        {
+            Id = Guid.Parse("db1ae6ab-91a7-4aaf-a08a-4097ce670a37"),
+            Date = new DateTime(2025, 5, 11),
+            Description = "Room 107 cleaning",
+            Type = Enums.ActivityType.Cleaning,
+            Status = Enums.ActivityStatus.InProgress,
+            RoomId = RoomSeeds.Room7.Id,
+            ApplicationUserId = UserSeeds.User4.Id
+        };
+
         public static void Seed(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ActivityRecord>().HasData(ActivityRecord1, ActivityRecord2, ActivityRecord3,
-                                                          ActivityRecord4, ActivityRecord5, ActivityRecord6);
+                                                          ActivityRecord4, ActivityRecord5, ActivityRecord6,
+                                                          ActivityRecord7);
         }
     }
 }

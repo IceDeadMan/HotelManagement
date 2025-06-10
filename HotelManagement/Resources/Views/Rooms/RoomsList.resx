@@ -138,8 +138,14 @@
   <data name="Room" xml:space="preserve">
     <value>Room</value>
   </data>
+  <data name="EditRoom" xml:space="preserve">
+    <value>Edit</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>

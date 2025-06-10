@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model HotelManagement.ViewModels.RoomDetailViewModel
+@using System.Globalization;
+@using HotelManagement.Enums;
 
 <!-- Room Details View -->
 <!-- This view displays the details of a room, including its bookings in a calendar and guest reviews. -->
@@ -11,14 +13,76 @@
 <div class="container mt-4">
 	<div class="card shadow-sm">
 		<div class="card-body">
-			<h3 class="card-title">Room @Model.RoomNumber</h3>
-			<p class="card-text"><strong>@Localizer["RoomTypeDetail"]:</strong> @Model.RoomTypeName</p>
-			<p class="card-text"><strong>@Localizer["RoomCapacityDetail"]:</strong> @Model.RoomTypeCapacity</p>
-			<p class="card-text"><strong>@Localizer["RoomDescriptionDetail"]:</strong> @Model.Description</p>
-			<p class="card-text"><strong>@Localizer["RoomTypeDescription"]: </strong>@Model.RoomTypeDescription</p>
-			<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("C")</p>
-			<a asp-action="RoomsList" class="btn btn-secondary mt-4">@Localizer["BackToList"]</a>
+			<div class="row">
+				<!-- Room details column -->
+				<div class="col-md-6">
+					<h3 class="card-title">Room @Model.RoomNumber</h3>
+					<p class="card-text"><strong>@Localizer["RoomTypeDetail"]:</strong> @Model.RoomTypeName</p>
+					<p class="card-text"><strong>@Localizer["RoomCapacityDetail"]:</strong> @Model.RoomTypeCapacity</p>
+					<p class="card-text"><strong>@Localizer["RoomDescriptionDetail"]:</strong> @Model.Description</p>
+					<p class="card-text"><strong>@Localizer["RoomTypeDescription"]: </strong>@Model.RoomTypeDescription</p>
+					<p class="card-text"><strong>@Localizer["PriceDetail"]:</strong> @Model.RoomTypePrice.ToString("N2", CultureInfo.InvariantCulture) €</p>
+					<a asp-action="RoomsList" class="btn btn-secondary mt-4">@Localizer["BackToList"]</a>
+				</div>
 
+				<!-- Room photo column -->
+				<div class="col-md-6 d-flex align-items-center justify-content-center">
+					@if (Model.RoomTypePhoto != null)
+					{
+						var base64 = Convert.ToBase64String(Model.RoomTypePhoto);
+						var imageSrc = $"data:image/jpeg;base64,{base64}";
+						<img src="@imageSrc" class="img-fluid rounded shadow-sm" alt="Room Photo" style="max-height: 300px;" />
+					}
+					else
+					{
+						<p>No photo available.</p>
+					}
+				</div>
+			</div>
+			<!-- Activities section only for receptionist/manager/staff-->
+			@if (User.IsInRole("Manager") || User.IsInRole("Receptionist") || User.IsInRole("Staff"))
+			{
+				@if (Model.Activities?.Any() == true)
+				{
+					<h5 class="mt-4">@Localizer["ActivitiesForRoom"]:</h5>
+					<ul class="list-group">
+						@foreach (var activity in Model.Activities)
+						{
+							<li class="list-group-item">
+								<strong>@Localizer["ActivityGuest"]:</strong> @activity.GuestName
+								| <strong>@Localizer["ActivityType"]:</strong> @activity.Type
+								| <strong>@Localizer["ActivityDescription"]:</strong> @activity.Description
+								| <strong>@Localizer["ActivityDate"]:</strong> @activity.Date.ToString("dd.MM.yyyy")
+								| <strong>@Localizer["ActivityStatus"]:</strong> @Localizer[activity.Status.ToString()]
+							</li>
+						}
+					</ul>
+				}
+				<form method="post" asp-action="AddAction" class="mt-4">
+					@Html.AntiForgeryToken()
+
+					<label>@Localizer["ServiceType"]</label>
+					<div>
+						@foreach (var type in Enum.GetValues(typeof(ActivityType)).Cast<ActivityType>())
+						{
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="Type" value="@type" required />
+								<label class="form-check-label">@type.ToString()</label>
+							</div>
+						}
+					</div>
+
+					<div class="mb-2">
+						<label for="Description">@Localizer["Description"]</label>
+						<textarea name="Description" class="form-control" required></textarea>
+					</div>
+
+					<!-- Hidden values -->
+					<input type="hidden" name="RoomId" value="@Model.Id" />
+
+					<button type="submit" class="btn btn-primary">@Localizer["RequestService"]</button>
+				</form>
+			}
 			<!-- Bookings Section only for reception/manager -->
 			@if(User.IsInRole("Manager") || User.IsInRole("Receptionist"))
 			{
@@ -30,8 +94,8 @@
 						{
 							<li class="list-group-item">
 								<strong>@Localizer["BookingGuest"]:</strong> @booking.GuestName
-								| <strong>@Localizer["BookingFrom"]:</strong> @booking.StartDate.ToShortDateString()
-								| <strong>@Localizer["BookingTo"]:</strong> @booking.EndDate.ToShortDateString()
+								| <strong>@Localizer["BookingFrom"]:</strong> @booking.StartDate.ToString("dd.MM.yyyy")
+								| <strong>@Localizer["BookingTo"]:</strong> @booking.EndDate.ToString("dd.MM.yyyy")
 							</li>
 						}
 					</ul>
@@ -45,13 +109,17 @@
 				<h5 class="mt-4">@Localizer["RoomCalendar"]</h5>
 				<div id="calendar" class="border rounded p-2 shadow-sm" style="max-width: 700px; margin: auto;"></div>
 			}
-
+			@{
+				var localizedBooked = Localizer["Booked"].Value;
+			}
 
 			<!-- Generate calendar events from bookings -->
 			<script>
 				const bookings = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-					Model.Bookings.Select(b => new {
-						title = "Booked",
+					Model.Bookings
+					.Where(b => b.Status != BookingStatus.Cancelled)
+						.Select(b => new {
+						title = localizedBooked,
 						start = b.StartDate.ToString("yyyy-MM-dd"),
 						end = b.EndDate.AddDays(1).ToString("yyyy-MM-dd")
 					})
@@ -60,6 +128,7 @@
 
 			<!-- Initialize FullCalendar -->
 			<script>
+				const culture = '@CultureInfo.CurrentUICulture.Name'; 
 				document.addEventListener('DOMContentLoaded', function () {
 					var calendarEl = document.getElementById('calendar');
 
@@ -68,7 +137,8 @@
 						height: 'auto',
 						events: bookings,
 						eventColor: '#dc3545',
-						selectable: true
+						selectable: true,
+						locale: culture
 					});
 
 					calendar.render();
@@ -104,12 +174,12 @@
 												}
 											}
 										}
-										<small class="text-muted">@(review.Rating / 2.0)</small>
+										<small class="text-muted">@(review.Rating)</small>
 									</div>
 									<br />
-									@review.Comment
+									<p class="review-comment">@review.Comment</p>
 								</div>
-								<small class="text-muted">@review.ReviewDate.ToShortDateString(), By: @review.ReviewerUsername</small>
+								<small class="text-muted">@review.ReviewDate.ToShortDateString(),  @review.ReviewerUsername</small>
 							</div>
 						</li>
 					}

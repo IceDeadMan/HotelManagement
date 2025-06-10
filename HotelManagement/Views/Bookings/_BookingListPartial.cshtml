@@ -1,8 +1,10 @@
-﻿@using HotelManagement.Models;
-@using HotelManagement.Models.DTOs;
-@using HotelManagement.Enums;
+﻿@using HotelManagement.Enums;
+@using HotelManagement.Models;
+@using HotelManagement.Models;
 @using HotelManagement.ViewModels;
+@using HotelManagement.ViewModels.DTOs
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Text.Json;
 @inject IViewLocalizer Localizer
 @model IEnumerable<ReceptionBookingSummary>
 <!-- Reception Booking List Partial View -->
@@ -27,12 +29,12 @@
             <td>@booking.UserName</td>
             <td>
                 <span class="@(booking.StartDate.Date == DateTime.Today ? "date-today" : "")">
-                    @booking.StartDate.ToShortDateString()
+                    @booking.StartDate.ToString("dd.MM.yyyy")
                 </span>
             </td>
             <td>
                 <span class="@(booking.EndDate.Date == DateTime.Today ? "date-today" : "")">
-                    @booking.EndDate.ToShortDateString()
+                    @booking.EndDate.ToString("dd.MM.yyyy")
                 </span>
             </td>
             <td class="@(booking.Status switch {
@@ -42,7 +44,7 @@
                 BookingStatus.Cancelled => "status-cancelled",
                 _ => ""
             })">
-                @booking.Status
+                @Localizer[booking.Status.ToString()]
             </td>
             <td>@string.Join(", ", booking.RoomNumbers)</td>
             <td>
@@ -61,10 +63,15 @@
                         <button type="submit" name="newStatus" value="Completed" class="btn btn-primary btn-sm">@Localizer["CheckOut"]</button>
                     }
 
-                    @* Cancel: Allow cancel if booking is in pending state*@
+                    @* Cancel: Allow cancel if booking is in pending state *@
                     @if (booking.Status == BookingStatus.Pending)
                     {
-                        <button type="submit" name="newStatus" value="Cancelled" class="btn btn-danger btn-sm">@Localizer["Cancel"]</button>
+                        var confirmMessage = JsonSerializer.Serialize(Localizer["CancelConfirm"].Value);
+                        <button type="submit" name="newStatus" value="Cancelled"
+                                class="btn btn-danger btn-sm"
+                                onclick='return confirm(@Html.Raw(confirmMessage));'>
+                            @Localizer["Cancel"]
+                        </button>
                     }
                 </form>
 
